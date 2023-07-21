@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import foxy.ryukkun_.vividmotion.commands.Main;
 import org.apache.commons.lang.ArrayUtils;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -19,6 +20,8 @@ public final class VividMotion extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        getCommand("vividmotion").setExecutor(new Main());
+
         ProtocolManager manager = ProtocolLibrary.getProtocolManager();
 
         manager.addPacketListener(new PacketAdapter(this, PacketType.Play.Server.MAP) {

@@ -2,3 +2,18 @@ name: VividMotion
 version: '${project.version}'
 main: foxy.ryukkun_.vividmotion.VividMotion
 depend: [ProtocolLib]
+
+commands:
+  vividmotion:
+    description: This is a fantastic command.
+    permission: vividmotion.command.main
+    usage: /<command> [set, give] [String]
+
+permissions:
+  vividmotion.command.*:
+    description: kita-nn!
+    children:
+      vividmotion.command.main: true
+  vividmotion.command.main:
+    description: kita--nn!
+    default: op
