@@ -5,26 +5,28 @@ import java.util.List;
 
 public class MapsData {
     // Map Count (Height, Width)
-    public int height, width, m_height, m_width, frames;
+    public int height, width, m_height, m_width;
+    public double frameRate;
     public boolean is_loaded = false;
     // Byte[Frame][height*width]
-    public final List<Byte[]> map_pixel = new ArrayList<>();
+    public final List<byte[]> map_pixel = new ArrayList<>();
     public byte background_color;
 
-    public MapsData(int width, int height){
+    public MapsData(int width, int height, double frameRate){
         setBackgroundColor(0,0,0);
+        this.frameRate = frameRate;
         this.width = width;
         this.height = height;
         this.m_width = width / 256 + 1;
         this.m_height = height / 256 + 1;
     }
 
-    public void addFrame(Byte[] bytes){
+    public void addFrame(byte[] bytes){
         map_pixel.add(bytes);
     }
 
     public void setBackgroundColor(int r, int g, int b){
-        background_color = (byte)MapConverter.get_nearest_color(0,0,0);
+        background_color = (byte)MapConverter.get_nearest_color(r,g,b);
     }
 
     public byte[][] getMapDatas(int frame){

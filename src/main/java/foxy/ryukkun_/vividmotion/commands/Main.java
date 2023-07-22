@@ -2,10 +2,12 @@ package foxy.ryukkun_.vividmotion.commands;
 
 
 import foxy.ryukkun_.vividmotion.videoutil.FFmpegSource;
+import foxy.ryukkun_.vividmotion.videoutil.GetMap;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,10 +29,15 @@ public class Main implements CommandExecutor, TabCompleter {
         try {
             if (2 <= args.length){
                 if ("give".equalsIgnoreCase(args[0].trim())){
-                     Arrays.copyOfRange(args, 1, args.length);
+                    String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
+                    FFmpegSource ffs = new FFmpegSource(input);
+                    if (!ffs.can_load){
+                        return false;
+                    }
+                    new GetMap(ffs, (Player) sender).start();
                 }
             }
-            new FFmpegSource(args[1]);
+
 
         } catch (Exception ignored){}
 
