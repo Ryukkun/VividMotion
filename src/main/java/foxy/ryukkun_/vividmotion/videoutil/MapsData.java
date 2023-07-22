@@ -17,8 +17,8 @@ public class MapsData {
         this.frameRate = frameRate;
         this.width = width;
         this.height = height;
-        this.m_width = width / 256 + 1;
-        this.m_height = height / 256 + 1;
+        this.m_width = width % 128 == 0 ? width/128 : width/128+1;
+        this.m_height = height % 128 == 0 ? height/128 : height/128+1;
     }
 
     public void addFrame(byte[] bytes){
@@ -31,14 +31,14 @@ public class MapsData {
 
     public byte[][] getMapDatas(int frame){
         int m_index, p_index, px, py;
-        int height_diff = (m_height*256 - height)/2;
-        int width_diff = (m_width*256 - width)/2;
-        byte[][] maps = new byte[m_width*m_height][256*256];
+        int height_diff = (m_height*128 - height)/2;
+        int width_diff = (m_width*128 - width)/2;
+        byte[][] maps = new byte[m_width*m_height][128*128];
 
-        for (int y = 0, y_limit = m_height*256; y < y_limit; y++){
-            for (int x = 0, x_limit = m_width*256; x < x_limit; x++){
-                p_index = (y%256 * 256) + (x%256);
-                m_index = (y/256 * m_width) + (x/256);
+        for (int y = 0, y_limit = m_height*128; y < y_limit; y++){
+            for (int x = 0, x_limit = m_width*128; x < x_limit; x++){
+                p_index = (y%128 * 128) + (x%128);
+                m_index = (y/128 * m_width) + (x/128);
                 px = x-width_diff;
                 py = y-height_diff;
                 if (py < 0 || px < 0 || height <= py || width <= px ){

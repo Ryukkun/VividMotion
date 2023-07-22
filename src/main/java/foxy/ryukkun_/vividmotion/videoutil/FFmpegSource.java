@@ -110,9 +110,12 @@ public class FFmpegSource {
     public byte[] read() {
         if (can_load){
             if (bimg != null){
-                return MapConverter.toConvert(bimg);
+                byte[] res = MapConverter.toConvert(bimg);
+                bimg = null;
+                return res;
 
-            } else {
+
+            } else if (ffg != null) {
                 Frame f;
                 try{
                     f = ffg.grabImage();

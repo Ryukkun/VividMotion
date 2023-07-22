@@ -4,13 +4,14 @@ import java.awt.image.BufferedImage;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.map.MapPalette;
 
 public class MapConverter {
     public static final Short[] color = get_all_color();
-    public static final int color_count = color.length / 3;
+    public static final Short[] fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
 
     public static byte[] toConvert(BufferedImage buff){
 
@@ -22,6 +23,7 @@ public class MapConverter {
         byte[] map_format = new byte[width*height];
 
         int[] pixel_data = buff.getRGB(0, 0, width, height, null, 0, width);
+
 
         for (int y = 0; y < height; y++) {
             diff[0] = 0;
@@ -36,21 +38,48 @@ public class MapConverter {
                 //System.out.print("b:"+b+" g:"+g+" r:"+r+" bgr:"+rgb);
 
 
-                color_index = get_nearest_color(pixel[0], pixel[1], pixel[2]);
+                color_index = get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
 
-                map_format[index] = (byte)color_index;
+                map_format[index] = (byte)(color_index+4);
 
                 color_index *= 3;
                 for (i = 0; i < 3; i++) {
                     if (0 < pixel[i]) {
-                        diff[i] = pixel[i] - color[color_index+i];
+                        diff[i] = pixel[i] - fixedColor[color_index+i];
                     } else {
-                        diff[i] = pixel[i] + color[color_index+i];
+                        diff[i] = pixel[i] + fixedColor[color_index+i];
                     }
                 }
             }
         }
         return map_format;
+    }
+
+    public static int get_nearest_fixedColor(int r, int g, int b){
+        int last_total = 200000;
+        int index = 0;
+        int color_index = 0;
+        int total, n;
+
+        for (int i = 0, color_count = fixedColor.length/3; i < color_count; i++) {
+            total = 0;
+
+            n = fixedColor[index++] - r;
+            total += n * n;
+
+            n = fixedColor[index++] - g;
+            total += n * n;
+
+            n = fixedColor[index++] - b;
+            total += n * n;
+
+
+            if (total < last_total) {
+                last_total = total;
+                color_index = i;
+            }
+        }
+        return color_index;
     }
 
     public static int get_nearest_color(int r, int g, int b){
@@ -59,7 +88,7 @@ public class MapConverter {
         int color_index = 0;
         int total, n;
 
-        for (int i = 0; i < color_count; i++) {
+        for (int i = 0, color_count = color.length/3; i < color_count; i++) {
             total = 0;
 
             n = color[index++] - r;
@@ -85,12 +114,14 @@ public class MapConverter {
     private static Short[] get_all_color(){
         List<Short> res = new ArrayList<>();
         Color col;
-        for (byte i = 0; i != -1; i++) {
-            col = MapPalette.getColor(i);
-            res.add((short) col.getRed());
-            res.add((short) col.getGreen());
-            res.add((short) col.getBlue());
-        }
+        try {
+            for (byte i = 0; i != -1; i++) {
+                col = MapPalette.getColor(i);
+                res.add((short) col.getRed());
+                res.add((short) col.getGreen());
+                res.add((short) col.getBlue());
+            }
+        }catch (Exception ignored){}
         return res.toArray(new Short[0]);
     }
 }

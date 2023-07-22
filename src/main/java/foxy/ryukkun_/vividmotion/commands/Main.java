@@ -35,6 +35,7 @@ public class Main implements CommandExecutor, TabCompleter {
                         return false;
                     }
                     new GetMap(ffs, (Player) sender).start();
+                    return true;
                 }
             }
 
@@ -74,13 +75,13 @@ public class Main implements CommandExecutor, TabCompleter {
 
     private TabUtil getTabUtil(String[] args){
         int len_1 = args.length-1;
-        TabUtil res = null, util = tab_list.get(tab_list.name);
+        TabUtil util = tab_list.get(tab_list.name);
 
         try{
             for (int i = 0; i < len_1; i++){
-                res = util.get(args[i]);
+                util = util.get(args[i]);
             }
         } catch (Exception ignored){}
-        return res;
+        return util;
     }
 }
