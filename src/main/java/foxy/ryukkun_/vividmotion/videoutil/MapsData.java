@@ -3,7 +3,7 @@ package foxy.ryukkun_.vividmotion.videoutil;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MovieMaps {
+public class MapsData {
     // Map Count (Height, Width)
     public int height, width, m_height, m_width, frames;
     public boolean is_loaded = false;
@@ -11,7 +11,7 @@ public class MovieMaps {
     public final List<Byte[]> map_pixel = new ArrayList<>();
     public byte background_color;
 
-    public MovieMaps(int width, int height){
+    public MapsData(int width, int height){
         setBackgroundColor(0,0,0);
         this.width = width;
         this.height = height;
@@ -22,6 +22,7 @@ public class MovieMaps {
     public void addFrame(Byte[] bytes){
         map_pixel.add(bytes);
     }
+
     public void setBackgroundColor(int r, int g, int b){
         background_color = (byte)MapConverter.get_nearest_color(0,0,0);
     }
@@ -38,7 +39,7 @@ public class MovieMaps {
                 m_index = (y/256 * m_width) + (x/256);
                 px = x-width_diff;
                 py = y-height_diff;
-                if (y < height_diff || x < width_diff || height <= py || width <= px ){
+                if (py < 0 || px < 0 || height <= py || width <= px ){
                     maps[m_index][p_index] = background_color;
                 }else {
                     maps[m_index][p_index] = map_pixel.get(frame)[py*width+px];

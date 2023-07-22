@@ -1,12 +1,14 @@
 package foxy.ryukkun_.vividmotion.commands;
 
 
+import foxy.ryukkun_.vividmotion.videoutil.FFmpegSource;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Main implements CommandExecutor, TabCompleter {
@@ -21,9 +23,14 @@ public class Main implements CommandExecutor, TabCompleter {
              )
     );
     @Override
-    public boolean onCommand(CommandSender sender, Command command, String alias, String[] strings) {
+    public boolean onCommand(CommandSender sender, Command command, String alias, String[] args) {
         try {
-
+            if (2 <= args.length){
+                if ("give".equalsIgnoreCase(args[0].trim())){
+                     Arrays.copyOfRange(args, 1, args.length);
+                }
+            }
+            new FFmpegSource(args[1]);
 
         } catch (Exception ignored){}
 
