@@ -3,7 +3,6 @@ package foxy.ryukkun_.vividmotion.videoutil;
 import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.NBTTagCompound;
 import net.minecraft.server.v1_12_R1.NBTTagList;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
@@ -11,10 +10,10 @@ import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
 import net.minecraft.server.v1_12_R1.WorldMap;
-import org.bukkit.map.MapView;
-import foxy.ryukkun_.vividmotion.videoutil.MapRenderPicture;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class GetMap extends Thread{
@@ -48,33 +47,27 @@ public class GetMap extends Thread{
         }
         mData.loaded();
 
-        ItemStack item;
         List<Short> item_count = new ArrayList<>();
         WorldMap view;
         byte[][] maps_pixel = mData.getMapDatas(0);
 
         for (byte[] bytes : maps_pixel) {
             view = this.createMap(player.getWorld());
-//            view.setCenterX(Integer.MAX_VALUE);
-//            view.setCenterZ(Integer.MAX_VALUE);
-//            view.setScale(MapView.Scale.FARTHEST);
 
             item_count.add( getMapId(view));
 
             view.colors = bytes;
-            view.centerX = Short.MAX_VALUE;
-            view.centerZ = Short.MAX_VALUE;
+            view.centerX = Integer.MAX_VALUE;
+            view.centerZ = Integer.MAX_VALUE;
             view.scale = 0;
-            view.flagDirty(0,0);
-            view.flagDirty(127, 127);
-//            view.getRenderers().clear();
-//            view.addRenderer(new MapRenderPicture(bytes));
+            view.mapView.getRenderers().clear();
+            view.mapView.addRenderer(new MapRenderPicture( view));
         }
 
         int ii;
-        net.minecraft.server.v1_12_R1.ItemStack nmsChest;
-        NBTTagCompound nbt2, nbt;
+        NBTTagCompound nbt;
         NBTTagList tagList = new NBTTagList();
+        List<NBTTagList> chestList = new ArrayList<>();
         for (int i = 0; i < item_count.size(); i++){
             ii = i % 27;
 
@@ -87,27 +80,38 @@ public class GetMap extends Thread{
             tagList.add(nbt);
 
             if (ii == 26){
-                give_chest(tagList);
+                chestList.add(tagList);
                 tagList = new NBTTagList();
             }
         }
 
-        give_chest(tagList);
-        Bukkit.getLogger().info("Finished");
+
+        if (tagList.size() != 0){
+            chestList.add(tagList);
+        }
+
+        int i = 1;
+        ItemStack chest;
+        for (NBTTagList maps :chestList){
+            chest = giveChest(maps);
+            ItemMeta meta = chest.getItemMeta();
+            meta.setDisplayName("Maps " + i++);
+            meta.setLore( Collections.singletonList("(+NBT)"));
+            chest.setItemMeta(meta);
+
+            player.getInventory().addItem( chest);
+        }
     }
 
-    private void give_chest(NBTTagList list){
+    private ItemStack giveChest(NBTTagList list) {
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagCompound nbt2 = new NBTTagCompound();
+
         nbt.set("Items", list);
         nbt2.set("BlockEntityTag", nbt);
         net.minecraft.server.v1_12_R1.ItemStack Chest = CraftItemStack.asNMSCopy( new ItemStack(Material.CHEST, 1));
         Chest.setTag(nbt2);
 
-        Bukkit.getLogger().info( nbt2.toString());
-        Bukkit.getLogger().info( Chest.toString());
-
-        player.getInventory().addItem( CraftItemStack.asBukkitCopy( Chest));
-
+        return CraftItemStack.asBukkitCopy( Chest);
     }
 }
