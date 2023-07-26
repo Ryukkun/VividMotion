@@ -1,15 +1,11 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
-import net.minecraft.server.v1_12_R1.Items;
-import net.minecraft.server.v1_12_R1.NBTTagCompound;
-import net.minecraft.server.v1_12_R1.NBTTagList;
+import net.minecraft.server.v1_12_R1.*;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
 import org.bukkit.entity.Player;
-import net.minecraft.server.v1_12_R1.WorldMap;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
@@ -26,18 +22,11 @@ public class GetMap extends Thread{
     }
 
 
-    public WorldMap createMap(World world){
-        net.minecraft.server.v1_12_R1.ItemStack stack = new net.minecraft.server.v1_12_R1.ItemStack(Items.MAP, 1, -1);
-        return Items.FILLED_MAP.getSavedMap(stack, ((CraftWorld) world).getHandle());
-    }
 
-    private short getMapId(WorldMap map){
-        return Short.parseShort(map.id.substring("map_".length()));
-    }
 
     @Override
     public void run() {
-        MapsData mData = new MapsData(ffs.width, ffs.height, ffs.frameRate);
+        MapsData mData = new MapsData(ffs, player.getWorld());
         while (true){
             byte[] frame = ffs.read();
             if (frame == null){
@@ -47,14 +36,15 @@ public class GetMap extends Thread{
         }
         mData.loaded();
 
-        List<Short> item_count = new ArrayList<>();
+        List<Integer> item_count = new ArrayList<>();
         WorldMap view;
-        byte[][] maps_pixel = mData.getMapDatas(0);
+        byte[][] maps_pixel = mData.getMapData(0);
+        int i = 0;
 
         for (byte[] bytes : maps_pixel) {
-            view = this.createMap(player.getWorld());
+            view = this.getMap( mData.data.mapIds[i++]);
 
-            item_count.add( getMapId(view));
+            item_count.add((int) getMapId(view));
 
             view.colors = bytes;
             view.centerX = Integer.MAX_VALUE;
@@ -68,14 +58,14 @@ public class GetMap extends Thread{
         NBTTagCompound nbt;
         NBTTagList tagList = new NBTTagList();
         List<NBTTagList> chestList = new ArrayList<>();
-        for (int i = 0; i < item_count.size(); i++){
+        for (i = 0; i < item_count.size(); i++){
             ii = i % 27;
 
             nbt = new NBTTagCompound();
             nbt.setByte("Slot", (byte)ii);
             nbt.setByte("Count", (byte)1);
             nbt.setString("id", "minecraft:filled_map");
-            nbt.setShort("Damage", item_count.get(i));
+            nbt.setShort("Damage", item_count.get(i).shortValue());
 
             tagList.add(nbt);
 
@@ -90,7 +80,7 @@ public class GetMap extends Thread{
             chestList.add(tagList);
         }
 
-        int i = 1;
+        i = 1;
         ItemStack chest;
         for (NBTTagList maps :chestList){
             chest = giveChest(maps);
