@@ -3,6 +3,7 @@ package foxy.ryukkun_.vividmotion.commands;
 
 import foxy.ryukkun_.vividmotion.videoutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.videoutil.GetMap;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -29,6 +30,7 @@ public class Main implements CommandExecutor, TabCompleter {
         try {
             if (2 <= args.length){
                 if ("give".equalsIgnoreCase(args[0].trim())){
+                    Bukkit.getLogger().info("give!");
                     String input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
                     FFmpegSource ffs = new FFmpegSource(input);
                     if (!ffs.can_load){

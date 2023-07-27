@@ -2,6 +2,7 @@ package foxy.ryukkun_.vividmotion.videoutil;
 
 import foxy.ryukkun_.vividmotion.VividMotion;
 import net.minecraft.server.v1_12_R1.PacketPlayOutMap;
+import net.minecraft.server.v1_12_R1.PlayerConnection;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -30,7 +31,7 @@ public class VideoPlayer extends Thread{
         lastTime.get(mapId).put(uuid, System.currentTimeMillis());
     }
 
-    public static List<UUID> getPacketPlayer(int mapId){
+    public static List<UUID> getPacketNeeded(int mapId){
         HashMap<UUID, Long> map = lastTime.get(mapId);
         if (map == null){
             return null;
@@ -42,7 +43,7 @@ public class VideoPlayer extends Thread{
         List<UUID> uuids = new ArrayList<>();
 
         for (UUID uuid : map.keySet()){
-            if (notTime - map.get(uuid) < 2000){
+            if (notTime - map.get(uuid) < 10000){
                 uuids.add(uuid);
             }
 
@@ -70,16 +71,19 @@ public class VideoPlayer extends Thread{
 
         // Send Packet Client
         List<UUID> uuids;
-        int i = -1;
+        int i;
         int frame;
         long next = mapsData.data.nowFrame <= 0 ? System.currentTimeMillis() : System.currentTimeMillis() + (long)(1000 / mapsData.data.videoFrameRate * mapsData.data.nowFrame);
         long start = System.currentTimeMillis();
+        PlayerConnection connection;
+        PacketPlayOutMap packet;
+        Player player;
 
         try{
             while (VividMotion.isEnable){
 
                 // check need update
-                uuids = getPacketPlayer(mapsData.data.mapIds[0]);
+                uuids = getPacketNeeded(mapsData.data.mapIds[0]);
                 if (uuids != null){
 
                     // calc frame
@@ -88,12 +92,15 @@ public class VideoPlayer extends Thread{
 
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData(frame);
-                    for (int mapId : mapsData.data.mapIds){
-                        i++;
+                    for (UUID uuid : uuids){
+                        player = Bukkit.getPlayer(uuid);
 
-                        PacketPlayOutMap packet = new PacketPlayOutMap(mapId, (byte) 0, true, new ArrayList<>(), pixelData[i], 0, 0, 128, 128);
-                        for (UUID uuid : uuids){
-                            ((CraftPlayer)Bukkit.getPlayer(uuid)).getHandle().playerConnection.sendPacket(packet);
+                        if (player != null){
+                            connection = ((CraftPlayer)player).getHandle().playerConnection;
+                            for (i = 0; i < mapsData.data.mapIds.length; i++){
+                                packet = new PacketPlayOutMap(mapsData.data.mapIds[i], (byte) 0, false, new ArrayList<>(), pixelData[i], 0, 0, 128, 128);
+                                connection.sendPacket(packet);
+                            }
                         }
                     }
                 }

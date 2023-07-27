@@ -15,10 +15,12 @@ public class MapsData {
     public World world;
 
     public MapsData(FFmpegSource ffs, World world){
-        setBackgroundColor(0,0,0);
         data = new Data(ffs, world);
+        setBackgroundColor(0,0,0);
         this.ffs = ffs;
         this.world = world;
+
+        new Thread(this::loadFFS).start();
     }
 
     public MapsData(File path) {
@@ -98,7 +100,25 @@ public class MapsData {
 
 
     public void addFrame(byte[] bytes){
-        data.map_pixel.add(bytes);
+        int m_index, p_index, px, py;
+        int height = data.height, width = data.width;
+        int m_height = data.m_height, m_width = data.m_width;
+
+        int height_diff = (m_height*128 - height)/2;
+        int width_diff = (m_width*128 - width)/2;
+        byte[][] maps = new byte[m_width*m_height][128*128];
+
+        for (int y = 0, y_limit = m_height*128; y < y_limit; y++){
+            for (int x = 0, x_limit = m_width*128; x < x_limit; x++){
+                p_index = (y%128 * 128) + (x%128);
+                m_index = (y/128 * m_width) + (x/128);
+                px = x-width_diff;
+                py = y-height_diff;
+                maps[m_index][p_index] = (py < 0 || px < 0 || height <= py || width <= px ) ? data.background_color : bytes[py*width+px];
+            }
+        }
+
+        data.map_pixel.add(maps);
     }
 
     public void setBackgroundColor(int r, int g, int b){
@@ -112,34 +132,11 @@ public class MapsData {
 
 
     public byte[][] getMapData(int frame){
-        int m_index, p_index, px, py;
-        int height = data.height, width = data.width;
-        int m_height = data.m_height, m_width = data.m_width;
-
-        int height_diff = (m_height*128 - height)/2;
-        int width_diff = (m_width*128 - width)/2;
-        byte[][] maps = new byte[m_width*m_height][128*128];
-
         if (data.map_pixel.size() <= frame){
             frame = 0;
         }
         data.nowFrame = frame;
-
-        for (int y = 0, y_limit = m_height*128; y < y_limit; y++){
-            for (int x = 0, x_limit = m_width*128; x < x_limit; x++){
-                p_index = (y%128 * 128) + (x%128);
-                m_index = (y/128 * m_width) + (x/128);
-                px = x-width_diff;
-                py = y-height_diff;
-                if (py < 0 || px < 0 || height <= py || width <= px ){
-                    maps[m_index][p_index] = data.background_color;
-                }else {
-                    maps[m_index][p_index] = data.map_pixel.get(frame)[py*width+px];
-                }
-            }
-        }
-
-        return  maps;
+        return data.map_pixel.get(frame);
     }
 
 
@@ -151,7 +148,7 @@ public class MapsData {
         public double videoFrameRate, setFrameRate;
         public boolean is_loaded = false;
         // Byte[Frame][height*width]
-        public final List<byte[]> map_pixel = new ArrayList<>();
+        public final List<byte[][]> map_pixel = new ArrayList<>();
         public int[] mapIds;
         public byte background_color;
         public int nowFrame = -1;

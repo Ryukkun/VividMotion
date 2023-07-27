@@ -1,15 +1,15 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
+import org.bukkit.Bukkit;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.FrameGrabber;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.net.MalformedURLException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Pattern;
 
@@ -17,7 +17,6 @@ public class FFmpegSource {
     public boolean can_load = false;
     public int width, height;
     public double frameRate;
-    public BufferedImage bimg = null;
     public FFmpegFrameGrabber ffg = null;
     private final Java2DFrameConverter java2d = new Java2DFrameConverter();
 
@@ -33,8 +32,13 @@ public class FFmpegSource {
         // is URL
         if (re_url.matcher(path).find()) {
             try {
-                fromURL(new URL(path));
-            }catch (MalformedURLException ignored){}
+                URL url = new URL(path);
+                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
+                connection.setRequestProperty("User-Agent", "Mozilla/5.0");
+                connection.connect();
+                InputStream input = connection.getInputStream();
+                fromURL(input);
+            }catch (Exception ignored){}
 
         // is File
         } else {
@@ -45,36 +49,16 @@ public class FFmpegSource {
         }
     }
 
-    public void fromURL(URL url) {
-        try {
-            bimg = ImageIO.read(url);
-            if (bimg.getType() == BufferedImage.TYPE_3BYTE_BGR || bimg.getType() == BufferedImage.TYPE_4BYTE_ABGR){
-                can_load = true;
-            }
-
-        } catch (IOException ignored) {}
-        if (!can_load){
-            bimg = null;
-            ffg = new FFmpegFrameGrabber(url);
-            can_load = ffmpeg_setup();
-        }
+    public void fromURL(InputStream url) {
+        ffg = new FFmpegFrameGrabber(url);
+        can_load = ffmpeg_setup();
 
         get_info();
     }
 
     public void fromFile(File file) {
-        try {
-            bimg = ImageIO.read(file);
-            if (bimg.getType() == BufferedImage.TYPE_3BYTE_BGR || bimg.getType() == BufferedImage.TYPE_4BYTE_ABGR){
-                can_load = true;
-            }
-
-        } catch (IOException ignored) {}
-        if (!can_load){
-            bimg = null;
-            ffg = new FFmpegFrameGrabber(file);
-            can_load = ffmpeg_setup();
-        }
+        ffg = new FFmpegFrameGrabber(file);
+        can_load = ffmpeg_setup();
 
         get_info();
     }
@@ -87,49 +71,48 @@ public class FFmpegSource {
             return true;
 
         }catch (FFmpegFrameGrabber.Exception e){
+            Bukkit.getLogger().warning(e.toString());
             ffg = null;
             return false;
         }
     }
 
     private void get_info(){
-        if (can_load){
-            if (bimg != null){
-                width = bimg.getWidth();
-                height = bimg.getHeight();
-                frameRate = 0.0;
-
-            } else if (ffg != null) {
-                width = ffg.getImageWidth();
-                height = ffg.getImageHeight();
-                frameRate = ffg.getFrameRate();
-            }
+        if (can_load && ffg != null){
+            width = ffg.getImageWidth();
+            height = ffg.getImageHeight();
+            frameRate = ffg.getFrameRate();
         }
     }
 
+
     public byte[] read() {
-        if (can_load){
-            if (bimg != null){
-                byte[] res = MapConverter.toConvert(bimg);
-                bimg = null;
-                return res;
+        byte[] res = _read();
+        if (res == null) {
+            try {
+                ffg.close();
+                ffg.release();
+            } catch (FrameGrabber.Exception ignored) {}
+        }
+        return res;
+    }
 
 
-            } else if (ffg != null) {
-                Frame f;
-                try{
-                    f = ffg.grabImage();
-                } catch (FFmpegFrameGrabber.Exception e){
-                    return null;
-                }
-                if (f == null){
-                    return null;
-                } else if (f.image == null) {
-                    return null;
-                }
-                return MapConverter.toConvert( java2d.convert(f));
-
+    public byte[] _read() {
+        if (can_load && ffg != null){
+            Frame f;
+            try{
+                f = ffg.grabImage();
+            } catch (FFmpegFrameGrabber.Exception e){
+                return null;
             }
+            if (f == null){
+                return null;
+            } else if (f.image == null) {
+                return null;
+            }
+            return MapConverter.toConvert(f);
+
         }
         return null;
     }

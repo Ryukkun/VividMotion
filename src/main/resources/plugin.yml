@@ -1,7 +1,6 @@
 name: VividMotion
 version: '${project.version}'
 main: foxy.ryukkun_.vividmotion.VividMotion
-depend: [ProtocolLib]
 
 commands:
   vividmotion:

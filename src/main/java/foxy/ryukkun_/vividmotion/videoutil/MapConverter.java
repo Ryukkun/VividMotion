@@ -1,29 +1,30 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
-import java.awt.image.BufferedImage;
+import java.awt.*;
 
-import java.awt.Color;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.map.MapPalette;
+import org.bytedeco.javacv.Frame;
 
 public class MapConverter {
     public static final Short[] color = get_all_color();
     public static final Short[] fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
 
-    public static byte[] toConvert(BufferedImage buff){
+    public static byte[] toConvert(Frame frame){
 
         int i, color_index;
-        int index = -1;
-        int width = buff.getWidth(), height = buff.getHeight();
+        int index = 0;
+        int width = frame.imageWidth, height = frame.imageHeight;
         int[] diff = new int[3];
         int[] pixel = new int[3];
         byte[] map_format = new byte[width*height];
 
-        int[] pixel_data = buff.getRGB(0, 0, width, height, null, 0, width);
-
+        ByteBuffer buff = (ByteBuffer) frame.image[0];
+        buff.rewind();
 
         for (int y = 0; y < height; y++) {
             diff[0] = 0;
@@ -31,20 +32,18 @@ public class MapConverter {
             diff[2] = 0;
 
             for (int x = 0; x < width; x++) {
-                index++;
-                pixel[0] = (pixel_data[index] >> 16 & 0xff) + diff[0];
-                pixel[1] = (pixel_data[index] >> 8 & 0xff) + diff[1];
-                pixel[2] = (pixel_data[index] & 0xff) + diff[2];
-                //System.out.print("b:"+b+" g:"+g+" r:"+r+" bgr:"+rgb);
+                pixel[0] = (buff.get() & 0xFF) + (diff[0] >> 1);
+                pixel[1] = (buff.get() & 0xFF) + (diff[1] >> 1);
+                pixel[2] = (buff.get() & 0xFF) + (diff[2] >> 1);
 
 
                 color_index = get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
 
-                map_format[index] = (byte)(color_index+4);
+                map_format[index++] = (byte)(color_index+4);
 
                 color_index *= 3;
                 for (i = 0; i < 3; i++) {
-                    if (0 < pixel[i]) {
+                    if (0 <= pixel[i]) {
                         diff[i] = pixel[i] - fixedColor[color_index+i];
                     } else {
                         diff[i] = pixel[i] + fixedColor[color_index+i];
@@ -56,7 +55,7 @@ public class MapConverter {
     }
 
     public static int get_nearest_fixedColor(int r, int g, int b){
-        int last_total = 200000;
+        int last_total = Integer.MAX_VALUE;
         int index = 0;
         int color_index = 0;
         int total, n;
