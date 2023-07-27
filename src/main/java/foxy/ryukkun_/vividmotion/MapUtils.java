@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion;
 
 import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.PersistentCollection;

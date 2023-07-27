@@ -5,7 +5,6 @@ import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
-import org.bytedeco.javacv.Java2DFrameConverter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -18,7 +17,6 @@ public class FFmpegSource {
     public int width, height;
     public double frameRate;
     public FFmpegFrameGrabber ffg = null;
-    private final Java2DFrameConverter java2d = new Java2DFrameConverter();
 
     public static Pattern re_url = Pattern.compile("https?://.+");
 
