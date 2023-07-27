@@ -4,6 +4,10 @@ import foxy.ryukkun_.vividmotion.VividMotion;
 import net.minecraft.server.v1_12_R1.PacketPlayOutMap;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_12_R1.entity.CraftPlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.map.MapCanvas;
+import org.bukkit.map.MapRenderer;
+import org.bukkit.map.MapView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,13 +34,15 @@ public class VideoPlayer extends Thread{
         HashMap<UUID, Long> map = lastTime.get(mapId);
         if (map == null){
             return null;
+        } else if (map.isEmpty()) {
+            return null;
         }
 
         long notTime = System.currentTimeMillis();
         List<UUID> uuids = new ArrayList<>();
 
         for (UUID uuid : map.keySet()){
-            if (notTime - map.get(uuid) < 5000){
+            if (notTime - map.get(uuid) < 2000){
                 uuids.add(uuid);
             }
 
@@ -53,30 +59,38 @@ public class VideoPlayer extends Thread{
             if (mapsData.ffs == null){
                 return;
             }
-
             mapsData.loadFFS();
         }
+
+        // Set MapDetector
+        MapView view = Bukkit.getMap((short) mapsData.data.mapIds[0]);
+        view.getRenderers().clear();
+        view.addRenderer(new MapDetector());
+
 
         // Send Packet Client
         List<UUID> uuids;
         int i = -1;
         int frame;
-        long next = System.currentTimeMillis();
+        long next = mapsData.data.nowFrame <= 0 ? System.currentTimeMillis() : System.currentTimeMillis() + (long)(1000 / mapsData.data.videoFrameRate * mapsData.data.nowFrame);
         long start = System.currentTimeMillis();
 
         try{
             while (VividMotion.isEnable){
 
-                // calc frame
-                frame = (int)((next - start) % 1000 * mapsData.data.videoFrameRate / 1000);
+                // check need update
+                uuids = getPacketPlayer(mapsData.data.mapIds[0]);
+                if (uuids != null){
 
-                // Send Packets
-                byte[][] pixelData = mapsData.getMapData(frame);
-                for (int mapId : mapsData.data.mapIds){
-                    uuids = getPacketPlayer(mapId);
-                    i++;
+                    // calc frame
+                    // next - start / 1000 * vFrameRate = nowFrame
+                    frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.map_pixel.size();
 
-                    if (uuids != null){
+                    // Send Packets
+                    byte[][] pixelData = mapsData.getMapData(frame);
+                    for (int mapId : mapsData.data.mapIds){
+                        i++;
+
                         PacketPlayOutMap packet = new PacketPlayOutMap(mapId, (byte) 0, true, new ArrayList<>(), pixelData[i], 0, 0, 128, 128);
                         for (UUID uuid : uuids){
                             ((CraftPlayer)Bukkit.getPlayer(uuid)).getHandle().playerConnection.sendPacket(packet);
@@ -85,12 +99,21 @@ public class VideoPlayer extends Thread{
                 }
 
                 // sleep
-                next += 1000 / mapsData.getFrameRate();
-                Thread.sleep(Math.max(0,  System.currentTimeMillis() - next));
+                next += (long) (1000 / mapsData.getFrameRate());
+                Thread.sleep(Math.max(0,  next - System.currentTimeMillis()));
 
                 }
             } catch (InterruptedException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+
+    public static class MapDetector extends MapRenderer {
+
+        @Override
+        public void render(MapView mapView, MapCanvas mapCanvas, Player player) {
+            updateTime(mapView.getId(), player.getUniqueId());
         }
     }
 }

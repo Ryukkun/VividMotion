@@ -1,6 +1,7 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
 import foxy.ryukkun_.vividmotion.VividMotion;
+import net.minecraft.server.v1_12_R1.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 
@@ -11,11 +12,13 @@ import java.util.List;
 public class MapsData {
     public Data data;
     public FFmpegSource ffs;
+    public World world;
 
     public MapsData(FFmpegSource ffs, World world){
         setBackgroundColor(0,0,0);
         data = new Data(ffs, world);
         this.ffs = ffs;
+        this.world = world;
     }
 
     public MapsData(File path) {
@@ -24,8 +27,11 @@ public class MapsData {
 
             data = (Data) in.readObject();
 
+            VividMotion.mapsDataList.add(this);
+            new VideoPlayer(this).start();
+
         } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
+            Bukkit.getLogger().warning(e.toString());
         }
     }
 
@@ -39,8 +45,32 @@ public class MapsData {
             }
             addFrame(frame);
         }
-        loaded();
+
+
+        // Loaded
+        data.is_loaded = true;
+
+
+        if (data.map_pixel.size() == 1){
+            // isPicture
+            data.isPicture = true;
+
+            byte[][] pixelData = getMapData();
+            for (int i = 0; i < data.mapIds.length; i++ ){
+                WorldMap worldMap = MapUtils.getMap(data.mapIds[i], world);
+                worldMap.colors = pixelData[i];
+                worldMap.mapView.addRenderer(new MapRenderPicture(worldMap));
+            }
+
+        } else{
+            // isVideo
+            data.isPicture = false;
+
+            VividMotion.mapsDataList.add(this);
+            new VideoPlayer(this).start();
+        }
     }
+
 
     public boolean setFrameRate(double fr){
         if (0 < fr){
@@ -112,13 +142,7 @@ public class MapsData {
         return  maps;
     }
 
-    public void loaded(){
-        data.is_loaded = true;
 
-        if (data.map_pixel.size() == 1){
-            data.isPicture = true;
-        }
-    }
 
 
     public static class Data implements Serializable {
@@ -145,7 +169,7 @@ public class MapsData {
 
             mapIds = new int[m_height*m_width];
             for (int i = 0; i < m_height*m_width; i++){
-                mapIds[i] = Bukkit.createMap(world).getId();
+                mapIds[i] = MapUtils.createMap(world).mapView.getId();
             }
         }
     }
