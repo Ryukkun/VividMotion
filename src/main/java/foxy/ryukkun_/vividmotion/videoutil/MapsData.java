@@ -5,6 +5,8 @@ import foxy.ryukkun_.vividmotion.VividMotion;
 import net.minecraft.server.v1_12_R1.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.v1_12_R1.map.CraftMapView;
+import org.bukkit.map.MapView;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -60,9 +62,15 @@ public class MapsData {
 
             byte[][] pixelData = getMapData();
             for (int i = 0; i < data.mapIds.length; i++ ){
-                WorldMap worldMap = MapUtils.getMap(data.mapIds[i], world);
-                worldMap.colors = pixelData[i];
-                worldMap.mapView.addRenderer(new MapRenderPicture(worldMap));
+                MapView view = Bukkit.getMap(data.mapIds[i]);
+
+                try {
+                    view.getClass().getDeclaredField("");
+                    view.colors = pixelData[i];
+                } catch (NoSuchFieldException e) {
+
+                }
+                view.addRenderer(new MapRenderPicture(worldMap));
             }
 
         } else{
@@ -167,7 +175,7 @@ public class MapsData {
 
             mapIds = new int[m_height*m_width];
             for (int i = 0; i < m_height*m_width; i++){
-                mapIds[i] = MapUtils.createMap(world).mapView.getId();
+                mapIds[i] = MapUtils.createMap(world).getId();
             }
         }
     }

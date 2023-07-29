@@ -3,8 +3,10 @@ package foxy.ryukkun_.vividmotion;
 import net.minecraft.server.v1_12_R1.Items;
 import net.minecraft.server.v1_12_R1.PersistentCollection;
 import net.minecraft.server.v1_12_R1.WorldMap;
+import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.craftbukkit.v1_12_R1.CraftWorld;
+import org.bukkit.map.MapView;
 
 public class MapUtils {
 
@@ -15,17 +17,16 @@ public class MapUtils {
     }
 
 
-    public static WorldMap createMap(World world){
-        net.minecraft.server.v1_12_R1.ItemStack stack = new net.minecraft.server.v1_12_R1.ItemStack(Items.MAP, 1, -1);
-        WorldMap worldMap = Items.FILLED_MAP.getSavedMap(stack, ((CraftWorld) world).getHandle());
+    public static MapView createMap(World world){
+        MapView view = Bukkit.createMap(world);
 
-        if (worldMap != null) {
-            worldMap.centerX = Integer.MAX_VALUE;
-            worldMap.centerZ = Integer.MAX_VALUE;
-            worldMap.scale = 0;
-            worldMap.mapView.getRenderers().clear();
+        if (view != null) {
+            view.setCenterX(Integer.MAX_VALUE);
+            view.setCenterZ(Integer.MAX_VALUE);
+            view.setScale(MapView.Scale.FARTHEST);
+            view.getRenderers().clear();
         }
-        return worldMap;
+        return view;
     }
 
     public static short getMapId(WorldMap map){
