@@ -2,10 +2,9 @@ package foxy.ryukkun_.vividmotion.videoutil;
 
 import foxy.ryukkun_.vividmotion.MapUtils;
 import foxy.ryukkun_.vividmotion.VividMotion;
-import net.minecraft.server.v1_12_R1.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.craftbukkit.v1_12_R1.map.CraftMapView;
+import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
 import java.io.*;
@@ -60,23 +59,30 @@ public class MapsData {
             // isPicture
             data.isPicture = true;
 
-            byte[][] pixelData = getMapData();
+            byte[][] pixelData = getMapData(0);
             for (int i = 0; i < data.mapIds.length; i++ ){
-                MapView view = Bukkit.getMap(data.mapIds[i]);
+                MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                MapUtils.setColor(view, pixelData[i]);
 
-                try {
-                    view.getClass().getDeclaredField("");
-                    view.colors = pixelData[i];
-                } catch (NoSuchFieldException e) {
-
+                for (MapRenderer render: view.getRenderers()){
+                    view.removeRenderer(render);
                 }
-                view.addRenderer(new MapRenderPicture(worldMap));
+                view.addRenderer(new MapRenderPicture(pixelData[i]));
             }
 
         } else{
             // isVideo
             data.isPicture = false;
 
+            byte[][] pixelData = getMapData(0);
+            for (int i = 0; i < data.mapIds.length; i++ ){
+                MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                MapUtils.setColor(view, pixelData[i]);
+
+                for (MapRenderer render: view.getRenderers()){
+                    view.removeRenderer(render);
+                }
+            }
             VividMotion.mapsDataList.add(this);
             new VideoPlayer(this).start();
         }

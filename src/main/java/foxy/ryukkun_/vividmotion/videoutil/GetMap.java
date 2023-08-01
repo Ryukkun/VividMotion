@@ -1,8 +1,8 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
-import net.minecraft.server.v1_12_R1.*;
+
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_12_R1.inventory.CraftItemStack;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,54 +27,42 @@ public class GetMap extends Thread{
     public void run() {
         MapsData mData = new MapsData(ffs, player.getWorld());
 
-        int i, ii;
-        NBTTagCompound nbt;
-        NBTTagList tagList = new NBTTagList();
-        List<NBTTagList> chestList = new ArrayList<>();
+        int i;
+        int ii;
+        int iii = 1;
+        NBTEditor.NBTCompound nbt;
+        List<ItemStack> chestList = new ArrayList<>();
+        NBTEditor.NBTCompound chest = null;
+
         for (i = 0; i < mData.data.mapIds.length; i++){
             ii = i % 27;
+            if (ii == 0){
+                if (chest != null) {
+                    chestList.add(NBTEditor.getItemFromTag(chest));
+                }
+                ItemStack itemChest = new ItemStack( Material.CHEST);
+                ItemMeta meta = itemChest.getItemMeta();
+                meta.setDisplayName("Maps " + iii++);
+                meta.setLore( Collections.singletonList("(+NBT)"));
+                itemChest.setItemMeta(meta);
 
-            nbt = new NBTTagCompound();
-            nbt.setByte("Slot", (byte)ii);
-            nbt.setByte("Count", (byte)1);
-            nbt.setString("id", "minecraft:filled_map");
-            nbt.setShort("Damage", (short) mData.data.mapIds[i]);
-
-            tagList.add(nbt);
-
-            if (ii == 26){
-                chestList.add(tagList);
-                tagList = new NBTTagList();
+                chest = NBTEditor.getNBTCompound( itemChest);
             }
+
+            nbt = NBTEditor.getEmptyNBTCompound();
+            nbt.set((byte)ii, "Slot");
+            nbt.set((byte)1, "Count");
+            nbt.set("minecraft:filled_map", "id");
+            nbt.set((short) mData.data.mapIds[i], "Damage");
+
+            chest.set(nbt, "tag", "BlockEntityTag", "Items", NBTEditor.NEW_ELEMENT);
         }
 
-
-        if (!tagList.isEmpty()){
-            chestList.add(tagList);
+        if (chest != null){
+            chestList.add(NBTEditor.getItemFromTag( chest));
         }
 
-        i = 1;
-        ItemStack chest;
-        for (NBTTagList maps :chestList){
-            chest = giveChest(maps);
-            ItemMeta meta = chest.getItemMeta();
-            meta.setDisplayName("Maps " + i++);
-            meta.setLore( Collections.singletonList("(+NBT)"));
-            chest.setItemMeta(meta);
-
-            player.getInventory().addItem( chest);
-        }
+        player.getInventory().addItem( chestList.toArray(new ItemStack[0]));
     }
 
-    private ItemStack giveChest(NBTTagList list) {
-        NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagCompound nbt2 = new NBTTagCompound();
-
-        nbt.set("Items", list);
-        nbt2.set("BlockEntityTag", nbt);
-        net.minecraft.server.v1_12_R1.ItemStack Chest = CraftItemStack.asNMSCopy( new ItemStack(Material.CHEST, 1));
-        Chest.setTag(nbt2);
-
-        return CraftItemStack.asBukkitCopy( Chest);
-    }
 }
