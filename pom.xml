@@ -76,11 +76,61 @@
         </dependency>
 
         <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.13.2-api</artifactId>
+            <version>1.13</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.13.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.14.4-api</artifactId>
+            <version>1.14</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.14.4.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.15.2-api</artifactId>
+            <version>1.15</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.15.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.16.5-api</artifactId>
+            <version>1.16</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.16.5.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.17.1-api</artifactId>
+            <version>1.17</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.17.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.18.2-api</artifactId>
+            <version>1.18</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.18.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>net.minecraft</groupId>
+            <artifactId>bukkit-1.19.4-api</artifactId>
+            <version>1.19</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/deps/craftbukkit-1.19.4.jar</systemPath>
+        </dependency>
+
+
+        <dependency>
             <groupId>io.github.bananapuncher714</groupId>
             <artifactId>nbteditor</artifactId>
             <version>7.18.5</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.bytedeco</groupId>
