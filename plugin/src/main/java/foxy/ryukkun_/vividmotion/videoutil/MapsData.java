@@ -181,7 +181,14 @@ public class MapsData {
 
             mapIds = new int[m_height*m_width];
             for (int i = 0; i < m_height*m_width; i++){
-                mapIds[i] = MapUtils.createMap(world).getId();
+                MapView view = Bukkit.createMap(world);
+
+                view.setCenterX(Integer.MAX_VALUE);
+                view.setCenterZ(Integer.MAX_VALUE);
+                view.setScale(MapView.Scale.FARTHEST);
+                view.getRenderers().clear();
+
+                mapIds[i] = view.getId();
             }
         }
     }
