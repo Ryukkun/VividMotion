@@ -7,11 +7,25 @@
     <groupId>foxy.ryukkun_</groupId>
     <artifactId>VividMotion</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>VividMotion</name>
+    <modules>
+        <module>bukkit_1_12</module>
+        <module>core-interface</module>
+        <module>bukkit_1_13</module>
+        <module>bukkit_1_14</module>
+        <module>bukkit_1_15</module>
+        <module>bukkit_1_16</module>
+        <module>bukkit_1_17</module>
+        <module>bukkit_1_18_R2</module>
+        <module>bukkit_1_19_R3</module>
+        <module>plugin</module>
+    </modules>
 
     <properties>
+        <maven.compiler.source>11</maven.compiler.source>
+        <maven.compiler.target>11</maven.compiler.target>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -37,9 +51,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <createDependencyReducedPom>false</createDependencyReducedPom>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -52,132 +63,4 @@
         </resources>
     </build>
 
-    <repositories>
-        <repository>
-            <id>spigotmc-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-        <repository>
-            <id>sonatype</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
-        </repository>
-    </repositories>
-
-    <dependencies>
-        <dependency>
-            <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
-            <version>1.12.2-R0.1-SNAPSHOT</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.13.2-api</artifactId>
-            <version>1.13</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.13.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.14.4-api</artifactId>
-            <version>1.14</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.14.4.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.15.2-api</artifactId>
-            <version>1.15</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.15.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.16.5-api</artifactId>
-            <version>1.16</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.16.5.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.17.1-api</artifactId>
-            <version>1.17</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.17.1.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.18.2-api</artifactId>
-            <version>1.18</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.18.2.jar</systemPath>
-        </dependency>
-        <dependency>
-            <groupId>net.minecraft</groupId>
-            <artifactId>bukkit-1.19.4-api</artifactId>
-            <version>1.19</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/deps/craftbukkit-1.19.4.jar</systemPath>
-        </dependency>
-
-
-        <dependency>
-            <groupId>io.github.bananapuncher714</groupId>
-            <artifactId>nbteditor</artifactId>
-            <version>7.18.5</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.5.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.0-1.5.9</version>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.0-1.5.9</version>
-            <classifier>windows-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.0-1.5.9</version>
-            <classifier>linux-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>6.0-1.5.9</version>
-            <classifier>macosx-x86_64</classifier>
-        </dependency>
-
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>1.5.9</version>
-            <classifier>windows-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>1.5.9</version>
-            <classifier>linux-x86_64</classifier>
-        </dependency>
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacpp</artifactId>
-            <version>1.5.9</version>
-            <classifier>macosx-x86_64</classifier>
-        </dependency>
-    </dependencies>
 </project>
