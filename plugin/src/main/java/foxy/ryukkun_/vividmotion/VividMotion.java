@@ -16,6 +16,8 @@ public final class VividMotion extends JavaPlugin {
 
     public static List<MapsData> mapsDataList = new ArrayList<>();
     public static boolean isEnable;
+    public static PacketManager packetManager;
+    public static MapUtil mapUtil;
 
     public File getMapDataFolder(){
         Path path = getDataFolder().toPath();
@@ -31,6 +33,9 @@ public final class VividMotion extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         isEnable = true;
+        packetManager = getPacketManager();
+        mapUtil = getMapUtil();
+
         if (!getDataFolder().exists()){
             boolean ignored = getDataFolder().mkdirs();
         }
@@ -102,6 +107,35 @@ public final class VividMotion extends JavaPlugin {
 //            return new Packet_1_19_R2();
         } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
             return new Packet_1_19_R3();
+        }
+        return null;
+    }
+
+
+    public static MapUtil getMapUtil(){
+        NBTEditor.MinecraftVersion version = NBTEditor.getMinecraftVersion();
+        if (version.equals(NBTEditor.MinecraftVersion.v1_12)){
+            return new MapUtil_1_12();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_13)) {
+            return new MapUtil_1_13();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_14)) {
+            return new MapUtil_1_14();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_15)) {
+            return new MapUtil_1_15();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_16)) {
+            return new MapUtil_1_16();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_17)) {
+            return new MapUtil_1_17();
+//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R1)) {
+//            return new Packet_1_18_R1();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R2)) {
+            return new MapUtil_1_18();
+//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R1)) {
+//            return new Packet_1_19_R1();
+//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R2)) {
+//            return new Packet_1_19_R2();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
+            return new MapUtil_1_19();
         }
         return null;
     }

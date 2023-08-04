@@ -1,7 +1,6 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
 import fox.ryukkun_.MapPacket;
-import fox.ryukkun_.PacketManager;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -17,7 +16,6 @@ import java.util.UUID;
 public class VideoPlayer extends Thread{
 
     public MapsData mapsData;
-    public static PacketManager packetManager = VividMotion.getPacketManager();
     public static HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
 
     public VideoPlayer(MapsData mapsData){
@@ -101,7 +99,7 @@ public class VideoPlayer extends Thread{
                                 packetList.add(new MapPacket(mapsData.data.mapIds[i], pixelData[i]));
                             }
 
-                            packetManager.sendPacket(player, packetList);
+                            VividMotion.packetManager.sendPacket(player, packetList);
                         }
                     }
                 }

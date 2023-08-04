@@ -1,6 +1,5 @@
 package foxy.ryukkun_.vividmotion.videoutil;
 
-import foxy.ryukkun_.vividmotion.MapUtils;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -62,7 +61,7 @@ public class MapsData {
             byte[][] pixelData = getMapData(0);
             for (int i = 0; i < data.mapIds.length; i++ ){
                 MapView view = Bukkit.getMap((short) data.mapIds[i]);
-                MapUtils.setColor(view, pixelData[i]);
+                VividMotion.mapUtil.setColor(view, pixelData[i]);
 
                 for (MapRenderer render: view.getRenderers()){
                     view.removeRenderer(render);
@@ -77,7 +76,7 @@ public class MapsData {
             byte[][] pixelData = getMapData(0);
             for (int i = 0; i < data.mapIds.length; i++ ){
                 MapView view = Bukkit.getMap((short) data.mapIds[i]);
-                MapUtils.setColor(view, pixelData[i]);
+                VividMotion.mapUtil.setColor(view, pixelData[i]);
 
                 for (MapRenderer render: view.getRenderers()){
                     view.removeRenderer(render);

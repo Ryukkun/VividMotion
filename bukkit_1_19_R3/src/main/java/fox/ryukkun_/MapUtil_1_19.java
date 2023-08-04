@@ -2,12 +2,12 @@ package fox.ryukkun_;
 
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
-import org.bukkit.craftbukkit.v1_17_R1.map.CraftMapView;
+import org.bukkit.craftbukkit.v1_19_R3.map.CraftMapView;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 
-public class MapUtil_1_17 implements MapUtil{
+public class MapUtil_1_19 implements MapUtil{
 
     @Override
     public void setColor(MapView view, byte[] pixelData) {
