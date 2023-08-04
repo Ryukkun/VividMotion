@@ -16,7 +16,7 @@ public class Packet_1_19_R3 implements PacketManager{
         ServerGamePacketListenerImpl connection = ((CraftPlayer)player).getHandle().connection;
 
         for (MapPacket packet : packets){
-            ClientboundMapItemDataPacket NMSpacket = new ClientboundMapItemDataPacket(packet.mapId, (byte) 0, false, new ArrayList<>(), new MapItemSavedData.MapPatch(packet.sX, packet.sY, packet.fX, packet.fY, packet.color));
+            ClientboundMapItemDataPacket NMSpacket = new ClientboundMapItemDataPacket(packet.mapId, (byte) 4, false, new ArrayList<>(), new MapItemSavedData.MapPatch(packet.sX, packet.sY, packet.fX, packet.fY, packet.color));
             connection.send(NMSpacket);
         }
     }

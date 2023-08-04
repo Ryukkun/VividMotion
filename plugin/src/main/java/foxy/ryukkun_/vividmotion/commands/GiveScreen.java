@@ -1,8 +1,12 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.commands;
 
 
+import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
+import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -11,25 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GetMap extends Thread{
-    public FFmpegSource ffs;
-    public Player player;
-
-    public GetMap(FFmpegSource ffs, Player player){
-        this.ffs = ffs;
-        this.player = player;
-    }
-
-
-
-
-    @Override
-    public void run() {
-        MapsData mData = new MapsData(ffs, player.getWorld());
-
-        player.getInventory().addItem( convertToChest( mData.data.mapIds));
-    }
-
+public class GiveScreen extends ScreenCommandTemplate {
 
     private ItemStack[] convertToChest(int[] mapIds){
         int ii;
@@ -48,6 +34,8 @@ public class GetMap extends Thread{
                 ItemMeta meta = itemChest.getItemMeta();
                 meta.setDisplayName("Maps " + iii++);
                 meta.setLore( Collections.singletonList("(+NBT)"));
+                meta.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 itemChest.setItemMeta(meta);
 
                 chest = NBTEditor.getNBTCompound( itemChest);
@@ -72,5 +60,30 @@ public class GetMap extends Thread{
         }
 
         return chestList.toArray(new ItemStack[0]);
+    }
+
+    private void addMapsInInventory(Player player, int[] mapIds){
+        player.getInventory().addItem(convertToChest( mapIds));
+    }
+
+
+    @Override
+    public void onCommandInCache(Player player, ScreenData screenData) {
+        addMapsInInventory(player, screenData.data.mapIds);
+    }
+
+    @Override
+    public void onCommandNotInCache(Player player, String name, String input){
+        new Thread(() -> {
+
+            FFmpegSource ffs = new FFmpegSource(input);
+            if (ffs.can_load){
+                ScreenData mData = new ScreenData(name, ffs, player.getWorld());
+                addMapsInInventory(player, mData.data.mapIds);
+
+            }else {
+                player.sendMessage("解析不能なURL、PATHです。");
+            }
+        }).start();
     }
 }

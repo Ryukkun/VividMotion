@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.imageutil;
 
 import org.bukkit.Bukkit;
 import org.bytedeco.ffmpeg.global.avutil;
@@ -110,7 +110,7 @@ public class FFmpegSource {
             } else if (f.image == null) {
                 return null;
             }
-            return MapConverter.toConvert(f);
+            return ImageConverter.toConvert(f);
 
         }
         return null;

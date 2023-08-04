@@ -15,7 +15,7 @@ public class Packet_1_13 implements PacketManager {
         PlayerConnection connection = ((CraftPlayer)player).getHandle().playerConnection;
 
         for (MapPacket packet : packets){
-            PacketPlayOutMap NMSpacket = new PacketPlayOutMap(packet.mapId, (byte) 0, false, new ArrayList<>(), packet.color, packet.sX, packet.sY, packet.fX, packet.fY);
+            PacketPlayOutMap NMSpacket = new PacketPlayOutMap(packet.mapId, (byte) 4, false, new ArrayList<>(), packet.color, packet.sX, packet.sY, packet.fX, packet.fY);
             connection.sendPacket(NMSpacket);
         }
     }

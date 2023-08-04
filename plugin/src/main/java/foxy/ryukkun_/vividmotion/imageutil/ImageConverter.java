@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.imageutil;
 
 import java.awt.*;
 
@@ -10,7 +10,7 @@ import java.util.List;
 import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
 
-public class MapConverter {
+public class ImageConverter {
     public static final Short[] color = get_all_color();
     public static final Short[] fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
 

@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
@@ -15,10 +15,10 @@ import java.util.UUID;
 
 public class VideoPlayer extends Thread{
 
-    public MapsData mapsData;
+    public ScreenData mapsData;
     public static HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
 
-    public VideoPlayer(MapsData mapsData){
+    public VideoPlayer(ScreenData mapsData){
         this.mapsData = mapsData;
     }
 

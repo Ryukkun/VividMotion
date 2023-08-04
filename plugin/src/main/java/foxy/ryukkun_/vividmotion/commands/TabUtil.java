@@ -1,6 +1,5 @@
 package foxy.ryukkun_.vividmotion.commands;
 
-
 import java.util.HashMap;
 import java.util.Set;
 
@@ -24,4 +23,6 @@ public class TabUtil {
     private String checkst(String text){
         return text.toLowerCase().trim();
     }
+
+
 }

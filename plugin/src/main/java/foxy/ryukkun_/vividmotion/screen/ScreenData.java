@@ -1,6 +1,8 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.screen;
 
 import foxy.ryukkun_.vividmotion.VividMotion;
+import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
+import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.map.MapRenderer;
@@ -10,13 +12,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapsData {
+public class ScreenData {
     public Data data;
     public FFmpegSource ffs;
     public World world;
 
-    public MapsData(FFmpegSource ffs, World world){
-        data = new Data(ffs, world);
+    public ScreenData(String name, FFmpegSource ffs, World world){
+        // Please run with async
+        data = new Data(name, ffs, world);
         setBackgroundColor(0,0,0);
         this.ffs = ffs;
         this.world = world;
@@ -24,13 +27,13 @@ public class MapsData {
         new Thread(this::loadFFS).start();
     }
 
-    public MapsData(File path) {
+    public ScreenData(File path) {
         try (FileInputStream f = new FileInputStream(path);
              ObjectInputStream in = new ObjectInputStream(f)) {
 
             data = (Data) in.readObject();
 
-            VividMotion.mapsDataList.add(this);
+            VividMotion.screenDataList.add(this);
             new VideoPlayer(this).start();
 
         } catch (IOException | ClassNotFoundException e) {
@@ -66,7 +69,7 @@ public class MapsData {
                 for (MapRenderer render: view.getRenderers()){
                     view.removeRenderer(render);
                 }
-                view.addRenderer(new MapRenderPicture(pixelData[i]));
+                view.addRenderer(new PictureRender(pixelData[i]));
             }
 
         } else{
@@ -82,7 +85,7 @@ public class MapsData {
                     view.removeRenderer(render);
                 }
             }
-            VividMotion.mapsDataList.add(this);
+            VividMotion.screenDataList.add(this);
             new VideoPlayer(this).start();
         }
     }
@@ -116,7 +119,7 @@ public class MapsData {
     public void addFrame(byte[] bytes){
         int m_index, p_index, px, py;
         int height = data.height, width = data.width;
-        int m_height = data.m_height, m_width = data.m_width;
+        int m_height = data.mapHeight, m_width = data.mapWidth;
 
         int height_diff = (m_height*128 - height)/2;
         int width_diff = (m_width*128 - width)/2;
@@ -136,7 +139,7 @@ public class MapsData {
     }
 
     public void setBackgroundColor(int r, int g, int b){
-        data.background_color = (byte)MapConverter.get_nearest_color(r,g,b);
+        data.background_color = (byte) ImageConverter.get_nearest_color(r,g,b);
     }
 
     public byte[][] getMapData(){
@@ -158,7 +161,7 @@ public class MapsData {
 
     public static class Data implements Serializable {
         // Map Count (Height, Width)
-        public int height, width, m_height, m_width;
+        public int height, width, mapHeight, mapWidth;
         public double videoFrameRate, setFrameRate;
         public boolean is_loaded = false;
         // Byte[Frame][height*width]
@@ -168,18 +171,20 @@ public class MapsData {
         public int nowFrame = -1;
         public boolean isPausing = false;
         public boolean isPicture;
+        public String name;
 
-        public Data(FFmpegSource ffs, World world){
+        public Data(String name, FFmpegSource ffs, World world){
+            this.name = name;
             height = ffs.height;
             width = ffs.width;
             videoFrameRate = ffs.frameRate;
-            m_width = width % 128 == 0 ? width/128 : width/128+1;
-            m_height = height % 128 == 0 ? height/128 : height/128+1;
+            mapWidth = width % 128 == 0 ? width/128 : width/128+1;
+            mapHeight = height % 128 == 0 ? height/128 : height/128+1;
             setFrameRate = 20.0;
 
 
-            mapIds = new int[m_height*m_width];
-            for (int i = 0; i < m_height*m_width; i++){
+            mapIds = new int[mapHeight * mapWidth];
+            for (int i = 0; i < mapHeight * mapWidth; i++){
                 MapView view = Bukkit.createMap(world);
 
                 view.setCenterX(Integer.MAX_VALUE);

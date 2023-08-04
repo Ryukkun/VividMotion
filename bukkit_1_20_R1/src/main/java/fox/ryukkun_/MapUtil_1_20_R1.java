@@ -3,7 +3,6 @@ package fox.ryukkun_;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_20_R1.map.CraftMapView;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;

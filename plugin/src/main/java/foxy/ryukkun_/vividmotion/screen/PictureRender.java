@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.videoutil;
+package foxy.ryukkun_.vividmotion.screen;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class MapRenderPicture extends MapRenderer {
+public class PictureRender extends MapRenderer {
 
     private final byte[] pixelData;
     private final List<UUID> updated = new ArrayList<>();
-    public MapRenderPicture(byte[] pixelData){
+    public PictureRender(byte[] pixelData){
         this.pixelData = pixelData;
     }
 

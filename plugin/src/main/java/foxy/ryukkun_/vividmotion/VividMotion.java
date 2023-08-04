@@ -1,8 +1,9 @@
 package foxy.ryukkun_.vividmotion;
 
 import fox.ryukkun_.*;
-import foxy.ryukkun_.vividmotion.commands.Main;
-import foxy.ryukkun_.vividmotion.videoutil.MapsData;
+import foxy.ryukkun_.vividmotion.commands.GiveScreen;
+import foxy.ryukkun_.vividmotion.commands.SetScreen;
+import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -14,7 +15,7 @@ import java.util.List;
 
 public final class VividMotion extends JavaPlugin {
 
-    public static List<MapsData> mapsDataList = new ArrayList<>();
+    public static List<ScreenData> screenDataList = new ArrayList<>();
     public static boolean isEnable;
     public static PacketManager packetManager;
     public static MapUtil mapUtil;
@@ -42,10 +43,11 @@ public final class VividMotion extends JavaPlugin {
 
         File[] fs = getMapDataFolder().listFiles();
         for (File file : fs != null ? fs : new File[0]) {
-            mapsDataList.add( new MapsData(file));
+            screenDataList.add( new ScreenData(file));
         }
 
-        getCommand("vividmotion").setExecutor(new Main());
+        getCommand("give-screen").setExecutor(new GiveScreen());
+        getCommand("set-screen").setExecutor(new SetScreen());
     }
 
     @Override
@@ -67,7 +69,7 @@ public final class VividMotion extends JavaPlugin {
             boolean ignored = file1.delete();
         }
 
-        for (MapsData mapsData : mapsDataList){
+        for (ScreenData mapsData : screenDataList){
             ids = mapsData.data.mapIds;
             path1 = path.resolve( ids[0] + "-" + ids[ids.length - 1] + ".dat");
 
