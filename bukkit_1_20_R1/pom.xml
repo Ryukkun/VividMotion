@@ -10,17 +10,18 @@
     </parent>
 
     <groupId>fox.ryukkun_</groupId>
-    <artifactId>bukkit_1_18_R2</artifactId>
+    <artifactId>bukkit_1_20_R1</artifactId>
     <version>${project.parent.version}</version>
     <packaging>jar</packaging>
 
     <properties>
-        <mc.version>1.18.2</mc.version>
+        <mc.version>1.20.1</mc.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <jdk.version>17</jdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
 
     <build>
         <plugins>
@@ -79,18 +80,13 @@
         </plugins>
     </build>
 
-    <repositories>
-        <repository>
-            <id>spigot-repo</id>
-            <url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-        </repository>
-    </repositories>
+
 
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot</artifactId>
-            <version>1.18.2-R0.1-SNAPSHOT</version>
+            <version>1.20.1-R0.1-SNAPSHOT</version>
             <classifier>remapped-mojang</classifier>
             <scope>provided</scope>
         </dependency>
@@ -100,5 +96,6 @@
             <version>${project.parent.version}</version>
         </dependency>
     </dependencies>
+
 
 </project>

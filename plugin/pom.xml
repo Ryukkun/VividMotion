@@ -169,6 +169,12 @@
             <artifactId>bukkit_1_19_R3</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_20_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
 

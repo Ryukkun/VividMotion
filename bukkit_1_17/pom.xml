@@ -15,6 +15,7 @@
     <packaging>jar</packaging>
 
     <properties>
+        <mc.version>1.17.1</mc.version>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <jdk.version>17</jdk.version>
@@ -54,9 +55,9 @@
                         </goals>
                         <id>remap-obf</id>
                         <configuration>
-                            <srgIn>org.spigotmc:minecraft-server:1.17.1-R0.1-SNAPSHOT:txt:maps-mojang</srgIn>
+                            <srgIn>org.spigotmc:minecraft-server:${mc.version}-R0.1-SNAPSHOT:txt:maps-mojang</srgIn>
                             <reverse>true</reverse>
-                            <remappedDependencies>org.spigotmc:spigot:1.17.1-R0.1-SNAPSHOT:jar:remapped-mojang</remappedDependencies>
+                            <remappedDependencies>org.spigotmc:spigot:${mc.version}-R0.1-SNAPSHOT:jar:remapped-mojang</remappedDependencies>
                             <remappedArtifactAttached>true</remappedArtifactAttached>
                             <remappedClassifierName>remapped-obf</remappedClassifierName>
                         </configuration>
@@ -69,8 +70,8 @@
                         <id>remap-spigot</id>
                         <configuration>
                             <inputFile>${project.build.directory}/${project.artifactId}-${project.version}-remapped-obf.jar</inputFile>
-                            <srgIn>org.spigotmc:minecraft-server:1.17.1-R0.1-SNAPSHOT:csrg:maps-spigot</srgIn>
-                            <remappedDependencies>org.spigotmc:spigot:1.17.1-R0.1-SNAPSHOT:jar:remapped-obf</remappedDependencies>
+                            <srgIn>org.spigotmc:minecraft-server:${mc.version}-R0.1-SNAPSHOT:csrg:maps-spigot</srgIn>
+                            <remappedDependencies>org.spigotmc:spigot:${mc.version}-R0.1-SNAPSHOT:jar:remapped-obf</remappedDependencies>
                         </configuration>
                     </execution>
                 </executions>

@@ -11,8 +11,9 @@
 
     <name>VividMotion</name>
     <modules>
-        <module>bukkit_1_12</module>
+        <module>plugin</module>
         <module>core-interface</module>
+        <module>bukkit_1_12</module>
         <module>bukkit_1_13</module>
         <module>bukkit_1_14</module>
         <module>bukkit_1_15</module>
@@ -20,12 +21,12 @@
         <module>bukkit_1_17</module>
         <module>bukkit_1_18_R2</module>
         <module>bukkit_1_19_R3</module>
-        <module>plugin</module>
+        <module>bukkit_1_20_R1</module>
     </modules>
 
     <properties>
-        <maven.compiler.source>11</maven.compiler.source>
-        <maven.compiler.target>11</maven.compiler.target>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>

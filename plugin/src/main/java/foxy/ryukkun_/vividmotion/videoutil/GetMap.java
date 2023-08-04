@@ -27,14 +27,18 @@ public class GetMap extends Thread{
     public void run() {
         MapsData mData = new MapsData(ffs, player.getWorld());
 
-        int i;
+        player.getInventory().addItem( convertToChest( mData.data.mapIds));
+    }
+
+
+    private ItemStack[] convertToChest(int[] mapIds){
         int ii;
         int iii = 1;
+        NBTEditor.NBTCompound chest = null;
         NBTEditor.NBTCompound nbt;
         List<ItemStack> chestList = new ArrayList<>();
-        NBTEditor.NBTCompound chest = null;
 
-        for (i = 0; i < mData.data.mapIds.length; i++){
+        for (int i = 0; i < mapIds.length; i++){
             ii = i % 27;
             if (ii == 0){
                 if (chest != null) {
@@ -53,7 +57,12 @@ public class GetMap extends Thread{
             nbt.set((byte)ii, "Slot");
             nbt.set((byte)1, "Count");
             nbt.set("minecraft:filled_map", "id");
-            nbt.set((short) mData.data.mapIds[i], "Damage");
+            if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo(NBTEditor.MinecraftVersion.v1_12)){
+                nbt.set((short) mapIds[i], "Damage");
+            } else{
+                nbt.set(mapIds[i], "tag", "map");
+            }
+
 
             chest.set(nbt, "tag", "BlockEntityTag", "Items", NBTEditor.NEW_ELEMENT);
         }
@@ -62,7 +71,6 @@ public class GetMap extends Thread{
             chestList.add(NBTEditor.getItemFromTag( chest));
         }
 
-        player.getInventory().addItem( chestList.toArray(new ItemStack[0]));
+        return chestList.toArray(new ItemStack[0]);
     }
-
 }

@@ -107,6 +107,8 @@ public final class VividMotion extends JavaPlugin {
 //            return new Packet_1_19_R2();
         } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
             return new Packet_1_19_R3();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_20)){
+            return new Packet_1_20_R1();
         }
         return null;
     }
@@ -136,6 +138,8 @@ public final class VividMotion extends JavaPlugin {
 //            return new Packet_1_19_R2();
         } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
             return new MapUtil_1_19();
+        } else if (version.equals(NBTEditor.MinecraftVersion.v1_20)){
+            return new MapUtil_1_20_R1();
         }
         return null;
     }
