@@ -5,6 +5,7 @@ import foxy.ryukkun_.vividmotion.commands.GiveScreen;
 import foxy.ryukkun_.vividmotion.commands.SetScreen;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -19,6 +20,7 @@ public final class VividMotion extends JavaPlugin {
     public static boolean isEnable;
     public static PacketManager packetManager;
     public static MapUtil mapUtil;
+    public static Plugin plugin;
 
     public File getMapDataFolder(){
         Path path = getDataFolder().toPath();
@@ -33,6 +35,7 @@ public final class VividMotion extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        plugin = this;
         isEnable = true;
         packetManager = getPacketManager();
         mapUtil = getMapUtil();
