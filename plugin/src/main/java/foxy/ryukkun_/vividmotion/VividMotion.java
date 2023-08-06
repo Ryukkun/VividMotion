@@ -3,7 +3,8 @@ package foxy.ryukkun_.vividmotion;
 import fox.ryukkun_.*;
 import foxy.ryukkun_.vividmotion.commands.GiveScreen;
 import foxy.ryukkun_.vividmotion.commands.SetScreen;
-import foxy.ryukkun_.vividmotion.event.SetUpScreenItem;
+import foxy.ryukkun_.vividmotion.event.SelectSetUpScreen;
+import foxy.ryukkun_.vividmotion.event.UsedSetUpScreen;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.plugin.Plugin;
@@ -50,7 +51,8 @@ public final class VividMotion extends JavaPlugin {
             new ScreenData(file);
         }
 
-        getServer().getPluginManager().registerEvents(new SetUpScreenItem(), this);
+        getServer().getPluginManager().registerEvents(new UsedSetUpScreen(), this);
+        getServer().getPluginManager().registerEvents(new SelectSetUpScreen(), this);
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
     }
@@ -62,6 +64,17 @@ public final class VividMotion extends JavaPlugin {
         saveMapData();
 
     }
+
+
+    public static ScreenData getScreenData(String name){
+        for (ScreenData sd : VividMotion.screenDataList) {
+            if (sd.data.name.equals(name)) {
+                return sd;
+            }
+        }
+        return null;
+    }
+
 
     public void saveMapData(){
         File file = getMapDataFolder();

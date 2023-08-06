@@ -37,7 +37,9 @@ public class FFmpegSource {
                 connection.connect();
                 InputStream input = connection.getInputStream();
                 fromURL(input);
-            }catch (Exception ignored){}
+            }catch (Exception ignored){
+                can_load = false;
+            }
 
         // is File
         } else {

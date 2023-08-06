@@ -11,7 +11,7 @@ import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class SetUpScreenItem implements Listener {
+public class SelectSetUpScreen implements Listener {
     @EventHandler
     public void onPlayerItemChange(PlayerItemHeldEvent event) {
 
@@ -27,11 +27,9 @@ public class SetUpScreenItem implements Listener {
                     return;
                 }
                 String name = is.getItemMeta().getLore().get(0);
-                for (ScreenData sd : VividMotion.screenDataList){
-                    if (sd.data.name.equals( name)){
-                        SetScreen.SetUpScreen.init_run(player, sd, false);
-                        return;
-                    }
+                ScreenData sd = VividMotion.getScreenData( name);
+                if (sd != null){
+                    SetScreen.SetUpScreen.init_run(player, sd, false);
                 }
             }
         }.runTaskLater(VividMotion.plugin, 1L);

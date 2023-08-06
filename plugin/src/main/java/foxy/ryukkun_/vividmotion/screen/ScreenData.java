@@ -34,8 +34,9 @@ public class ScreenData {
             data = (Data) in.readObject();
 
             VividMotion.screenDataList.add(this);
-            new VideoPlayer(this).start();
-
+            if (!data.isPicture) {
+                new VideoPlayer(this).start();
+            }
         } catch (IOException | ClassNotFoundException e) {
             Bukkit.getLogger().warning(e.toString());
         }
