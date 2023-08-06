@@ -5,14 +5,29 @@ main: foxy.ryukkun_.vividmotion.VividMotion
 commands:
   vividmotion:
     description: This is a fantastic command.
-    permission: vividmotion.command.main
+    permission: vividmotion.command.vividmotion
     usage: /<command> [set, give] [String]
+  give-screen:
+    description: This is a fantastic command.
+    permission: vividmotion.command.give-screen
+    usage: /<command> [name] [None or URL, Path]
+  set-screen:
+    description: This is a fantastic command.
+    permission: vividmotion.command.set-screen
+    usage: /<command> [name] [None or URL, Path]
 
 permissions:
   vividmotion.command.*:
     description: kita-nn!
     children:
-      vividmotion.command.main: true
-  vividmotion.command.main:
+      vividmotion.command.vividmotion: true
+      vividmotion.command.set-screen: true
+      vividmotion.command.give-screen: true
+
+  vividmotion.command.vividmotion:
     description: kita--nn!
+    default: op
+  vividmotion.command.set-screen:
+    default: op
+  vividmotion.command.give-screen:
     default: op

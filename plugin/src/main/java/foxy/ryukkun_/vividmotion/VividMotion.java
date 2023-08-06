@@ -3,6 +3,7 @@ package foxy.ryukkun_.vividmotion;
 import fox.ryukkun_.*;
 import foxy.ryukkun_.vividmotion.commands.GiveScreen;
 import foxy.ryukkun_.vividmotion.commands.SetScreen;
+import foxy.ryukkun_.vividmotion.event.SetUpScreenItem;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.plugin.Plugin;
@@ -46,9 +47,10 @@ public final class VividMotion extends JavaPlugin {
 
         File[] fs = getMapDataFolder().listFiles();
         for (File file : fs != null ? fs : new File[0]) {
-            screenDataList.add( new ScreenData(file));
+            new ScreenData(file);
         }
 
+        getServer().getPluginManager().registerEvents(new SetUpScreenItem(), this);
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
     }
@@ -65,7 +67,6 @@ public final class VividMotion extends JavaPlugin {
         File file = getMapDataFolder();
         Path path = file.toPath();
         Path path1;
-        int[] ids;
 
         File[] fs =  file.listFiles();
         for (File file1 : fs != null ? fs : new File[0]){
@@ -73,9 +74,7 @@ public final class VividMotion extends JavaPlugin {
         }
 
         for (ScreenData mapsData : screenDataList){
-            ids = mapsData.data.mapIds;
-            path1 = path.resolve( ids[0] + "-" + ids[ids.length - 1] + ".dat");
-
+            path1 = path.resolve(mapsData.data.name+ ".dat");
             try (FileOutputStream f = new FileOutputStream( path1.toFile());
                  ObjectOutputStream out = new ObjectOutputStream(f)){
 

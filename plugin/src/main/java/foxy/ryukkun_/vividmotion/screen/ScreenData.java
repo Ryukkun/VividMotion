@@ -57,36 +57,41 @@ public class ScreenData {
         data.is_loaded = true;
 
 
-        if (data.map_pixel.size() == 1){
-            // isPicture
-            data.isPicture = true;
-
-            byte[][] pixelData = getMapData(0);
-            for (int i = 0; i < data.mapIds.length; i++ ){
-                MapView view = Bukkit.getMap((short) data.mapIds[i]);
-                VividMotion.mapUtil.setColor(view, pixelData[i]);
-
-                for (MapRenderer render: view.getRenderers()){
-                    view.removeRenderer(render);
-                }
-                view.addRenderer(new PictureRender(pixelData[i]));
-            }
-
-        } else{
-            // isVideo
-            data.isPicture = false;
-
-            byte[][] pixelData = getMapData(0);
-            for (int i = 0; i < data.mapIds.length; i++ ){
-                MapView view = Bukkit.getMap((short) data.mapIds[i]);
-                VividMotion.mapUtil.setColor(view, pixelData[i]);
-
-                for (MapRenderer render: view.getRenderers()){
-                    view.removeRenderer(render);
-                }
-            }
+        if (!data.map_pixel.isEmpty()){
             VividMotion.screenDataList.add(this);
-            new VideoPlayer(this).start();
+
+            if (data.map_pixel.size() == 1){
+                // isPicture
+                data.isPicture = true;
+
+                byte[][] pixelData = getMapData(0);
+                for (int i = 0; i < data.mapIds.length; i++ ){
+                    MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                    VividMotion.mapUtil.setColor(view, pixelData[i]);
+
+                    for (MapRenderer render: view.getRenderers()){
+                        view.removeRenderer(render);
+                    }
+                    view.addRenderer(new PictureRender(pixelData[i]));
+                }
+                data.map_pixel.clear();
+
+
+            } else{
+                // isVideo
+                data.isPicture = false;
+
+                byte[][] pixelData = getMapData(0);
+                for (int i = 0; i < data.mapIds.length; i++ ){
+                    MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                    VividMotion.mapUtil.setColor(view, pixelData[i]);
+
+                    for (MapRenderer render: view.getRenderers()){
+                        view.removeRenderer(render);
+                    }
+                }
+                new VideoPlayer(this).start();
+            }
         }
     }
 

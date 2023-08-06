@@ -4,10 +4,7 @@ package foxy.ryukkun_.vividmotion.commands;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Particle;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
@@ -22,13 +19,13 @@ import java.util.*;
 public class SetScreen extends ScreenCommandTemplate {
     @Override
     public void onCommandInCache(Player player, ScreenData screenData) {
-        SetUpScreen.init_run(player, screenData);
+        SetUpScreen.init_run(player, screenData, true);
     }
 
 
     @Override
     public void onCommandNotInCache(Player player, ScreenData screenData) {
-        SetUpScreen.init_run(player, screenData);
+        SetUpScreen.init_run(player, screenData, true);
     }
 
 
@@ -50,26 +47,28 @@ public class SetScreen extends ScreenCommandTemplate {
             itemFrame.setItemMeta(im);
         }
 
-        private SetUpScreen(Player player, ScreenData screenData){
+        private SetUpScreen(Player player, ScreenData screenData, boolean giveItem){
             this.player = player;
             this.screenData = screenData;
 
-            ItemStack item = itemFrame;
-            ItemMeta im = item.getItemMeta();
-            List<String> l = im.getLore();
-            l.addAll(0, Arrays.asList( screenData.data.name, ""));
-            im.setLore( l);
-            item.setItemMeta(im);
+            if (giveItem){
+                ItemStack item = itemFrame.clone();
+                ItemMeta im = item.getItemMeta();
+                List<String> l = im.getLore();
+                l.addAll(0, Arrays.asList( screenData.data.name, ""));
+                im.setLore( l);
+                item.setItemMeta(im);
 
-            PlayerInventory inv = player.getInventory();
-            if (inv.getItemInMainHand().getType().equals(Material.AIR)){
-                inv.setItemInMainHand(item);
-            } else{
-                inv.addItem(item);
+                PlayerInventory inv = player.getInventory();
+                if (inv.getItemInMainHand().getType().equals(Material.AIR)){
+                    inv.setItemInMainHand(item);
+                } else{
+                    inv.addItem(item);
+                }
             }
         }
 
-        public static void init_run(Player player, ScreenData screenData){
+        public static void init_run(Player player, ScreenData screenData, boolean giveItem){
             UUID uuid = player.getUniqueId();
             if (!running.containsKey(uuid)){
                 running.put(uuid, new HashMap<>());
@@ -78,46 +77,48 @@ public class SetScreen extends ScreenCommandTemplate {
             Boolean b = uuidHash.get(screenData.data.name);
             if (b == null || !b){
                 uuidHash.put(screenData.data.name, true);
-                new SetUpScreen(player, screenData).runTaskTimer(VividMotion.plugin, 0L, 1L);
+                new SetUpScreen(player, screenData, giveItem).runTaskTimer(VividMotion.plugin, 0L, 1L);
             }
         }
 
 
         private static Location calcPosition(Location l, double rx, double ry, double rz, Character direction, boolean up, boolean down){
+            l = l.clone();
+
             if (direction == 'N'){
                 if (up){
-                    l = l.add(rx, rz, ry);
+                    l.add(rx, rz, ry);
                 } else if (down) {
-                    l = l.add(rx, -rz, -ry);
+                    l.add(rx, -rz, -ry);
                 } else {
-                    l = l.add(rx, ry, -rz);
+                    l.add(rx, ry, -rz);
                 }
 
             } else if (direction == 'S') {
                 if (up){
-                    l = l.add(-rx, rz, -ry);
+                    l.add(-rx, rz, -ry);
                 } else if (down) {
-                    l = l.add(-rx, -rz, ry);
+                    l.add(-rx, -rz, ry);
                 } else {
-                    l = l.add(-rx, ry, rz);
+                    l.add(-rx, ry, rz);
                 }
 
             } else if (direction == 'E') {
                 if (up){
-                    l = l.add(-ry, rz, rx);
+                    l.add(-ry, rz, rx);
                 } else if (down) {
-                    l = l.add(ry, -rz, rx);
+                    l.add(ry, -rz, rx);
                 } else {
-                    l = l.add(rz, ry, rx);
+                    l.add(rz, ry, rx);
                 }
 
             } else if (direction == 'W') {
                 if (up) {
-                    l = l.add(ry, rz, -rx);
+                    l.add(ry, rz, -rx);
                 } else if (down) {
-                    l = l.add(-ry, -rz, -rx);
+                    l.add(-ry, -rz, -rx);
                 } else {
-                    l = l.add(-rz, ry, -rx);
+                    l.add(-rz, ry, -rx);
                 }
             }
             return l;
@@ -147,7 +148,7 @@ public class SetScreen extends ScreenCommandTemplate {
 
         public static Block getTargetBlock(Player p){
             if (p.getGameMode().equals(GameMode.SURVIVAL)){
-                return p.getTargetBlock(null, 5);
+                return p.getTargetBlock(null, 4);
 
             } else if (p.getGameMode().equals(GameMode.CREATIVE)) {
                 return p.getTargetBlock(null, 5);
@@ -178,17 +179,32 @@ public class SetScreen extends ScreenCommandTemplate {
             return null;
         }
 
+        private void _cancel(){
+            running.get(player.getUniqueId()).put(screenData.data.name, false);
+            cancel();
+        }
 
         @Override
         public void run() {
-            if (!player.getInventory().contains(itemFrame)) {
-                running.get(player.getUniqueId()).put(screenData.data.name, false);
-                cancel();
+            ItemStack is = player.getInventory().getItemInMainHand();
+            ItemMeta im = is.getItemMeta();
+
+            if (im == null){
+                _cancel();
+                return;
+            }
+            if (!im.hasDisplayName() || !im.hasLore() || !is.getType().equals( Material.ITEM_FRAME)){
+                _cancel();
+            } else if (!im.getDisplayName().equals( itemFrame.getItemMeta().getDisplayName()) || !im.getLore().get(0).equals( screenData.data.name)) {
+                _cancel();
             }
 
             Block b = getTargetBlock(player);
             Character direction = getDirection(player);
-            if (b == null || direction == null) {
+            if (b == null){
+                return;
+            }
+            if (b.isEmpty() || b.isLiquid() || direction == null) {
                 return;
             }
 
@@ -212,7 +228,7 @@ public class SetScreen extends ScreenCommandTemplate {
             _y -= 0.4;
             _x -= 0.4;
             y += 0.4;
-            y += 0.4;
+            x += 0.4;
             Location l = b.getLocation();
             l.setX(b.getX() + 0.5);
             l.setY(b.getY() + 0.5);
@@ -227,41 +243,42 @@ public class SetScreen extends ScreenCommandTemplate {
             double xd = Math.abs(lxy.getX() - l_x_y.getX());
             double yd = Math.abs(lxy.getY() - l_x_y.getY());
             double zd = Math.abs(lxy.getZ() - l_x_y.getZ());
+            double vecS = 0.3;
             Location lCopy, lCopy2;
             if ( 0.5 < xd){
                 lCopy = lxy.clone();
                 lCopy2 = l_x_y.clone();
-                double v = (lxy.getX() - l_x_y.getX()) < 0 ? 1.0 : -1.0;
-                for (double d = 0.0; d < xd; d+=0.1) {
-                    lCopy = lCopy.add(v, 0, 0);
-                    lCopy2 = lCopy2.add(-v, 0, 0);
+                double v = (lxy.getX() - l_x_y.getX()) < 0 ? vecS : -vecS;
+                for (double d = 0.0; d < xd; d+=vecS) {
+                    lCopy.add(v, 0, 0);
+                    lCopy2.add(-v, 0, 0);
 
-                    locations.add(lCopy);
-                    locations.add(lCopy2);
+                    locations.add(lCopy.clone());
+                    locations.add(lCopy2.clone());
                 }
             }
             if ( 0.5 < yd){
                 lCopy = lxy.clone();
                 lCopy2 = l_x_y.clone();
-                double v = (lxy.getY() - l_x_y.getY()) < 0 ? 1.0 : -1.0;
-                for (double d = 0.0; d < yd; d+=0.1) {
-                    lCopy = lCopy.add(0, v, 0);
-                    lCopy2 = lCopy2.add(0, -v, 0);
+                double v = (lxy.getY() - l_x_y.getY()) < 0 ? vecS : -vecS;
+                for (double d = 0.0; d < yd; d+=vecS) {
+                    lCopy.add(0, v, 0);
+                    lCopy2.add(0, -v, 0);
 
-                    locations.add(lCopy);
-                    locations.add(lCopy2);
+                    locations.add(lCopy.clone());
+                    locations.add(lCopy2.clone());
                 }
             }
             if ( 0.5 < zd){
                 lCopy = lxy.clone();
                 lCopy2 = l_x_y.clone();
-                double v = (lxy.getZ() - l_x_y.getZ()) < 0 ? 1.0 : -1.0;
-                for (double d = 0.0; d < zd; d+=0.1) {
-                    lCopy = lCopy.add(0, 0, v);
-                    lCopy2 = lCopy2.add(0, 0, -v);
+                double v = (lxy.getZ() - l_x_y.getZ()) < 0 ? vecS : -vecS;
+                for (double d = 0.0; d < zd; d+=vecS) {
+                    lCopy.add(0, 0, v);
+                    lCopy2.add(0, 0, -v);
 
-                    locations.add(lCopy);
-                    locations.add(lCopy2);
+                    locations.add(lCopy.clone());
+                    locations.add(lCopy2.clone());
                 }
             }
 
