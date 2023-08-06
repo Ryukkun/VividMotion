@@ -1,7 +1,6 @@
 package foxy.ryukkun_.vividmotion.commands;
 
 
-import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
@@ -73,17 +72,7 @@ public class GiveScreen extends ScreenCommandTemplate {
     }
 
     @Override
-    public void onCommandNotInCache(Player player, String name, String input){
-        new Thread(() -> {
-
-            FFmpegSource ffs = new FFmpegSource(input);
-            if (ffs.can_load){
-                ScreenData mData = new ScreenData(name, ffs, player.getWorld());
-                addMapsInInventory(player, mData.data.mapIds);
-
-            }else {
-                player.sendMessage("解析不能なURL、PATHです。");
-            }
-        }).start();
+    public void onCommandNotInCache(Player player, ScreenData screenData){
+        addMapsInInventory(player, screenData.data.mapIds);
     }
 }

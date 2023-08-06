@@ -7,8 +7,8 @@ import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
@@ -16,27 +16,26 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.scheduler.BukkitRunnable;
-import org.bukkit.util.BlockIterator;
 
 import java.util.*;
 
 public class SetScreen extends ScreenCommandTemplate {
     @Override
     public void onCommandInCache(Player player, ScreenData screenData) {
-
+        SetUpScreen.init_run(player, screenData);
     }
 
 
     @Override
-    public void onCommandNotInCache(Player player, String name, String input) {
-
+    public void onCommandNotInCache(Player player, ScreenData screenData) {
+        SetUpScreen.init_run(player, screenData);
     }
 
 
     public static class SetUpScreen extends BukkitRunnable{
 
-        private Player player;
-        private ScreenData screenData;
+        private final Player player;
+        private final ScreenData screenData;
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
         private static final boolean isOver_1_13;
         private static final ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
@@ -76,9 +75,8 @@ public class SetScreen extends ScreenCommandTemplate {
                 running.put(uuid, new HashMap<>());
             }
             HashMap<String, Boolean> uuidHash = running.get(uuid);
-            if (uuidHash.get(screenData.data.name)){
-                return;
-            } else{
+            Boolean b = uuidHash.get(screenData.data.name);
+            if (b == null || !b){
                 uuidHash.put(screenData.data.name, true);
                 new SetUpScreen(player, screenData).runTaskTimer(VividMotion.plugin, 0L, 1L);
             }
@@ -128,15 +126,13 @@ public class SetScreen extends ScreenCommandTemplate {
         private static boolean canPlace(ScreenData screenData, Location location, Character direction, boolean up, boolean down){
             int mapHeight = screenData.data.mapHeight, mapWidth = screenData.data.mapWidth;
 
-
+            Location l, l1;
             for (int y = 0; y < mapHeight; y++){
                 for (int x = 0; x < mapWidth; x++){
 
-                    Location l = location;
-                    Location l1 = l.clone();
                     int ry = y - mapHeight/2, rx = x - mapWidth/2;
 
-                    l = calcPosition(l, rx, ry, 0.0, direction, up, down);
+                    l = calcPosition(location, rx, ry, 0.0, direction, up, down);
                     l1 = calcPosition(l, 0.0, 0.0, -1.0, direction, up, down);
 
                     if (l.getBlock().isEmpty() || l.getBlock().isLiquid() || !l1.getBlock().isEmpty()){
@@ -226,12 +222,58 @@ public class SetScreen extends ScreenCommandTemplate {
             Location l_x_y = calcPosition(l, _x, _y, 0, direction, up, down),
                     lxy = calcPosition(l, x, y, 0, direction, up, down);
 
+            locations.add(lxy);
+            locations.add(l_x_y);
+            double xd = Math.abs(lxy.getX() - l_x_y.getX());
+            double yd = Math.abs(lxy.getY() - l_x_y.getY());
+            double zd = Math.abs(lxy.getZ() - l_x_y.getZ());
+            Location lCopy, lCopy2;
+            if ( 0.5 < xd){
+                lCopy = lxy.clone();
+                lCopy2 = l_x_y.clone();
+                double v = (lxy.getX() - l_x_y.getX()) < 0 ? 1.0 : -1.0;
+                for (double d = 0.0; d < xd; d+=0.1) {
+                    lCopy = lCopy.add(v, 0, 0);
+                    lCopy2 = lCopy2.add(-v, 0, 0);
 
+                    locations.add(lCopy);
+                    locations.add(lCopy2);
+                }
+            }
+            if ( 0.5 < yd){
+                lCopy = lxy.clone();
+                lCopy2 = l_x_y.clone();
+                double v = (lxy.getY() - l_x_y.getY()) < 0 ? 1.0 : -1.0;
+                for (double d = 0.0; d < yd; d+=0.1) {
+                    lCopy = lCopy.add(0, v, 0);
+                    lCopy2 = lCopy2.add(0, -v, 0);
 
-            for () {
+                    locations.add(lCopy);
+                    locations.add(lCopy2);
+                }
+            }
+            if ( 0.5 < zd){
+                lCopy = lxy.clone();
+                lCopy2 = l_x_y.clone();
+                double v = (lxy.getZ() - l_x_y.getZ()) < 0 ? 1.0 : -1.0;
+                for (double d = 0.0; d < zd; d+=0.1) {
+                    lCopy = lCopy.add(0, 0, v);
+                    lCopy2 = lCopy2.add(0, 0, -v);
+
+                    locations.add(lCopy);
+                    locations.add(lCopy2);
+                }
+            }
+
+            for (Location ll : locations){
+                if (canPlace){
+                    player.getWorld().spawnParticle(Particle.REDSTONE, ll, 0, 0.01, 1, 0);
+                }else{
+                    player.getWorld().spawnParticle(Particle.REDSTONE, ll, 0, 0, 0, 0);
+                }
 
             }
-            player.getWorld().spawnPar
+
 
 
 

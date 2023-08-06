@@ -1,6 +1,7 @@
 package foxy.ryukkun_.vividmotion.commands;
 
 import foxy.ryukkun_.vividmotion.VividMotion;
+import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -15,7 +16,7 @@ import java.util.List;
 public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
 
     public void onCommandInCache(Player player, ScreenData screenData){}
-    public void onCommandNotInCache(Player player, String name, String input){}
+    public void onCommandNotInCache(Player player, ScreenData screenData){}
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
@@ -42,7 +43,18 @@ public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
                 input = args[1];
             }
 
-            onCommandNotInCache(player, args[0], input);
+            new Thread(() -> {
+
+                FFmpegSource ffs = new FFmpegSource(input);
+                if (ffs.can_load){
+                    ScreenData sd = new ScreenData(args[0], ffs, player.getWorld());
+                    onCommandNotInCache(player, sd);
+
+                }else {
+                    player.sendMessage("解析不能なURL、PATHです。");
+                }
+            }).start();
+
 
 
             return true;
