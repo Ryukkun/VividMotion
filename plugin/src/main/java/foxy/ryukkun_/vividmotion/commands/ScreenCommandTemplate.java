@@ -47,7 +47,7 @@ public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
 
                 FFmpegSource ffs = new FFmpegSource(input);
                 if (ffs.can_load){
-                    ScreenData sd = new ScreenData(args[0], ffs, player.getWorld());
+                    ScreenData sd = new ScreenData(args[0], ffs, player);
                     onCommandNotInCache(player, sd);
 
                 }else {

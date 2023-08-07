@@ -1,6 +1,9 @@
 package foxy.ryukkun_.vividmotion.commands;
 
 
+import fox.ryukkun_.ParticleUtil;
+import fox.ryukkun_.ParticleUtil_1_12;
+import fox.ryukkun_.ParticleUtil_1_13;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
@@ -107,11 +110,18 @@ public class SetScreen extends ScreenCommandTemplate {
         private final Player player;
         private final ScreenData screenData;
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
-        public static final boolean isOver_1_13;
+        public static final boolean isOver_1_13 = (NBTEditor.getMinecraftVersion().greaterThanOrEqualTo( NBTEditor.MinecraftVersion.v1_13));
+
+        public static final ParticleUtil particleUtil;
+        static {
+            if (isOver_1_13){
+                particleUtil = new ParticleUtil_1_13();
+            } else{
+                particleUtil = new ParticleUtil_1_12();
+            }
+        }
         private static final ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
         static {
-            isOver_1_13 = (NBTEditor.getMinecraftVersion().greaterThanOrEqualTo( NBTEditor.MinecraftVersion.v1_13));
-
             ItemMeta im = itemFrame.getItemMeta();
             im.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
@@ -318,9 +328,9 @@ public class SetScreen extends ScreenCommandTemplate {
             boolean canPlace = canPlace(screenData, face);
             for (Location ll : locations){
                 if (canPlace){
-                    player.getWorld().spawnParticle(Particle.REDSTONE, ll, 0, 0.01, 1, 0);
+                    particleUtil.spawnParticle(player.getWorld(), ll, 0, 255, 0);
                 }else{
-                    player.getWorld().spawnParticle(Particle.REDSTONE, ll, 0, 0, 0, 0);
+                    particleUtil.spawnParticle(player.getWorld(), ll, 255, 0, 0);
                 }
 
             }
