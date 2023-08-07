@@ -44,9 +44,8 @@ public class SetScreen extends ScreenCommandTemplate {
         public Direction(Player player){
             List<Block> b = getTargetBlock(player);
             direction = getDirection(player);
-            if (b == null){
-                return;
-            }
+            if (b == null) return;
+            if (b.size() < 2) return;
             targetBlock = b.get(1);
             Block adjacentB = b.get(0);
             if (targetBlock.isEmpty() || targetBlock.isLiquid() || direction == null) {
