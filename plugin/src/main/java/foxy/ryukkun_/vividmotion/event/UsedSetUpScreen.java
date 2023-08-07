@@ -7,6 +7,7 @@ import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Rotation;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.ItemFrame;
@@ -21,20 +22,23 @@ public class UsedSetUpScreen implements Listener {
     public void onHangingPlaceEvent(HangingPlaceEvent event){
         // is set up Item?
         ItemStack itemStack = event.getPlayer().getInventory().getItemInMainHand();
-        if (!SetScreen.SetUpScreen.isSetUpScreenItem(itemStack)) {
-            event.setCancelled(true);
+        if (!event.getEntity().getType().equals( EntityType.ITEM_FRAME) || !itemStack.getType().equals( Material.ITEM_FRAME)){
             return;
         }
-        // is good direction?
-        Player player = event.getPlayer();
-        SetScreen.Direction face = new SetScreen.Direction(player);
-        if (!SetScreen.SetUpScreen.isOver_1_13 && face.down || face.up) {
-            event.setCancelled(true);
+
+        if (!SetScreen.SetUpScreen.isSetUpScreenItem(itemStack)) {
             return;
         }
         // find screedData
         ScreenData screenData = VividMotion.getScreenData( itemStack.getItemMeta().getLore().get(0));
         if (screenData == null) {
+            return;
+        }
+
+        // is good direction?
+        Player player = event.getPlayer();
+        SetScreen.Direction face = new SetScreen.Direction(player);
+        if (!SetScreen.SetUpScreen.isOver_1_13 && (face.down || face.up) || !face.status) {
             event.setCancelled(true);
             return;
         }
@@ -52,17 +56,17 @@ public class UsedSetUpScreen implements Listener {
         int i = -1;
 
         if (face.down){
-            frameFace = BlockFace.DOWN;
-        } else if (face.up) {
             frameFace = BlockFace.UP;
+        } else if (face.up) {
+            frameFace = BlockFace.DOWN;
         } else if (face.direction == 'N') {
-            frameFace = BlockFace.NORTH;
-        } else if (face.direction == 'E') {
-            frameFace = BlockFace.EAST;
-        } else if (face.direction == 'W') {
-            frameFace = BlockFace.WEST;
-        } else if (face.direction == 'S') {
             frameFace = BlockFace.SOUTH;
+        } else if (face.direction == 'E') {
+            frameFace = BlockFace.WEST;
+        } else if (face.direction == 'W') {
+            frameFace = BlockFace.EAST;
+        } else if (face.direction == 'S') {
+            frameFace = BlockFace.NORTH;
         } else {
             event.setCancelled(true);
             return;
@@ -80,10 +84,17 @@ public class UsedSetUpScreen implements Listener {
                     l = SetScreen.SetUpScreen.calcPosition(face.targetBlock.getLocation(), rx, ry, -1, face);
 
                     itemFrameE = (ItemFrame) player.getWorld().spawnEntity(l, EntityType.ITEM_FRAME);
-                    itemFrameE.setFacingDirection(frameFace);
-                    //                if (face.up){
-                    //                    itemFrameE.setRotation();
-                    //                }
+                    itemFrameE.setFacingDirection(frameFace, true);
+                    if (face.up){
+                        if (face.direction == 'E') itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                        else if (face.direction == 'S') itemFrameE.setRotation(Rotation.CLOCKWISE);
+                        else if (face.direction == 'W') itemFrameE.setRotation(Rotation.CLOCKWISE_45);
+
+                    } else if (face.down){
+                        if (face.direction == 'W') itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                        else if (face.direction == 'S') itemFrameE.setRotation(Rotation.CLOCKWISE);
+                        else if (face.direction == 'E') itemFrameE.setRotation(Rotation.CLOCKWISE_45);
+                    }
 
                     NBTEditor.NBTCompound nbt = NBTEditor.getNBTCompound(new ItemStack(Material.MAP));
                     if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo(NBTEditor.MinecraftVersion.v1_12)) {

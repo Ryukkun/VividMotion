@@ -39,6 +39,7 @@ public class SetScreen extends ScreenCommandTemplate {
         public boolean down = false;
         public Character direction;
         public Block targetBlock = null;
+        public boolean status = false;
 
         public Direction(Player player){
             List<Block> b = getTargetBlock(player);
@@ -55,9 +56,9 @@ public class SetScreen extends ScreenCommandTemplate {
             up = false;
             down = false;
             BlockFace bf = targetBlock.getFace(adjacentB);
-            if(bf.equals(BlockFace.DOWN)){
+            if(bf.equals(BlockFace.UP)){
                 down = true;
-            } else if (bf.equals(BlockFace.UP)) {
+            } else if (bf.equals(BlockFace.DOWN)) {
                 up = true;
             } else if (bf.equals(BlockFace.NORTH)) {
                 direction = 'S';
@@ -68,6 +69,7 @@ public class SetScreen extends ScreenCommandTemplate {
             } else if (bf.equals(BlockFace.EAST)) {
                 direction = 'W';
             }
+            status = true;
         }
 
         public static List<Block> getTargetBlock(Player p){
@@ -222,7 +224,6 @@ public class SetScreen extends ScreenCommandTemplate {
                     if (l.getBlock().isEmpty() || l.getBlock().isLiquid() || !l1.getBlock().isEmpty()){
                         return false;
                     }
-
                 }
             }
             return true;
@@ -249,7 +250,7 @@ public class SetScreen extends ScreenCommandTemplate {
         @Override
         public void run() {
             ItemStack itemStack = player.getInventory().getItemInMainHand();
-            if ( !isSetUpScreenItem( itemStack)){
+            if ( !isSetUpScreenItem( itemStack) || !player.isOnline()){
                 _cancel();
                 return;
             } else if (!itemStack.getItemMeta().getLore().get(0).equals( screenData.data.name)) {
@@ -259,7 +260,7 @@ public class SetScreen extends ScreenCommandTemplate {
 
 
             Direction face = new Direction(player);
-            if (!isOver_1_13 && face.down || face.up) {
+            if (!isOver_1_13 && (face.down || face.up) || !face.status) {
                 return;
             }
 
