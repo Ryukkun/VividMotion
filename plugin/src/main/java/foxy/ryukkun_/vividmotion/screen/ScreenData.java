@@ -9,12 +9,16 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.xerial.snappy.SnappyInputStream;
+import org.xerial.snappy.SnappyOutputStream;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScreenData {
+    public static int FILE_FRAME = 50;
     public Data data;
     public FFmpegSource ffs;
     public Player player;
@@ -44,38 +48,63 @@ public class ScreenData {
         }
     }
 
-    public void loadFFS(){
+    public void loadFFS() {
         // Please run with async
         long lastSend = 0;
         byte[] frame;
-        while (true){
-            frame = ffs.read();
-            if (frame == null){
-                break;
-            }
-            addFrame(frame);
-
-            long nowTime = System.currentTimeMillis();
-            if (1000 < nowTime - lastSend){
-                byte[][] mapPixel = getMapData(data.map_pixel.size()-1);
-                List<MapPacket> packetList = new ArrayList<>();
-
-                for (int i = 0; i < data.mapIds.length; i++) {
-                    packetList.add(new MapPacket(data.mapIds[i], mapPixel[i]));
+        int frameCount = 0;
+        SnappyOutputStream out = null;
+        File file = null;
+        try {
+            while (true){
+                frame = ffs.read();
+                if (frame == null){
+                    break;
                 }
+                // Save MapPixel
+                byte[][] b = toMapFormat(frame);
+                if (frameCount % FILE_FRAME == 0){
+                    if (out != null) {
+                        out.close();
+                    }
+                    file = getFile().toPath().resolve((frameCount / FILE_FRAME)+".pdat").toFile();
+                    FileOutputStream f = new FileOutputStream( file);
+                    out = new SnappyOutputStream( new BufferedOutputStream( f));
+                }
+                for (byte[] b_ : b ){
+                    out.write(b_);
+                }
+                frameCount++;
 
-                VividMotion.packetManager.sendPacket(player, packetList);
-                lastSend = nowTime;
+                // Send Map
+                long nowTime = System.currentTimeMillis();
+                if (1000 < nowTime - lastSend){
+                    List<MapPacket> packetList = new ArrayList<>();
+
+                    for (int i = 0; i < data.mapIds.length; i++) {
+                        packetList.add(new MapPacket(data.mapIds[i], b[i]));
+                    }
+
+                    VividMotion.packetManager.sendPacket(player, packetList);
+                    lastSend = nowTime;
+                }
             }
 
+            // Loaded
+            if (out != null) {
+                out.close();
+            }
+        } catch (IOException e){
+            Bukkit.getLogger().warning(e.getMessage());
         }
 
 
         // Loaded
+        data.frameCount = frameCount;
         data.is_loaded = true;
 
 
-        if (data.map_pixel.size() == 1){
+        if (frameCount == 1){
             // isPicture
             data.isPicture = true;
 
@@ -89,7 +118,10 @@ public class ScreenData {
                 }
                 view.addRenderer(new PictureRender(pixelData[i]));
             }
-            data.map_pixel.clear();
+
+            if (file.exists()){
+                boolean ignored = file.delete();
+            }
 
 
         } else{
@@ -108,6 +140,16 @@ public class ScreenData {
             new VideoPlayer(this).start();
         }
     }
+
+
+    public File getFile(){
+        Path path = VividMotion.getMapDataFolder().toPath();
+        path = path.resolve(data.name);
+        File file = path.toFile();
+        boolean ignored = file.mkdirs();
+        return file;
+    }
+
 
 
     public boolean setFrameRate(double fr){
@@ -135,7 +177,8 @@ public class ScreenData {
     }
 
 
-    public void addFrame(byte[] bytes){
+
+    public byte[][] toMapFormat(byte[] bytes) {
         int m_index, p_index, px, py;
         int height = data.height, width = data.width;
         int m_height = data.mapHeight, m_width = data.mapWidth;
@@ -153,12 +196,10 @@ public class ScreenData {
                 maps[m_index][p_index] = (py < 0 || px < 0 || height <= py || width <= px ) ? data.background_color : bytes[py*width+px];
             }
         }
-
-        data.map_pixel.add(maps);
+        return maps;
     }
 
     public void setBackgroundColor(int r, int g, int b){
-        Bukkit.getLogger().info("set6");
         data.background_color = (byte) ImageConverter.get_nearest_color(r,g,b);
     }
 
@@ -169,11 +210,33 @@ public class ScreenData {
 
 
     public byte[][] getMapData(int frame){
-        if (data.map_pixel.size() <= frame){
+        if (data.frameCount <= frame){
             frame = 0;
         }
         data.nowFrame = frame;
-        return data.map_pixel.get(frame);
+
+        File file = getFile().toPath().resolve((frame / FILE_FRAME)+".pdat").toFile();
+        if (!file.exists()) {
+            return null;
+        }
+
+        byte[][] res = new byte[data.mapIds.length][128*128];
+        try (FileInputStream f = new FileInputStream( file);
+            SnappyInputStream in = new SnappyInputStream( new BufferedInputStream( f))){
+
+            in.mark(FILE_FRAME*128*128);
+            for (int i = 0; i < data.mapIds.length; i++){
+                byte[] _res = new byte[128*128];
+                if (in.read(_res) == -1){
+                    return null;
+                }
+                res[i] = _res;
+            }
+            } catch (IOException e) {
+            return null;
+        }
+
+        return res;
     }
 
 
@@ -184,14 +247,13 @@ public class ScreenData {
         public int height, width, mapHeight, mapWidth;
         public double videoFrameRate, setFrameRate;
         public boolean is_loaded = false;
-        // Byte[Frame][height*width]
-        public final List<byte[][]> map_pixel = new ArrayList<>();
         public int[] mapIds;
         public byte background_color;
         public int nowFrame = -1;
         public boolean isPausing = false;
         public boolean isPicture;
         public String name;
+        public int frameCount = 0;
 
         public Data(String name, FFmpegSource ffs, World world){
             this.name = name;

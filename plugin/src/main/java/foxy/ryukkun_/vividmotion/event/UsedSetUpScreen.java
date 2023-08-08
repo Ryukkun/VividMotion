@@ -29,7 +29,7 @@ public class UsedSetUpScreen implements Listener {
         if (!SetScreen.SetUpScreen.isSetUpScreenItem(itemStack)) {
             return;
         }
-        // find screenData
+        // find screen Data
         ScreenData screenData = VividMotion.getScreenData( itemStack.getItemMeta().getLore().get(0));
         if (screenData == null) {
             return;

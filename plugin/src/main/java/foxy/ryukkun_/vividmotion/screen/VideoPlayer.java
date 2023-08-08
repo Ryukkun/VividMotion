@@ -53,14 +53,6 @@ public class VideoPlayer extends Thread{
 
     @Override
     public void run() {
-        // Check load
-        if (!mapsData.data.is_loaded){
-            if (mapsData.ffs == null){
-                return;
-            }
-            mapsData.loadFFS();
-        }
-
         // Set MapDetector
         MapView view = Bukkit.getMap((short) mapsData.data.mapIds[0]);
         view.getRenderers().clear();
@@ -85,7 +77,7 @@ public class VideoPlayer extends Thread{
 
                     // calc frame
                     // next - start / 1000 * vFrameRate = nowFrame
-                    frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.map_pixel.size();
+                    frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.frameCount;
 
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData(frame);

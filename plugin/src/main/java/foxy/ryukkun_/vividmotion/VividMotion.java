@@ -23,15 +23,16 @@ public final class VividMotion extends JavaPlugin {
     public static PacketManager packetManager;
     public static MapUtil mapUtil;
     public static Plugin plugin;
+    private static File folder;
 
-    public File getMapDataFolder(){
-        Path path = getDataFolder().toPath();
+
+    public static File getMapDataFolder(){
+        Path path = folder.toPath();
         path = path.resolve("MapData");
         File file = path.toFile();
         boolean ignored = file.mkdirs();
         return file;
     }
-
 
 
     @Override
@@ -41,6 +42,7 @@ public final class VividMotion extends JavaPlugin {
         isEnable = true;
         packetManager = getPacketManager();
         mapUtil = getMapUtil();
+        folder = getDataFolder();
 
         if (!getDataFolder().exists()){
             boolean ignored = getDataFolder().mkdirs();
