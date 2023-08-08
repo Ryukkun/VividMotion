@@ -20,7 +20,6 @@ public class ScreenData {
     public Player player;
 
     public ScreenData(String name, FFmpegSource ffs, Player player){
-        // Please run with async
         data = new Data(name, ffs, player.getWorld());
         setBackgroundColor(0,0,0);
         this.ffs = ffs;
@@ -159,6 +158,7 @@ public class ScreenData {
     }
 
     public void setBackgroundColor(int r, int g, int b){
+        Bukkit.getLogger().info("set6");
         data.background_color = (byte) ImageConverter.get_nearest_color(r,g,b);
     }
 

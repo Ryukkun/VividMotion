@@ -48,7 +48,9 @@ public final class VividMotion extends JavaPlugin {
 
         File[] fs = getMapDataFolder().listFiles();
         for (File file : fs != null ? fs : new File[0]) {
-            new ScreenData(file);
+            if (file.getName().endsWith(".dat")) {
+                new ScreenData(file);
+            }
         }
 
         getServer().getPluginManager().registerEvents(new UsedSetUpScreen(), this);
