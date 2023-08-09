@@ -66,7 +66,7 @@ public class FFmpegSource {
 
     private boolean ffmpeg_setup() {
         try{
-            ffg.setPixelFormat(avutil.AV_PIX_FMT_RGB24);
+            ffg.setPixelFormat(avutil.AV_PIX_FMT_BGR24);
             avutil.av_log_set_level(avutil.AV_LOG_QUIET);
             ffg.start();
             return true;
