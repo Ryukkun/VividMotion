@@ -2,19 +2,20 @@ package foxy.ryukkun_.vividmotion.imageutil;
 
 import java.awt.*;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
+import org.bytedeco.javacv.Java2DFrameConverter;
 
 public class ImageConverter {
     public static final short[] color;
     private static final short[] fixedColor;
-
+    private static final Java2DFrameConverter java2d = new Java2DFrameConverter();
 
     // Cache設定
     // DIV : 2だったら1個とばしで計算
@@ -50,22 +51,23 @@ public class ImageConverter {
 
         int index = 0;
         int width = frame.imageWidth, height = frame.imageHeight;
-        int[] diff = new int[3];
+        int[] diff = {0, 0, 0};
         int[] pixel = new int[3];
         byte[] map_format = new byte[width*height];
+        Random random = new Random(1717289);
 
-        ByteBuffer buff = (ByteBuffer) frame.image[0];
-        buff.rewind();
+        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
+
 
         for (int y = 0; y < height; y++) {
-            diff[0] = 0;
-            diff[1] = 0;
-            diff[2] = 0;
+            diff[0] = random.nextInt(40)-20;
+            diff[1] = random.nextInt(40)-20;
+            diff[2] = random.nextInt(40)-20;
 
             for (int x = 0; x < width; x++) {
-                pixel[0] = (buff.get() & 0xFF) + diff[0];
-                pixel[1] = (buff.get() & 0xFF) + diff[1];
-                pixel[2] = (buff.get() & 0xFF) + diff[2];
+                pixel[0] = (buffer[index] >> 16 & 0xff) + diff[0];
+                pixel[1] = (buffer[index] >> 8 & 0xff) + diff[1];
+                pixel[2] = (buffer[index] & 0xff) + diff[2];
 
                 short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
                         ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
@@ -82,6 +84,9 @@ public class ImageConverter {
                     diff[1] >>= 1;
                     diff[2] >>= 1;
                 }
+                if (1911 < index && index < 1916){
+                    Bukkit.getLogger().info(String.valueOf(map_format[index-1]));
+                }
             }
         }
         return map_format;
@@ -96,7 +101,6 @@ public class ImageConverter {
 
         for (int r = 0; r < DIV_Row; r++){
             rr = r*DIV-oneSideDif;
-            Bukkit.getLogger().info(Integer.toString(r));
 
             for (int g = 0; g < DIV_Row; g++){
                 gg = g*DIV-oneSideDif;

@@ -4,16 +4,14 @@ import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
+public class ScreenCommandTemplate implements CMD {
 
     public void onCommandInCache(Player player, ScreenData screenData){}
     public void onCommandNotInCache(Player player, ScreenData screenData){}
@@ -35,7 +33,11 @@ public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
 
         } else if (2 <= args.length) {
             // create new screen
+            String name = args[0];
             String input;
+            if (VividMotion.getScreenData( name) != null){
+                return false;
+            }
 
             if (3 <= args.length) {
                 input = String.join(" ", Arrays.copyOfRange(args, 1, args.length));
@@ -47,7 +49,7 @@ public class ScreenCommandTemplate implements CommandExecutor, TabCompleter {
 
                 FFmpegSource ffs = new FFmpegSource(input);
                 if (ffs.can_load){
-                    ScreenData sd = new ScreenData(args[0], ffs, player);
+                    ScreenData sd = new ScreenData(name, ffs, player);
                     onCommandNotInCache(player, sd);
 
                 }else {

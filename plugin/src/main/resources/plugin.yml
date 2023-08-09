@@ -15,6 +15,10 @@ commands:
     description: This is a fantastic command.
     permission: vividmotion.command.set-screen
     usage: /<command> [name] [None or URL, Path]
+  screen:
+    description: This is a fantastic command.
+    permission: vividmotion.command.screen
+    usage: /<command> [] [] ...
 
 permissions:
   vividmotion.command.*:
@@ -23,11 +27,13 @@ permissions:
       vividmotion.command.vividmotion: true
       vividmotion.command.set-screen: true
       vividmotion.command.give-screen: true
+      vividmotion.command.screen: true
 
   vividmotion.command.vividmotion:
-    description: kita--nn!
     default: op
   vividmotion.command.set-screen:
     default: op
   vividmotion.command.give-screen:
+    default: op
+  vividmotion.command.screen:
     default: op

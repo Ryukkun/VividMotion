@@ -2,6 +2,7 @@ package foxy.ryukkun_.vividmotion;
 
 import fox.ryukkun_.*;
 import foxy.ryukkun_.vividmotion.commands.GiveScreen;
+import foxy.ryukkun_.vividmotion.commands.Screen;
 import foxy.ryukkun_.vividmotion.commands.SetScreen;
 import foxy.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import foxy.ryukkun_.vividmotion.event.UsedSetUpScreen;
@@ -50,8 +51,15 @@ public final class VividMotion extends JavaPlugin {
 
         File[] fs = getMapDataFolder().listFiles();
         for (File file : fs != null ? fs : new File[0]) {
-            if (file.getName().endsWith(".dat")) {
-                new ScreenData(file);
+
+            if (file.isDirectory()){
+                File[] fs1 = file.listFiles();
+
+                for (File file1 : fs1 != null ? fs1 : new File[0]) {
+                    if (file1.getName().endsWith(".dat")) {
+                        new ScreenData(file1);
+                    }
+                }
             }
         }
 
@@ -59,6 +67,7 @@ public final class VividMotion extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new SelectSetUpScreen(), this);
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
+        getCommand("screen").setExecutor(new Screen());
     }
 
     @Override
@@ -85,17 +94,15 @@ public final class VividMotion extends JavaPlugin {
         Path path = file.toPath();
         Path path1;
 
-        File[] fs =  file.listFiles();
-        for (File file1 : fs != null ? fs : new File[0]){
-            boolean ignored = file1.delete();
-        }
 
         for (ScreenData mapsData : screenDataList){
             if (!mapsData.data.is_loaded){
                 continue;
             }
 
-            path1 = path.resolve(mapsData.data.name+ ".dat");
+            path1 = path.resolve(mapsData.data.name);
+            path1.toFile().mkdirs();
+            path1 = path1.resolve(mapsData.data.name+ ".dat");
             try (FileOutputStream f = new FileOutputStream( path1.toFile());
                  ObjectOutputStream out = new ObjectOutputStream(f)){
 

@@ -4,6 +4,7 @@ import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -13,6 +14,7 @@ import org.xerial.snappy.SnappyInputStream;
 import org.xerial.snappy.SnappyOutputStream;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +24,8 @@ public class ScreenData {
     public Data data;
     public FFmpegSource ffs;
     public Player player;
+    private SnappyInputStream inputStream = null;
+    public boolean loopEnable = true;
 
     public ScreenData(String name, FFmpegSource ffs, Player player){
         data = new Data(name, ffs, player.getWorld());
@@ -54,7 +58,6 @@ public class ScreenData {
         byte[] frame;
         int frameCount = 0;
         SnappyOutputStream out = null;
-        File file = null;
         try {
             while (true){
                 frame = ffs.read();
@@ -63,13 +66,14 @@ public class ScreenData {
                 }
                 // Save MapPixel
                 byte[][] b = toMapFormat(frame);
+                Bukkit.getLogger().info(String.valueOf(b[0][5255]));
                 if (frameCount % FILE_FRAME == 0){
                     if (out != null) {
                         out.close();
                     }
-                    file = getFile().toPath().resolve((frameCount / FILE_FRAME)+".pdat").toFile();
-                    FileOutputStream f = new FileOutputStream( file);
-                    out = new SnappyOutputStream( new BufferedOutputStream( f));
+                    out = new SnappyOutputStream(
+                            Files.newOutputStream(
+                                    getFile( frameCount / FILE_FRAME)));
                 }
                 for (byte[] b_ : b ){
                     out.write(b_);
@@ -119,6 +123,7 @@ public class ScreenData {
                 view.addRenderer(new PictureRender(pixelData[i]));
             }
 
+            File file = getFile(0).toFile();
             if (file.exists()){
                 boolean ignored = file.delete();
             }
@@ -142,6 +147,33 @@ public class ScreenData {
     }
 
 
+    public byte[][] toMapFormat(byte[] bytes) {
+        int m_index, p_index, px, py;
+        int height = data.height, width = data.width;
+        int m_height = data.mapHeight, m_width = data.mapWidth;
+
+        int height_diff = (m_height*128 - height)/2;
+        int width_diff = (m_width*128 - width)/2;
+        byte[][] maps = new byte[m_width*m_height][128*128];
+
+        for (int y = 0, y_limit = m_height*128; y < y_limit; y++){
+            for (int x = 0, x_limit = m_width*128; x < x_limit; x++){
+                p_index = (y%128 * 128) + (x%128);
+                m_index = (y/128 * m_width) + (x/128);
+                px = x-width_diff;
+                py = y-height_diff;
+                maps[m_index][p_index] = (py < 0 || px < 0 || height <= py || width <= px ) ? data.background_color : bytes[py*width+px];
+                if (y == 41 && 0 <= x && x < 10){
+                    Bukkit.getLogger().info("x:"+x+" y:"+y+" p_index:"+p_index+" m_index"+m_index+" px:"+px+" py:"+py +" width:"+width+" color:"+maps[m_index][p_index]);
+                }
+
+            }
+        }
+        return maps;
+    }
+
+
+
     public File getFile(){
         Path path = VividMotion.getMapDataFolder().toPath();
         path = path.resolve(data.name);
@@ -150,10 +182,28 @@ public class ScreenData {
         return file;
     }
 
+    public Path getFile(int fileNum) {
+        return getFile().toPath().resolve(fileNum+".mapmeta");
+    }
+
+
+    public void delete(){
+        try {
+            if (inputStream != null) {
+                inputStream.close();
+            }
+            this.loopEnable = false;
+            VividMotion.screenDataList.remove( this);
+            FileUtils.deleteDirectory( getFile());
+
+        } catch (Exception e){
+            Bukkit.getLogger().info(e.getMessage());
+        }
+    }
 
 
     public boolean setFrameRate(double fr){
-        if (0 < fr){
+        if (0.0 < fr && fr <= data.videoFrameRate){
             data.setFrameRate = fr;
             return true;
         }
@@ -178,65 +228,81 @@ public class ScreenData {
 
 
 
-    public byte[][] toMapFormat(byte[] bytes) {
-        int m_index, p_index, px, py;
-        int height = data.height, width = data.width;
-        int m_height = data.mapHeight, m_width = data.mapWidth;
-
-        int height_diff = (m_height*128 - height)/2;
-        int width_diff = (m_width*128 - width)/2;
-        byte[][] maps = new byte[m_width*m_height][128*128];
-
-        for (int y = 0, y_limit = m_height*128; y < y_limit; y++){
-            for (int x = 0, x_limit = m_width*128; x < x_limit; x++){
-                p_index = (y%128 * 128) + (x%128);
-                m_index = (y/128 * m_width) + (x/128);
-                px = x-width_diff;
-                py = y-height_diff;
-                maps[m_index][p_index] = (py < 0 || px < 0 || height <= py || width <= px ) ? data.background_color : bytes[py*width+px];
-            }
-        }
-        return maps;
-    }
-
     public void setBackgroundColor(int r, int g, int b){
         data.background_color = (byte) ImageConverter.get_nearest_color(r,g,b);
     }
 
     public byte[][] getMapData(){
-        data.nowFrame++;
-        return getMapData(data.nowFrame);
+        return getMapData(data.nowFrame + data.videoFrameRate / getFrameRate());
     }
 
 
-    public byte[][] getMapData(int frame){
-        if (data.frameCount <= frame){
-            frame = 0;
-        }
-        data.nowFrame = frame;
+    public byte[][] getMapData(double frame_b){
+        int frame = (int)frame_b;
 
-        File file = getFile().toPath().resolve((frame / FILE_FRAME)+".pdat").toFile();
-        if (!file.exists()) {
-            return null;
-        }
+        try {
+            if (data.frameCount <= frame){
+                frame = 0;
+                frame_b -= data.frameCount;
+            }
 
-        byte[][] res = new byte[data.mapIds.length][128*128];
-        try (FileInputStream f = new FileInputStream( file);
-            SnappyInputStream in = new SnappyInputStream( new BufferedInputStream( f))){
+            int frameLength = 128*128*data.mapIds.length;
+            int fileNum = frame / FILE_FRAME;
+            int frameInFile = frame % FILE_FRAME;
+            int nowFrame = (int)data.nowFrame;
 
-            in.mark(FILE_FRAME*128*128);
+
+            if (nowFrame / FILE_FRAME != frame / FILE_FRAME || inputStream == null){
+                // 新しく InputStreamを作成
+
+                inputStream = new SnappyInputStream(
+                        Files.newInputStream(
+                                getFile( fileNum)));
+
+                if (frameInFile != 0){
+                    inputStream.skip((long) frameLength *frameInFile);
+                }
+
+
+
+            } else if (nowFrame+1 != frame) {
+                // 既存のInputStreamを再利用
+
+                if (nowFrame+1 < frame) {
+                    inputStream.skip((long) (frame - nowFrame - 1) *frameLength);
+
+                } else{
+                    inputStream = new SnappyInputStream(
+                            Files.newInputStream(
+                                    getFile( fileNum)));
+
+                    if (frameInFile != 0){
+                        inputStream.skip((long) frameLength *frameInFile);
+                    }
+                }
+            }
+
+
+            // get byte[][]
+            byte[][] res = new byte[data.mapIds.length][128*128];
+
             for (int i = 0; i < data.mapIds.length; i++){
                 byte[] _res = new byte[128*128];
-                if (in.read(_res) == -1){
+                if (inputStream.read(_res) == -1){
                     return null;
                 }
                 res[i] = _res;
             }
-            } catch (IOException e) {
+
+            data.nowFrame = frame_b;
+            return res;
+
+        } catch (IOException e) {
+            for (StackTraceElement s : e.getStackTrace()){
+                Bukkit.getLogger().info(s.toString());
+            }
             return null;
         }
-
-        return res;
     }
 
 
@@ -249,7 +315,7 @@ public class ScreenData {
         public boolean is_loaded = false;
         public int[] mapIds;
         public byte background_color;
-        public int nowFrame = -1;
+        public double nowFrame = 0;
         public boolean isPausing = false;
         public boolean isPicture;
         public String name;

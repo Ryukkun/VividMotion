@@ -62,36 +62,35 @@ public class VideoPlayer extends Thread{
         // Send Packet Client
         List<UUID> uuids;
         int i;
-        int frame;
-        long next = mapsData.data.nowFrame <= 0 ? System.currentTimeMillis() : System.currentTimeMillis() + (long)(1000 / mapsData.data.videoFrameRate * mapsData.data.nowFrame);
-        long start = System.currentTimeMillis();
+        long next = System.currentTimeMillis();
         List<MapPacket> packetList = new ArrayList<>();
         Player player;
 
         try{
-            while (VividMotion.isEnable){
+            while (VividMotion.isEnable && mapsData.loopEnable){
 
                 // check need update
                 uuids = getPacketNeeded(mapsData.data.mapIds[0]);
-                if (uuids != null){
+                if (uuids != null && !mapsData.isPausing()){
+                    if (!uuids.isEmpty()){
+                        // calc frame
+                        // next - start / 1000 * vFrameRate = nowFrame
+                        //frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.frameCount;
 
-                    // calc frame
-                    // next - start / 1000 * vFrameRate = nowFrame
-                    frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.frameCount;
+                        // Send Packets
+                        byte[][] pixelData = mapsData.getMapData();
+                        for (UUID uuid : uuids){
+                            player = Bukkit.getPlayer(uuid);
 
-                    // Send Packets
-                    byte[][] pixelData = mapsData.getMapData(frame);
-                    for (UUID uuid : uuids){
-                        player = Bukkit.getPlayer(uuid);
+                            if (player != null){
 
-                        if (player != null){
+                                packetList.clear();
+                                for (i = 0; i < mapsData.data.mapIds.length; i++) {
+                                    packetList.add(new MapPacket(mapsData.data.mapIds[i], pixelData[i]));
+                                }
 
-                            packetList.clear();
-                            for (i = 0; i < mapsData.data.mapIds.length; i++) {
-                                packetList.add(new MapPacket(mapsData.data.mapIds[i], pixelData[i]));
+                                VividMotion.packetManager.sendPacket(player, packetList);
                             }
-
-                            VividMotion.packetManager.sendPacket(player, packetList);
                         }
                     }
                 }
