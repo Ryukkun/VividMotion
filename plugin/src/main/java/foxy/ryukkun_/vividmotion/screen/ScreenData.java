@@ -66,7 +66,6 @@ public class ScreenData {
                 }
                 // Save MapPixel
                 byte[][] b = toMapFormat(frame);
-                Bukkit.getLogger().info(String.valueOf(b[0][5255]));
                 if (frameCount % FILE_FRAME == 0){
                     if (out != null) {
                         out.close();
@@ -163,10 +162,6 @@ public class ScreenData {
                 px = x-width_diff;
                 py = y-height_diff;
                 maps[m_index][p_index] = (py < 0 || px < 0 || height <= py || width <= px ) ? data.background_color : bytes[py*width+px];
-                if (y == 41 && 0 <= x && x < 10){
-                    Bukkit.getLogger().info("x:"+x+" y:"+y+" p_index:"+p_index+" m_index"+m_index+" px:"+px+" py:"+py +" width:"+width+" color:"+maps[m_index][p_index]);
-                }
-
             }
         }
         return maps;

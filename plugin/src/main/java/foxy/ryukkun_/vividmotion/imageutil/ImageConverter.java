@@ -84,9 +84,6 @@ public class ImageConverter {
                     diff[1] >>= 1;
                     diff[2] >>= 1;
                 }
-                if (1911 < index && index < 1916){
-                    Bukkit.getLogger().info(String.valueOf(map_format[index-1]));
-                }
             }
         }
         return map_format;
