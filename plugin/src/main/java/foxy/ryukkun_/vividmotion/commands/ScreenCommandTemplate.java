@@ -18,6 +18,10 @@ public class ScreenCommandTemplate implements CMD {
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
+        if (!(commandSender instanceof Player)){
+            commandSender.sendMessage("Please execute by the Player ");
+            return true;
+        }
         Player player = (Player) commandSender;
 
         if (1 == args.length){
@@ -49,7 +53,7 @@ public class ScreenCommandTemplate implements CMD {
 
                 FFmpegSource ffs = new FFmpegSource(input);
                 if (ffs.can_load){
-                    ScreenData sd = new ScreenData(name, ffs, player);
+                    ScreenData sd = new ScreenData(name, ffs, player, player.getWorld());
                     onCommandNotInCache(player, sd);
 
                 }else {
@@ -65,6 +69,7 @@ public class ScreenCommandTemplate implements CMD {
 
         return false;
     }
+
 
 
 

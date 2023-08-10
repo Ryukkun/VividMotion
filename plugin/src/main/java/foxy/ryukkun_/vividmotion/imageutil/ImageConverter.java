@@ -7,7 +7,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import org.bukkit.Bukkit;
 import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;

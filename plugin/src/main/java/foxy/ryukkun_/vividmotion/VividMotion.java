@@ -23,6 +23,7 @@ public final class VividMotion extends JavaPlugin {
     public static boolean isEnable;
     public static PacketManager packetManager;
     public static MapUtil mapUtil;
+    public static MapGetter mapGetter;
     public static Plugin plugin;
     private static File folder;
 
@@ -43,6 +44,7 @@ public final class VividMotion extends JavaPlugin {
         isEnable = true;
         packetManager = getPacketManager();
         mapUtil = getMapUtil();
+        mapGetter = getMapGetter();
         folder = getDataFolder();
 
         if (!getDataFolder().exists()){
@@ -115,7 +117,17 @@ public final class VividMotion extends JavaPlugin {
     }
 
 
-    public static PacketManager getPacketManager(){
+
+    private static MapGetter getMapGetter(){
+        if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo( NBTEditor.MinecraftVersion.v1_12)) {
+            return new MapUtil_1_12();
+        } else {
+            return new MapUtil_1_13();
+        }
+    }
+
+
+    private static PacketManager getPacketManager(){
         NBTEditor.MinecraftVersion version = NBTEditor.getMinecraftVersion();
         if (version.equals(NBTEditor.MinecraftVersion.v1_12)){
             return new Packet_1_12();
@@ -146,7 +158,7 @@ public final class VividMotion extends JavaPlugin {
     }
 
 
-    public static MapUtil getMapUtil(){
+    private static MapUtil getMapUtil(){
         NBTEditor.MinecraftVersion version = NBTEditor.getMinecraftVersion();
         if (version.equals(NBTEditor.MinecraftVersion.v1_12)){
             return new MapUtil_1_12();

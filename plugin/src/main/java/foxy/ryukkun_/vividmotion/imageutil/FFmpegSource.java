@@ -7,8 +7,6 @@ import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.FrameGrabber;
 
 import java.io.File;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.regex.Pattern;
 
@@ -32,11 +30,8 @@ public class FFmpegSource {
         if (re_url.matcher(path).find()) {
             try {
                 URL url = new URL(path);
-                HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-                connection.setRequestProperty("User-Agent", "Mozilla/5.0");
-                connection.connect();
-                InputStream input = connection.getInputStream();
-                fromURL(input);
+                fromURL(url);
+
             }catch (Exception ignored){
                 can_load = false;
             }
@@ -50,7 +45,8 @@ public class FFmpegSource {
         }
     }
 
-    public void fromURL(InputStream url) {
+
+    public void fromURL(URL url) {
         ffg = new FFmpegFrameGrabber(url);
         can_load = ffmpeg_setup();
 

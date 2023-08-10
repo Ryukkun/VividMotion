@@ -7,7 +7,7 @@ import org.bukkit.map.MapView;
 
 import java.lang.reflect.Field;
 
-public class MapUtil_1_13 implements MapUtil{
+public class MapUtil_1_13 implements MapUtil, MapGetter{
 
     @Override
     public void setColor(MapView view, byte[] pixelData) {
@@ -20,5 +20,10 @@ public class MapUtil_1_13 implements MapUtil{
         } catch (Exception e){
             Bukkit.getLogger().warning(e.toString());
         }
+    }
+
+    @Override
+    public MapView getMap(int id) {
+        return Bukkit.getMap( id);
     }
 }

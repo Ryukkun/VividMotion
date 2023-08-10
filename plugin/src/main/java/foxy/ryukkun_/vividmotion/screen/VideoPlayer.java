@@ -1,17 +1,12 @@
 package foxy.ryukkun_.vividmotion.screen;
 
-import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class VideoPlayer extends Thread{
 
@@ -31,14 +26,15 @@ public class VideoPlayer extends Thread{
 
     public static List<UUID> getPacketNeeded(int mapId){
         HashMap<UUID, Long> map = lastTime.get(mapId);
+        List<UUID> uuids = new ArrayList<>();
         if (map == null){
-            return null;
+            return uuids;
         } else if (map.isEmpty()) {
-            return null;
+            return uuids;
         }
 
         long notTime = System.currentTimeMillis();
-        List<UUID> uuids = new ArrayList<>();
+
 
         for (UUID uuid : map.keySet()){
             if (notTime - map.get(uuid) < 10000){
@@ -53,46 +49,49 @@ public class VideoPlayer extends Thread{
 
     @Override
     public void run() {
-        // Set MapDetector
-        MapView view = Bukkit.getMap((short) mapsData.data.mapIds[0]);
-        view.getRenderers().clear();
-        view.addRenderer(new MapDetector());
-
-
         // Send Packet Client
-        List<UUID> uuids;
-        int i;
         long next = System.currentTimeMillis();
-        List<MapPacket> packetList = new ArrayList<>();
-        Player player;
+        List<UUID> alreadySend = new ArrayList<>();
+        byte[][] lastPixelData = null;
 
         try{
             while (VividMotion.isEnable && mapsData.loopEnable){
 
-                // check need update
-                uuids = getPacketNeeded(mapsData.data.mapIds[0]);
-                if (uuids != null && !mapsData.isPausing()){
-                    if (!uuids.isEmpty()){
-                        // calc frame
-                        // next - start / 1000 * vFrameRate = nowFrame
-                        //frame = (int) ((next - start) * mapsData.data.videoFrameRate / 1000) % mapsData.data.frameCount;
+                if (mapsData.isPausing()){
+                    // if Pausing
+                    // Send Packets
+                    byte[][] pixelData = mapsData.getMapData( mapsData.data.nowFrame);
+                    List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
+                    for (UUID uuid: uuids) {
+                        if (!alreadySend.contains( uuid)){
+                            mapsData.sendPixelData(uuid, pixelData);
+                        }
+                    }
+                    alreadySend = uuids;
 
-                        // Send Packets
-                        byte[][] pixelData = mapsData.getMapData();
-                        for (UUID uuid : uuids){
-                            player = Bukkit.getPlayer(uuid);
 
-                            if (player != null){
-
-                                packetList.clear();
-                                for (i = 0; i < mapsData.data.mapIds.length; i++) {
-                                    packetList.add(new MapPacket(mapsData.data.mapIds[i], pixelData[i]));
-                                }
-
-                                VividMotion.packetManager.sendPacket(player, packetList);
+                } else {
+                    // Send Packets
+                    byte[][] pixelData = mapsData.getMapData();
+                    List<Integer> skipList = new ArrayList<>();
+                    if (lastPixelData != null){
+                        for (int i =0; i < mapsData.data.mapIds.length; i++) {
+                            if (checkArray(pixelData[i], lastPixelData[i])){
+                                skipList.add(i);
                             }
                         }
                     }
+                    List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
+                    for (UUID uuid : uuids) {
+                        if (alreadySend.contains(uuid)) {
+                            mapsData.sendPixelData(uuid, pixelData, skipList);
+                        } else {
+                            mapsData.sendPixelData(uuid, pixelData);
+                        }
+                    }
+
+                    lastPixelData = pixelData;
+                    alreadySend = uuids;
                 }
 
                 // sleep
@@ -103,6 +102,17 @@ public class VideoPlayer extends Thread{
             } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+    }
+
+
+    private boolean checkArray(byte[] b1, byte[] b2) {
+        for (int i = 0; i < 128; i++) {
+            int ii = i * 128 + 127;
+            if (b1[ii] != b2[ii]) {
+                return false;
+            }
+        }
+        return true;
     }
 
 

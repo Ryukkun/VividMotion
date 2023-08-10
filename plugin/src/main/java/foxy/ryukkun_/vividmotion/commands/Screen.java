@@ -3,6 +3,7 @@ package foxy.ryukkun_.vividmotion.commands;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -105,20 +106,33 @@ public class Screen extends SubCommandTemp{
 
             new Thread(() -> {
 
-                Player player = (Player) commandSender;
+
                 FFmpegSource ffs = new FFmpegSource(input);
                 if (ffs.can_load){
-                    new ScreenData(name, ffs, player);
+                    if (commandSender instanceof Player){
+                        Player player = (Player) commandSender;
+                        new ScreenData(name, ffs, player, player.getWorld());
+
+                    } else if (commandSender instanceof BlockCommandSender) {
+                        BlockCommandSender bcs = (BlockCommandSender) commandSender;
+                        new ScreenData(name, ffs, null, bcs.getBlock().getWorld());
+
+                    } else {
+                        CMD.sendMessage(commandSender, " Player または CommandBlock から実行してください");
+                    }
 
                 }else {
-                    commandSender.sendMessage("解析不能なURL、PATHです。");
+                    CMD.sendMessage(commandSender, "解析不能なURL、PATHです。");
                 }
             }).start();
 
 
-
             return true;
         }
+
+
+
+
 
         @Override
         public List<String> onTabComplete(CommandSender commandSender, Command command, String alias, String[] args) {

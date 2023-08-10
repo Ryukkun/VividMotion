@@ -18,6 +18,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+
 
 public class ScreenData {
     public static int FILE_FRAME = 50;
@@ -27,8 +29,8 @@ public class ScreenData {
     private SnappyInputStream inputStream = null;
     public boolean loopEnable = true;
 
-    public ScreenData(String name, FFmpegSource ffs, Player player){
-        data = new Data(name, ffs, player.getWorld());
+    public ScreenData(String name, FFmpegSource ffs, Player player, World world){
+        data = new Data(name, ffs, world);
         setBackgroundColor(0,0,0);
         this.ffs = ffs;
         this.player = player;
@@ -36,6 +38,8 @@ public class ScreenData {
         VividMotion.screenDataList.add(this);
         new Thread(this::loadFFS).start();
     }
+
+
 
     public ScreenData(File path) {
         try (FileInputStream f = new FileInputStream(path);
@@ -45,6 +49,15 @@ public class ScreenData {
 
             VividMotion.screenDataList.add(this);
             if (!data.isPicture) {
+
+                for (int i : data.mapIds){
+                    MapView view = VividMotion.mapGetter.getMap( i);
+                    for (MapRenderer renderer : view.getRenderers()){
+                        view.removeRenderer( renderer);
+                    }
+                }
+                MapView view = VividMotion.mapGetter.getMap( data.mapIds[0]);
+                view.addRenderer(new VideoPlayer.MapDetector());
                 new VideoPlayer(this).start();
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -58,6 +71,10 @@ public class ScreenData {
         byte[] frame;
         int frameCount = 0;
         SnappyOutputStream out = null;
+        VideoPlayer.MapDetector mapDetector = new VideoPlayer.MapDetector();
+        VividMotion.mapGetter.getMap( data.mapIds[0])
+                .addRenderer( mapDetector);
+
         try {
             while (true){
                 frame = ffs.read();
@@ -82,13 +99,8 @@ public class ScreenData {
                 // Send Map
                 long nowTime = System.currentTimeMillis();
                 if (1000 < nowTime - lastSend){
-                    List<MapPacket> packetList = new ArrayList<>();
 
-                    for (int i = 0; i < data.mapIds.length; i++) {
-                        packetList.add(new MapPacket(data.mapIds[i], b[i]));
-                    }
-
-                    VividMotion.packetManager.sendPacket(player, packetList);
+                    sendPixelData( b);
                     lastSend = nowTime;
                 }
             }
@@ -112,13 +124,11 @@ public class ScreenData {
             data.isPicture = true;
 
             byte[][] pixelData = getMapData(0);
+            VividMotion.mapGetter.getMap( data.mapIds[0]).removeRenderer( mapDetector);
             for (int i = 0; i < data.mapIds.length; i++ ){
-                MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                MapView view = VividMotion.mapGetter.getMap( data.mapIds[i]);
                 VividMotion.mapUtil.setColor(view, pixelData[i]);
 
-                for (MapRenderer render: view.getRenderers()){
-                    view.removeRenderer(render);
-                }
                 view.addRenderer(new PictureRender(pixelData[i]));
             }
 
@@ -134,12 +144,9 @@ public class ScreenData {
 
             byte[][] pixelData = getMapData(0);
             for (int i = 0; i < data.mapIds.length; i++ ){
-                MapView view = Bukkit.getMap((short) data.mapIds[i]);
+                MapView view = VividMotion.mapGetter.getMap( (short) data.mapIds[i]);
                 VividMotion.mapUtil.setColor(view, pixelData[i]);
 
-                for (MapRenderer render: view.getRenderers()){
-                    view.removeRenderer(render);
-                }
             }
             new VideoPlayer(this).start();
         }
@@ -165,6 +172,35 @@ public class ScreenData {
             }
         }
         return maps;
+    }
+
+
+    public void sendPixelData(byte[][] pixelData){
+        for (UUID uuid : VideoPlayer.getPacketNeeded(data.mapIds[0])){
+            sendPixelData(uuid, pixelData);
+        }
+    }
+
+    public void sendPixelData(UUID uuid, byte[][] pixelData){
+        sendPixelData(uuid, pixelData, null);
+    }
+
+    public void sendPixelData(UUID uuid, byte[][] pixelData, List<Integer> skipList){
+        player = Bukkit.getPlayer(uuid);
+        if (player != null){
+
+            List<MapPacket> packetList = new ArrayList<>();
+            for (int i = 0; i < data.mapIds.length; i++) {
+                if (skipList != null) {
+                    if (skipList.contains(i)){
+                        continue;
+                    }
+                }
+                packetList.add(new MapPacket(data.mapIds[i], pixelData[i]));
+            }
+
+            VividMotion.packetManager.sendPacket(player, packetList);
+        }
     }
 
 
@@ -333,7 +369,9 @@ public class ScreenData {
                 view.setCenterX(Integer.MAX_VALUE);
                 view.setCenterZ(Integer.MAX_VALUE);
                 view.setScale(MapView.Scale.FARTHEST);
-                view.getRenderers().clear();
+                for (MapRenderer render: view.getRenderers()){
+                    view.removeRenderer(render);
+                }
 
                 mapIds[i] = view.getId();
             }
