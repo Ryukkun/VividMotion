@@ -64,7 +64,7 @@ public class VideoPlayer extends Thread{
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid: uuids) {
                         if (!alreadySend.contains( uuid)){
-                            mapsData.sendPixelData(uuid, pixelData);
+                            MapPacket.sendPixelData(mapsData, uuid, pixelData);
                         }
                     }
                     alreadySend = uuids;
@@ -73,20 +73,21 @@ public class VideoPlayer extends Thread{
                 } else {
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData();
-                    List<Integer> skipList = new ArrayList<>();
+                    List<MapPacket.MapPixelChecker> mapPixelCheckers = new ArrayList<>();
                     if (lastPixelData != null){
                         for (int i =0; i < mapsData.data.mapIds.length; i++) {
-                            if (checkArray(pixelData[i], lastPixelData[i])){
-                                skipList.add(i);
+                            MapPacket.MapPixelChecker mpc = new MapPacket.MapPixelChecker( lastPixelData[i], pixelData[i], mapsData.data.mapIds[i]);
+                            if (!mpc.notChange){
+                                mapPixelCheckers.add(mpc);
                             }
                         }
                     }
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid : uuids) {
                         if (alreadySend.contains(uuid)) {
-                            mapsData.sendPixelData(uuid, pixelData, skipList);
+                            MapPacket.sendPixelData(uuid, mapPixelCheckers);
                         } else {
-                            mapsData.sendPixelData(uuid, pixelData);
+                            MapPacket.sendPixelData(mapsData, uuid, pixelData);
                         }
                     }
 
@@ -105,15 +106,8 @@ public class VideoPlayer extends Thread{
     }
 
 
-    private boolean checkArray(byte[] b1, byte[] b2) {
-        for (int i = 0; i < 128; i++) {
-            int ii = i * 128 + 127;
-            if (b1[ii] != b2[ii]) {
-                return false;
-            }
-        }
-        return true;
-    }
+
+
 
 
     public static class MapDetector extends MapRenderer {

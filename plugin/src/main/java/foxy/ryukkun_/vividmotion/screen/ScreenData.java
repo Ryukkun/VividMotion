@@ -1,6 +1,5 @@
 package foxy.ryukkun_.vividmotion.screen;
 
-import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
@@ -16,9 +15,6 @@ import org.xerial.snappy.SnappyOutputStream;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
 
 public class ScreenData {
@@ -100,7 +96,7 @@ public class ScreenData {
                 long nowTime = System.currentTimeMillis();
                 if (1000 < nowTime - lastSend){
 
-                    sendPixelData( b);
+                    MapPacket.sendPixelData(this, b);
                     lastSend = nowTime;
                 }
             }
@@ -174,34 +170,6 @@ public class ScreenData {
         return maps;
     }
 
-
-    public void sendPixelData(byte[][] pixelData){
-        for (UUID uuid : VideoPlayer.getPacketNeeded(data.mapIds[0])){
-            sendPixelData(uuid, pixelData);
-        }
-    }
-
-    public void sendPixelData(UUID uuid, byte[][] pixelData){
-        sendPixelData(uuid, pixelData, null);
-    }
-
-    public void sendPixelData(UUID uuid, byte[][] pixelData, List<Integer> skipList){
-        player = Bukkit.getPlayer(uuid);
-        if (player != null){
-
-            List<MapPacket> packetList = new ArrayList<>();
-            for (int i = 0; i < data.mapIds.length; i++) {
-                if (skipList != null) {
-                    if (skipList.contains(i)){
-                        continue;
-                    }
-                }
-                packetList.add(new MapPacket(data.mapIds[i], pixelData[i]));
-            }
-
-            VividMotion.packetManager.sendPacket(player, packetList);
-        }
-    }
 
 
 
