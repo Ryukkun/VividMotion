@@ -96,7 +96,7 @@ public class ScreenData {
                 long nowTime = System.currentTimeMillis();
                 if (1000 < nowTime - lastSend){
 
-                    MapPacket.sendPixelData(this, b);
+                    MapPacketSender.sendPixelData(this, b);
                     lastSend = nowTime;
                 }
             }

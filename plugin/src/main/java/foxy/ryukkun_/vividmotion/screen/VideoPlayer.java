@@ -1,5 +1,6 @@
 package foxy.ryukkun_.vividmotion.screen;
 
+import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -64,7 +65,7 @@ public class VideoPlayer extends Thread{
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid: uuids) {
                         if (!alreadySend.contains( uuid)){
-                            MapPacket.sendPixelData(mapsData, uuid, pixelData);
+                            MapPacketSender.sendPixelData(mapsData, uuid, pixelData);
                         }
                     }
                     alreadySend = uuids;
@@ -73,10 +74,10 @@ public class VideoPlayer extends Thread{
                 } else {
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData();
-                    List<MapPacket.MapPixelChecker> mapPixelCheckers = new ArrayList<>();
+                    List<MapPacket> mapPixelCheckers = new ArrayList<>();
                     if (lastPixelData != null){
                         for (int i =0; i < mapsData.data.mapIds.length; i++) {
-                            MapPacket.MapPixelChecker mpc = new MapPacket.MapPixelChecker( lastPixelData[i], pixelData[i], mapsData.data.mapIds[i]);
+                            MapPacket mpc = new MapPacket(mapsData.data.mapIds[i], lastPixelData[i], pixelData[i]);
                             if (!mpc.notChange){
                                 mapPixelCheckers.add(mpc);
                             }
@@ -85,9 +86,9 @@ public class VideoPlayer extends Thread{
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid : uuids) {
                         if (alreadySend.contains(uuid)) {
-                            MapPacket.sendPixelData(uuid, mapPixelCheckers);
+                            MapPacketSender.sendPixelData(uuid, mapPixelCheckers);
                         } else {
-                            MapPacket.sendPixelData(mapsData, uuid, pixelData);
+                            MapPacketSender.sendPixelData(mapsData, uuid, pixelData);
                         }
                     }
 
