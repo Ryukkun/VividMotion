@@ -6,7 +6,6 @@ import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
 import org.xerial.snappy.SnappyInputStream;
@@ -21,15 +20,13 @@ public class ScreenData {
     public static int FILE_FRAME = 50;
     public Data data;
     public FFmpegSource ffs;
-    public Player player;
     private SnappyInputStream inputStream = null;
     public boolean loopEnable = true;
 
-    public ScreenData(String name, FFmpegSource ffs, Player player, World world){
+    public ScreenData(String name, FFmpegSource ffs, World world){
         data = new Data(name, ffs, world);
         setBackgroundColor(0,0,0);
         this.ffs = ffs;
-        this.player = player;
 
         VividMotion.screenDataList.add(this);
         new Thread(this::loadFFS).start();

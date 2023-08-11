@@ -53,7 +53,7 @@ public class ScreenCommandTemplate implements CMD {
 
                 FFmpegSource ffs = new FFmpegSource(input);
                 if (ffs.can_load){
-                    ScreenData sd = new ScreenData(name, ffs, player, player.getWorld());
+                    ScreenData sd = new ScreenData(name, ffs, player.getWorld());
                     onCommandNotInCache(player, sd);
 
                 }else {

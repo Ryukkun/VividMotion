@@ -50,10 +50,11 @@ public class MapPacket {
             }
             if (startY == 0 && endY == 127) {
                 break;
-            } else if (endY == -1) {
-                notChange = true;
-                return;
             }
+        }
+        if (endY == -1) {
+            notChange = true;
+            return;
         }
 
         for (int y = startY; y <= endY; y++) {

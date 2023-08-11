@@ -33,14 +33,20 @@ public class FFmpegSource {
                 fromURL(url);
 
             }catch (Exception ignored){
+                close();
                 can_load = false;
             }
 
         // is File
         } else {
-            File file = new File(path);
-            if (file.exists()){
-                fromFile( file);
+            try {
+                File file = new File(path);
+                if (file.exists()){
+                    fromFile( file);
+                }
+            } catch (Exception e) {
+                close();
+                can_load = false;
             }
         }
     }
@@ -65,14 +71,27 @@ public class FFmpegSource {
             ffg.setPixelFormat(avutil.AV_PIX_FMT_BGR24);
             avutil.av_log_set_level(avutil.AV_LOG_QUIET);
             ffg.start();
+
             return true;
 
         }catch (FFmpegFrameGrabber.Exception e){
             Bukkit.getLogger().warning(e.toString());
+            close();
             ffg = null;
             return false;
         }
     }
+
+
+    public void close(){
+        try {
+            if (ffg != null){
+                ffg.close();
+                ffg = null;
+            }
+        } catch (FrameGrabber.Exception ignored) {}
+    }
+
 
     private void get_info(){
         if (can_load && ffg != null){
@@ -86,10 +105,7 @@ public class FFmpegSource {
     public byte[] read() {
         byte[] res = _read();
         if (res == null) {
-            try {
-                ffg.close();
-                ffg.release();
-            } catch (FrameGrabber.Exception ignored) {}
+            close();
         }
         return res;
     }

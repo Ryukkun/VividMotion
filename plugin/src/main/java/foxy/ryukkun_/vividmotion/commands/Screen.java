@@ -7,6 +7,7 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bytedeco.javacv.FrameGrabber;
 
 import java.util.Arrays;
 import java.util.List;
@@ -111,11 +112,11 @@ public class Screen extends SubCommandTemp{
                 if (ffs.can_load){
                     if (commandSender instanceof Player){
                         Player player = (Player) commandSender;
-                        new ScreenData(name, ffs, player, player.getWorld());
+                        new ScreenData(name, ffs, player.getWorld());
 
                     } else if (commandSender instanceof BlockCommandSender) {
                         BlockCommandSender bcs = (BlockCommandSender) commandSender;
-                        new ScreenData(name, ffs, null, bcs.getBlock().getWorld());
+                        new ScreenData(name, ffs, bcs.getBlock().getWorld());
 
                     } else {
                         CMD.sendMessage(commandSender, " Player または CommandBlock から実行してください");
@@ -123,6 +124,11 @@ public class Screen extends SubCommandTemp{
 
                 }else {
                     CMD.sendMessage(commandSender, "解析不能なURL、PATHです。");
+                    try {
+                        ffs.ffg.close();
+                    } catch (FrameGrabber.Exception e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }).start();
 
