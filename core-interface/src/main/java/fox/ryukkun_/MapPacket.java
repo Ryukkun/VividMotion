@@ -81,7 +81,7 @@ public class MapPacket {
 
     private byte[] getPixelData(byte[] rawPixelData){
         int endX = sX + fX;
-        int endY = sY + fX;
+        int endY = sY + fY;
         byte[] pixelData = new byte[fX*fY];
 
         int index = 0;
