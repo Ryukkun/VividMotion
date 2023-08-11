@@ -40,7 +40,8 @@ public final class VividMotion extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        plugin = this;
+        saveConfig();
+        ConfigManager.setPlugin( this);
         isEnable = true;
         packetManager = getPacketManager();
         mapUtil = getMapUtil();
