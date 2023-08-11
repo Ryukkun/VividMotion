@@ -85,8 +85,8 @@ public class MapPacket {
         byte[] pixelData = new byte[fX*fY];
 
         int index = 0;
-        for (int x = sX; x < endX; x++) {
-            for (int y = sY; y < endY; y++) {
+        for (int y = sY; y < endY; y++) {
+            for (int x = sX; x < endX; x++) {
                 int i = y * 128 + x;
                 pixelData[index++] = rawPixelData[i];
             }
