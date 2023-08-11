@@ -63,6 +63,7 @@ public class ScreenData {
         long lastSend = 0;
         byte[] frame;
         int frameCount = 0;
+        double framePointer = 0.0;
         SnappyOutputStream out = null;
         VideoPlayer.MapDetector mapDetector = new VideoPlayer.MapDetector();
         VividMotion.mapGetter.getMap( data.mapIds[0])
@@ -74,6 +75,13 @@ public class ScreenData {
                 if (frame == null){
                     break;
                 }
+
+                framePointer += 1/data.videoFrameRate;
+                if (20 < data.videoFrameRate && framePointer <= frameCount*0.05) {
+                    continue;
+                }
+
+
                 // Save MapPixel
                 byte[][] b = toMapFormat(frame);
                 if (frameCount % FILE_FRAME == 0){
@@ -110,6 +118,7 @@ public class ScreenData {
         // Loaded
         data.frameCount = frameCount;
         data.is_loaded = true;
+        if (20 < data.videoFrameRate) data.videoFrameRate = 20.0;
 
 
         if (frameCount == 1){

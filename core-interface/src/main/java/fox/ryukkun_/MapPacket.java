@@ -35,7 +35,7 @@ public class MapPacket {
 
 
     private void arrayCheck(byte[] oldByte, byte[] NewByte) {
-        int equalNum = 3;
+        int equalNum = 10;
         int startX = 128 - equalNum;
         int startY = 128;
         int endY = -1;
