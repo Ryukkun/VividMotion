@@ -140,37 +140,69 @@
 
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_12</artifactId>
+            <artifactId>bukkit_1_12_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_13</artifactId>
+            <artifactId>bukkit_1_13_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_14</artifactId>
+            <artifactId>bukkit_1_13_R2</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_15</artifactId>
+            <artifactId>bukkit_1_14_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_16</artifactId>
+            <artifactId>bukkit_1_15_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
-            <artifactId>bukkit_1_17</artifactId>
+            <artifactId>bukkit_1_16_R1</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_16_R2</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_16_R3</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_17_R1</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_18_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>
             <groupId>fox.ryukkun_</groupId>
             <artifactId>bukkit_1_18_R2</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_19_R1</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
+            <artifactId>bukkit_1_19_R2</artifactId>
             <version>${project.parent.version}</version>
         </dependency>
         <dependency>

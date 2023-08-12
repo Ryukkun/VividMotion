@@ -2,8 +2,8 @@ package foxy.ryukkun_.vividmotion.commands;
 
 
 import fox.ryukkun_.ParticleUtil;
-import fox.ryukkun_.ParticleUtil_1_12;
-import fox.ryukkun_.ParticleUtil_1_13;
+import fox.ryukkun_.ParticleUtil_1_12_R1;
+import fox.ryukkun_.ParticleUtil_1_13_R1;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
@@ -116,9 +116,9 @@ public class SetScreen extends ScreenCommandTemplate {
         public static final ParticleUtil particleUtil;
         static {
             if (isOver_1_13){
-                particleUtil = new ParticleUtil_1_13();
+                particleUtil = new ParticleUtil_1_13_R1();
             } else{
-                particleUtil = new ParticleUtil_1_12();
+                particleUtil = new ParticleUtil_1_12_R1();
             }
         }
         private static final ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);

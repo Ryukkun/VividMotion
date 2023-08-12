@@ -8,6 +8,7 @@ import foxy.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import foxy.ryukkun_.vividmotion.event.UsedSetUpScreen;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +26,7 @@ public final class VividMotion extends JavaPlugin {
     public static MapUtil mapUtil;
     public static MapGetter mapGetter;
     public static Plugin plugin;
+    public static String version;
     private static File folder;
 
 
@@ -46,6 +48,8 @@ public final class VividMotion extends JavaPlugin {
         mapUtil = getMapUtil();
         mapGetter = getMapGetter();
         folder = getDataFolder();
+        version = Bukkit.getServer().getClass().getPackage().getName();
+        version = version.substring( version.lastIndexOf('.') + 1);
 
         if (!getDataFolder().exists()){
             boolean ignored = getDataFolder().mkdirs();
@@ -120,38 +124,46 @@ public final class VividMotion extends JavaPlugin {
 
     private static MapGetter getMapGetter(){
         if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo( NBTEditor.MinecraftVersion.v1_12)) {
-            return new MapUtil_1_12();
+            return new MapUtil_1_12_R1();
         } else {
-            return new MapUtil_1_13();
+            return new MapUtil_1_13_R1();
         }
     }
 
 
+
+
+
     private static PacketManager getPacketManager(){
-        NBTEditor.MinecraftVersion version = NBTEditor.getMinecraftVersion();
-        if (version.equals(NBTEditor.MinecraftVersion.v1_12)){
-            return new Packet_1_12();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_13)) {
-            return new Packet_1_13();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_14)) {
-            return new Packet_1_14();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_15)) {
-            return new Packet_1_15();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_16)) {
-            return new Packet_1_16();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_17)) {
-            return new Packet_1_17();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R1)) {
-//            return new Packet_1_18_R1();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R2)) {
+        if (version.equalsIgnoreCase( MCVersion.v1_12_R1)){
+            return new Packet_1_12_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+            return new Packet_1_13_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R2)) {
+            return new Packet_1_13_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_14_R1)) {
+            return new Packet_1_14_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_15_R1)) {
+            return new Packet_1_15_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R1)) {
+            return new Packet_1_16_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R2)) {
+            return new Packet_1_16_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R3)) {
+            return new Packet_1_16_R3();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_17_R1)) {
+            return new Packet_1_17_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R1)) {
+            return new Packet_1_18_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R2)) {
             return new Packet_1_18_R2();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R1)) {
-//            return new Packet_1_19_R1();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R2)) {
-//            return new Packet_1_19_R2();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R1)) {
+            return new Packet_1_19_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R2)) {
+            return new Packet_1_19_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R3)) {
             return new Packet_1_19_R3();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_20)){
+        } else if (version.equalsIgnoreCase( MCVersion.v1_20_R1)){
             return new Packet_1_20_R1();
         }
         return null;
@@ -159,32 +171,56 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapUtil getMapUtil(){
-        NBTEditor.MinecraftVersion version = NBTEditor.getMinecraftVersion();
-        if (version.equals(NBTEditor.MinecraftVersion.v1_12)){
-            return new MapUtil_1_12();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_13)) {
-            return new MapUtil_1_13();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_14)) {
-            return new MapUtil_1_14();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_15)) {
-            return new MapUtil_1_15();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_16)) {
-            return new MapUtil_1_16();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_17)) {
-            return new MapUtil_1_17();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R1)) {
-//            return new Packet_1_18_R1();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_18_R2)) {
-            return new MapUtil_1_18();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R1)) {
-//            return new Packet_1_19_R1();
-//        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R2)) {
-//            return new Packet_1_19_R2();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_19_R3)) {
-            return new MapUtil_1_19();
-        } else if (version.equals(NBTEditor.MinecraftVersion.v1_20)){
+        if (version.equalsIgnoreCase( MCVersion.v1_12_R1)){
+            return new MapUtil_1_12_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+            return new MapUtil_1_13_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R2)) {
+            return new MapUtil_1_13_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_14_R1)) {
+            return new MapUtil_1_14_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_15_R1)) {
+            return new MapUtil_1_15_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R1)) {
+            return new MapUtil_1_16_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R2)) {
+            return new MapUtil_1_16_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R3)) {
+            return new MapUtil_1_16_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_17_R1)) {
+            return new MapUtil_1_17_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R1)) {
+            return new MapUtil_1_17_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R2)) {
+            return new MapUtil_1_18_R2();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R1)) {
+            return new MapUtil_1_17_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R2)) {
+            return new MapUtil_1_17_R1();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R3)) {
+            return new MapUtil_1_19_R3();
+        } else if (version.equalsIgnoreCase( MCVersion.v1_20_R1)){
             return new MapUtil_1_20_R1();
         }
         return null;
+    }
+
+    static class MCVersion {
+        static final String
+                v1_12_R1 = "v1_12_R1",
+                v1_13_R1 = "v1_13_R1",
+                v1_13_R2 = "v1_13_R2",
+                v1_14_R1 = "v1_14_R1",
+                v1_15_R1 = "v1_15_R1",
+                v1_16_R1 = "v1_16_R1",
+                v1_16_R2 = "v1_16_R2",
+                v1_16_R3 = "v1_16_R3",
+                v1_17_R1 = "v1_17_R1",
+                v1_18_R1 = "v1_18_R1",
+                v1_18_R2 = "v1_18_R2",
+                v1_19_R1 = "v1_19_R1",
+                v1_19_R2 = "v1_19_R2",
+                v1_19_R3 = "v1_19_R3",
+                v1_20_R1 = "v1_20_R1";
     }
 }
