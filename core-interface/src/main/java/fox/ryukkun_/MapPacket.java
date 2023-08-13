@@ -23,12 +23,12 @@ public class MapPacket {
     }
 
 
-    public MapPacket(int mapId, byte[] oldColor, byte[] newColor){
+    public MapPacket(int mapId, byte[] oldColor, byte[] newColor, boolean lessThan1_16){
         this.mapId = mapId;
         arrayCheck(oldColor, newColor);
 
         // set pixelData
-        if (fullChange) color = newColor;
+        if (fullChange || lessThan1_16) color = newColor;
         else if (notChange) color = null;
         else color = getPixelData(newColor);
     }

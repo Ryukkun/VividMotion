@@ -7,7 +7,6 @@ import foxy.ryukkun_.vividmotion.commands.SetScreen;
 import foxy.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import foxy.ryukkun_.vividmotion.event.UsedSetUpScreen;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -42,6 +41,9 @@ public final class VividMotion extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+        plugin = this;
+        version = Bukkit.getServer().getClass().getPackage().getName();
+        version = version.substring( version.lastIndexOf('.') + 1);
         saveConfig();
         ConfigManager.setPlugin( this);
         isEnable = true;
@@ -49,8 +51,7 @@ public final class VividMotion extends JavaPlugin {
         mapUtil = getMapUtil();
         mapGetter = getMapGetter();
         folder = getDataFolder();
-        version = Bukkit.getServer().getClass().getPackage().getName();
-        version = version.substring( version.lastIndexOf('.') + 1);
+
 
         if (!getDataFolder().exists()){
             boolean ignored = getDataFolder().mkdirs();
@@ -124,10 +125,12 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapGetter getMapGetter(){
-        if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo( NBTEditor.MinecraftVersion.v1_12)) {
-            return new MapUtil_1_12_R1();
-        } else {
-            return new MapUtil_1_13_R1();
+    if (version.equalsIgnoreCase( MCVersion.v1_12_R1)) {
+        return new MapUtil_1_12_R1();
+    } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+        return new MapUtil_1_13_R1();
+    } else {
+            return new MapUtil_1_13_R2();
         }
     }
 
@@ -206,8 +209,8 @@ public final class VividMotion extends JavaPlugin {
         return null;
     }
 
-    static class MCVersion {
-        static final String
+    public static class MCVersion {
+        public static final String
                 v1_12_R1 = "v1_12_R1",
                 v1_13_R1 = "v1_13_R1",
                 v1_13_R2 = "v1_13_R2",

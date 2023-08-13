@@ -1,5 +1,6 @@
 package foxy.ryukkun_.vividmotion.commands;
 
+import foxy.ryukkun_.vividmotion.ConfigManager;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.screen.ScreenData;
@@ -34,7 +35,12 @@ public class Screen extends SubCommandTemp{
                 }
 
                 if (sc != null){
-                    return sc.setFrameRate( d);
+                    if (0.0 < d && d <= 20.0) {
+                        ConfigManager.setFPS( d);
+                    } else {
+                        commandSender.sendMessage( "FPSは 下限0 上限20です。");
+                    }
+                    return true;
                 }
             }
             return false;

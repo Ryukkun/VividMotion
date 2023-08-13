@@ -31,7 +31,14 @@ public class ConfigManager {
     }
 
     public static void setEncode(String encode){
-        config.set("mapEncode", encode);
+        if (encode.trim().equalsIgnoreCase( "誤差拡散")) {
+            config.set("mapEncode", "誤差拡散");
+        } else if (encode.trim().equalsIgnoreCase( "誤差拡散.mk3")) {
+            config.set("mapEncode", "誤差拡散.Mk3");
+        } else {
+            return;
+        }
+
         save();
     }
 

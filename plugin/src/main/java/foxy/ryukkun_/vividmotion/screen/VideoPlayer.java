@@ -2,6 +2,7 @@ package foxy.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
 import foxy.ryukkun_.vividmotion.VividMotion;
+import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -13,6 +14,9 @@ public class VideoPlayer extends Thread{
 
     public ScreenData mapsData;
     public static HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
+
+    private static final boolean lessThan1_16 = NBTEditor.getMinecraftVersion().lessThanOrEqualTo(  NBTEditor.MinecraftVersion.v1_16);
+
 
     public VideoPlayer(ScreenData mapsData){
         this.mapsData = mapsData;
@@ -59,7 +63,7 @@ public class VideoPlayer extends Thread{
             while (VividMotion.isEnable && mapsData.loopEnable){
 
                 if (mapsData.isPausing()){
-                    // if Pausing
+                    // is Pausing
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData( mapsData.data.nowFrame);
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
@@ -72,12 +76,13 @@ public class VideoPlayer extends Thread{
 
 
                 } else {
+                    // is not Pausing
                     // Send Packets
                     byte[][] pixelData = mapsData.getMapData();
                     List<MapPacket> mapPixelCheckers = new ArrayList<>();
                     if (lastPixelData != null){
                         for (int i =0; i < mapsData.data.mapIds.length; i++) {
-                            MapPacket mpc = new MapPacket(mapsData.data.mapIds[i], lastPixelData[i], pixelData[i]);
+                            MapPacket mpc = new MapPacket(mapsData.data.mapIds[i], lastPixelData[i], pixelData[i], lessThan1_16);
                             if (!mpc.notChange){
                                 mapPixelCheckers.add(mpc);
                             }

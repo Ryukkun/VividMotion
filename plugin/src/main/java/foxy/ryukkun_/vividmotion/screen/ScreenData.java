@@ -1,5 +1,6 @@
 package foxy.ryukkun_.vividmotion.screen;
 
+import foxy.ryukkun_.vividmotion.ConfigManager;
 import foxy.ryukkun_.vividmotion.VividMotion;
 import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
@@ -77,7 +78,9 @@ public class ScreenData {
                 }
 
                 framePointer += 1/data.videoFrameRate;
-                if (20 < data.videoFrameRate && framePointer <= frameCount*0.05) {
+                double targetFPS = ConfigManager.getFPS();
+                double targetFPSTime = 1/targetFPS;
+                if (targetFPS < data.videoFrameRate && framePointer <= frameCount*targetFPSTime) {
                     continue;
                 }
 
