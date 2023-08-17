@@ -25,23 +25,17 @@ public class Screen extends SubCommandTemp{
     private static class SetFps extends ScreenCommandTemplate {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
-            if (2 <= args.length){
-                ScreenData sc = VividMotion.getScreenData(args[0]);
-                double d;
+            if (1 <= args.length) {
                 try {
-                    d = Double.parseDouble( args[1]);
-                }catch ( NumberFormatException e) {
-                    return false;
-                }
-
-                if (sc != null){
+                    double d = Double.parseDouble(args[0]);
                     if (0.0 < d && d <= 20.0) {
-                        ConfigManager.setFPS( d);
+                        ConfigManager.setFPS(d);
                     } else {
-                        commandSender.sendMessage( "FPSは 下限0 上限20です。");
+                        commandSender.sendMessage("FPSは 下限0 上限20です。");
                     }
                     return true;
-                }
+
+                } catch (NumberFormatException e) {}
             }
             return false;
         }

@@ -126,7 +126,7 @@ public class SetScreen extends ScreenCommandTemplate {
             ItemMeta im = itemFrame.getItemMeta();
             im.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            im.setDisplayName("SetUpScreen");
+            im.setDisplayName("ScreenSetter");
             im.setLore(Arrays.asList("右クリック で設置", "いらなかったら 消したり捨てていいよ"));
             itemFrame.setItemMeta(im);
         }

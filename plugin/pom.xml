@@ -140,6 +140,11 @@
 
         <dependency>
             <groupId>fox.ryukkun_</groupId>
+            <artifactId>core-interface</artifactId>
+            <version>${project.parent.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>fox.ryukkun_</groupId>
             <artifactId>bukkit_1_12_R1</artifactId>
             <version>${project.parent.version}</version>
         </dependency>

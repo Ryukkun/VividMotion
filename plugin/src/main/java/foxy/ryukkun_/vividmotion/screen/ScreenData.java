@@ -319,7 +319,7 @@ public class ScreenData {
     public static class Data implements Serializable {
         // Map Count (Height, Width)
         public int height, width, mapHeight, mapWidth;
-        public double videoFrameRate, setFrameRate;
+        public double videoFrameRate, setFrameRate = 20.0;
         public boolean is_loaded = false;
         public int[] mapIds;
         public byte background_color;
@@ -336,7 +336,7 @@ public class ScreenData {
             videoFrameRate = ffs.frameRate;
             mapWidth = width % 128 == 0 ? width/128 : width/128+1;
             mapHeight = height % 128 == 0 ? height/128 : height/128+1;
-            setFrameRate = 20.0;
+
 
 
             mapIds = new int[mapHeight * mapWidth];
