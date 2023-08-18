@@ -12,17 +12,17 @@
 <br>
 
 ## コマンド
-  | command | description                          |
-  | :--- |:-------------------------------------|
-  | `/set-screen <name>` | `ScreenSetter`を取得する。                 |
-  | `/set-screen <name> <URL or Path>` | 新しく`screen`をつくり、`ScreenSetter`を取得する。 |
-  | `/give-screen <name>` | `screen`で使われるすべての地図を取得する。            |
+  | command                             | description                          |
+  |:------------------------------------|:-------------------------------------|
+  | `/set-screen <name>`                | `ScreenSetter`を取得する。                 |
+  | `/set-screen <name> <URL or Path>`  | 新しく`screen`をつくり、`ScreenSetter`を取得する。 |
+  | `/give-screen <name>`               | `screen`で使われるすべての地図を取得する。            |
   | `/give-screen <name> <URL or Path>` | 新しく`screen`をつくり、使われるすべての地図を取得する。     |
-  | `/screen new <name> <URL or Path>` | 新しく`screen`をつくる。                     |
-  | `/screen delete <name>` | 駆逐する                                 |
-  | `/screen pause <name>` | 一時停止                                 |
-  | `/screen resume <name>` | 再生                                   |
-  | `/screen set-fps <deouble>` | FPSの設定。FPSはエンコードする際に決定する。 |
+  | `/screen new <name> <URL or Path>`  | 新しく`screen`をつくる。                     |
+  | `/screen delete <name>`             | 駆逐する                                 |
+  | `/screen pause <name>`              | 一時停止                                 |
+  | `/screen resume <name>`             | 再生                                   |
+  | `/screen set-fps <deouble>`         | FPSの設定。FPSはエンコードする際に決定する。            |
 <br>
 
 ## すごいよん
