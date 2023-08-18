@@ -1,7 +1,7 @@
-package foxy.ryukkun_.vividmotion.screen;
+package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
-import foxy.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.VividMotion;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
@@ -12,8 +12,8 @@ import java.util.*;
 
 public class VideoPlayer extends Thread{
 
-    public ScreenData mapsData;
-    public static HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
+    public final ScreenData mapsData;
+    public static final HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
 
     private static final boolean lessThan1_16 = NBTEditor.getMinecraftVersion().lessThanOrEqualTo(  NBTEditor.MinecraftVersion.v1_16);
 

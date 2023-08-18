@@ -1,11 +1,11 @@
-package foxy.ryukkun_.vividmotion.commands;
+package fox.ryukkun_.vividmotion.commands;
 
 
 import fox.ryukkun_.ParticleUtil;
 import fox.ryukkun_.ParticleUtil_1_12_R1;
 import fox.ryukkun_.ParticleUtil_1_13_R1;
-import foxy.ryukkun_.vividmotion.VividMotion;
-import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.*;
 import org.bukkit.block.Block;

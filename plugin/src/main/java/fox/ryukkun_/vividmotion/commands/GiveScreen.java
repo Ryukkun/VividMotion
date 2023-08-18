@@ -1,7 +1,7 @@
-package foxy.ryukkun_.vividmotion.commands;
+package fox.ryukkun_.vividmotion.commands;
 
 
-import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import fox.ryukkun_.vividmotion.screen.ScreenData;
 import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;

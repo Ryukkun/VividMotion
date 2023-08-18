@@ -1,6 +1,6 @@
 name: VividMotion
 version: '${project.version}'
-main: foxy.ryukkun_.vividmotion.VividMotion
+main: fox.ryukkun_.vividmotion.VividMotion
 
 commands:
   vividmotion:

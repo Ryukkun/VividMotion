@@ -1,12 +1,12 @@
-package foxy.ryukkun_.vividmotion;
+package fox.ryukkun_.vividmotion;
 
 import fox.ryukkun_.*;
-import foxy.ryukkun_.vividmotion.commands.GiveScreen;
-import foxy.ryukkun_.vividmotion.commands.Screen;
-import foxy.ryukkun_.vividmotion.commands.SetScreen;
-import foxy.ryukkun_.vividmotion.event.SelectSetUpScreen;
-import foxy.ryukkun_.vividmotion.event.UsedSetUpScreen;
-import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import fox.ryukkun_.vividmotion.commands.GiveScreen;
+import fox.ryukkun_.vividmotion.commands.Screen;
+import fox.ryukkun_.vividmotion.commands.SetScreen;
+import fox.ryukkun_.vividmotion.event.SelectSetUpScreen;
+import fox.ryukkun_.vividmotion.event.UsedSetUpScreen;
+import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,7 +19,7 @@ import java.util.List;
 
 public final class VividMotion extends JavaPlugin {
 
-    public static List<ScreenData> screenDataList = new ArrayList<>();
+    public static final List<ScreenData> screenDataList = new ArrayList<>();
     public static boolean isEnable;
     public static PacketManager packetManager;
     public static MapUtil mapUtil;
@@ -44,7 +44,7 @@ public final class VividMotion extends JavaPlugin {
         plugin = this;
         version = Bukkit.getServer().getClass().getPackage().getName();
         version = version.substring( version.lastIndexOf('.') + 1);
-        saveConfig();
+        saveDefaultConfig();
         ConfigManager.setPlugin( this);
         isEnable = true;
         packetManager = getPacketManager();
@@ -190,17 +190,17 @@ public final class VividMotion extends JavaPlugin {
         } else if (version.equalsIgnoreCase( MCVersion.v1_16_R2)) {
             return new MapUtil_1_16_R2();
         } else if (version.equalsIgnoreCase( MCVersion.v1_16_R3)) {
-            return new MapUtil_1_16_R2();
+            return new MapUtil_1_16_R3();
         } else if (version.equalsIgnoreCase( MCVersion.v1_17_R1)) {
             return new MapUtil_1_17_R1();
         } else if (version.equalsIgnoreCase( MCVersion.v1_18_R1)) {
-            return new MapUtil_1_17_R1();
+            return new MapUtil_1_18_R1();
         } else if (version.equalsIgnoreCase( MCVersion.v1_18_R2)) {
             return new MapUtil_1_18_R2();
         } else if (version.equalsIgnoreCase( MCVersion.v1_19_R1)) {
-            return new MapUtil_1_17_R1();
+            return new MapUtil_1_19_R1();
         } else if (version.equalsIgnoreCase( MCVersion.v1_19_R2)) {
-            return new MapUtil_1_17_R1();
+            return new MapUtil_1_19_R2();
         } else if (version.equalsIgnoreCase( MCVersion.v1_19_R3)) {
             return new MapUtil_1_19_R3();
         } else if (version.equalsIgnoreCase( MCVersion.v1_20_R1)){

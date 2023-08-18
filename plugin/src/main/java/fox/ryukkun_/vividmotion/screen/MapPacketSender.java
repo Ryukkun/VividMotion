@@ -1,7 +1,7 @@
-package foxy.ryukkun_.vividmotion.screen;
+package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
-import foxy.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 

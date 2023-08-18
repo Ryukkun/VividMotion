@@ -1,9 +1,13 @@
 package fox.ryukkun_;
 
 public class MapPacket {
-    public int mapId, fX, fY, sX, sY;
+    public final int mapId;
+    public int fX;
+    public int fY;
+    public int sX;
+    public int sY;
     public boolean fullChange, notChange;
-    public byte[] color;
+    public final byte[] color;
     public MapPacket(int mapId, byte[] color, int sX, int sY, int fX, int fY){
         this.mapId = mapId;
         this.color = color;

@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.screen;
+package fox.ryukkun_.vividmotion.screen;
 
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;

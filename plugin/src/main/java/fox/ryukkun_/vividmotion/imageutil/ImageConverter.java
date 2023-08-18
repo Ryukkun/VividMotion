@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.imageutil;
+package fox.ryukkun_.vividmotion.imageutil;
 
 import java.awt.*;
 

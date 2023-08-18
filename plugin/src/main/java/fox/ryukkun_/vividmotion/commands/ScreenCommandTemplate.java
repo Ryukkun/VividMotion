@@ -1,8 +1,8 @@
-package foxy.ryukkun_.vividmotion.commands;
+package fox.ryukkun_.vividmotion.commands;
 
-import foxy.ryukkun_.vividmotion.VividMotion;
-import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
-import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
+import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

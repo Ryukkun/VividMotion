@@ -1,6 +1,6 @@
-package foxy.ryukkun_.vividmotion.commands;
+package fox.ryukkun_.vividmotion.commands;
 
-import foxy.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;

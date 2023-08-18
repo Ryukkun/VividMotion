@@ -1,8 +1,8 @@
-package foxy.ryukkun_.vividmotion.event;
+package fox.ryukkun_.vividmotion.event;
 
-import foxy.ryukkun_.vividmotion.VividMotion;
-import foxy.ryukkun_.vividmotion.commands.SetScreen;
-import foxy.ryukkun_.vividmotion.screen.ScreenData;
+import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.commands.SetScreen;
+import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

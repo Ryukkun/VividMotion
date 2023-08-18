@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.commands;
+package fox.ryukkun_.vividmotion.commands;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class SubCommandTemp implements CMD {
-    HashMap<String, CMD> subCommands = new HashMap<>();
+    final HashMap<String, CMD> subCommands = new HashMap<>();
 
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {

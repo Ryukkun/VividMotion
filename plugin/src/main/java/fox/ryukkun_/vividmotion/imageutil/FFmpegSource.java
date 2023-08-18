@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion.imageutil;
+package fox.ryukkun_.vividmotion.imageutil;
 
 import org.bukkit.Bukkit;
 import org.bytedeco.ffmpeg.global.avutil;
@@ -17,7 +17,7 @@ public class FFmpegSource {
     public double frameRate;
     public FFmpegFrameGrabber ffg = null;
 
-    public static Pattern re_url = Pattern.compile("https?://.+");
+    public static final Pattern re_url = Pattern.compile("https?://.+");
 
 
 

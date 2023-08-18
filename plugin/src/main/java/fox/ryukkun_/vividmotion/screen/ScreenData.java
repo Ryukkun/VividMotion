@@ -1,9 +1,9 @@
-package foxy.ryukkun_.vividmotion.screen;
+package fox.ryukkun_.vividmotion.screen;
 
-import foxy.ryukkun_.vividmotion.ConfigManager;
-import foxy.ryukkun_.vividmotion.VividMotion;
-import foxy.ryukkun_.vividmotion.imageutil.FFmpegSource;
-import foxy.ryukkun_.vividmotion.imageutil.ImageConverter;
+import fox.ryukkun_.vividmotion.ConfigManager;
+import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
+import fox.ryukkun_.vividmotion.imageutil.ImageConverter;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
@@ -18,7 +18,7 @@ import java.nio.file.Path;
 
 
 public class ScreenData {
-    public static int FILE_FRAME = 50;
+    public static final int FILE_FRAME = 50;
     public Data data;
     public FFmpegSource ffs;
     private SnappyInputStream inputStream = null;
@@ -65,6 +65,9 @@ public class ScreenData {
         byte[] frame;
         int frameCount = 0;
         double framePointer = 0.0;
+        double targetFPS = ConfigManager.getFPS();
+        double targetFPSTime = 1/targetFPS;
+        double videoFPS = ffs.frameRate;
         SnappyOutputStream out = null;
         VideoPlayer.MapDetector mapDetector = new VideoPlayer.MapDetector();
         VividMotion.mapGetter.getMap( data.mapIds[0])
@@ -77,10 +80,9 @@ public class ScreenData {
                     break;
                 }
 
-                framePointer += 1/data.videoFrameRate;
-                double targetFPS = ConfigManager.getFPS();
-                double targetFPSTime = 1/targetFPS;
-                if (targetFPS < data.videoFrameRate && framePointer <= frameCount*targetFPSTime) {
+                framePointer += 1/videoFPS;
+
+                if (targetFPS < videoFPS && framePointer <= frameCount*targetFPSTime) {
                     continue;
                 }
 
@@ -121,7 +123,7 @@ public class ScreenData {
         // Loaded
         data.frameCount = frameCount;
         data.is_loaded = true;
-        if (20 < data.videoFrameRate) data.videoFrameRate = 20.0;
+        if (20 < videoFPS) data.videoFrameRate = 20.0;
 
 
         if (frameCount == 1){
@@ -318,15 +320,18 @@ public class ScreenData {
 
     public static class Data implements Serializable {
         // Map Count (Height, Width)
-        public int height, width, mapHeight, mapWidth;
+        public final int height;
+        public final int width;
+        public final int mapHeight;
+        public final int mapWidth;
         public double videoFrameRate, setFrameRate = 20.0;
         public boolean is_loaded = false;
-        public int[] mapIds;
+        public final int[] mapIds;
         public byte background_color;
         public double nowFrame = 0;
         public boolean isPausing = false;
         public boolean isPicture;
-        public String name;
+        public final String name;
         public int frameCount = 0;
 
         public Data(String name, FFmpegSource ffs, World world){

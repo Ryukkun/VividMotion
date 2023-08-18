@@ -1,4 +1,4 @@
-package foxy.ryukkun_.vividmotion;
+package fox.ryukkun_.vividmotion;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
