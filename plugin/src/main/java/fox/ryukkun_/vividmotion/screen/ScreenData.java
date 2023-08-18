@@ -123,7 +123,7 @@ public class ScreenData {
         // Loaded
         data.frameCount = frameCount;
         data.is_loaded = true;
-        if (20 < videoFPS) data.videoFrameRate = 20.0;
+        if (targetFPS < videoFPS) data.videoFrameRate = targetFPS;
 
 
         if (frameCount == 1){
@@ -324,7 +324,7 @@ public class ScreenData {
         public final int width;
         public final int mapHeight;
         public final int mapWidth;
-        public double videoFrameRate, setFrameRate = 20.0;
+        public double videoFrameRate, setFrameRate = Double.MAX_VALUE;
         public boolean is_loaded = false;
         public final int[] mapIds;
         public byte background_color;
