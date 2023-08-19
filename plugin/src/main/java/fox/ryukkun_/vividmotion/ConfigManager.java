@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion;
 
+import fox.ryukkun_.vividmotion.imageutil.ImageConverter;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -30,15 +31,8 @@ public class ConfigManager {
         return config.getString("mapEncode");
     }
 
-    public static void setEncode(String encode){
-        if (encode.trim().equalsIgnoreCase( "誤差拡散")) {
-            config.set("mapEncode", "誤差拡散");
-        } else if (encode.trim().equalsIgnoreCase( "誤差拡散.mk3")) {
-            config.set("mapEncode", "誤差拡散.Mk3");
-        } else {
-            return;
-        }
-
+    public static void setEncode(ImageConverter.EncodeType encode){
+        config.set("mapEncode", encode.name);
         save();
     }
 

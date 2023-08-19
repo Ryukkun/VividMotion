@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class ScreenCommandTemplate implements CMD {
+public class ScreenCommandTPL implements CMD {
 
     public void onCommandInCache(Player player, ScreenData screenData){}
     public void onCommandNotInCache(Player player, ScreenData screenData){}

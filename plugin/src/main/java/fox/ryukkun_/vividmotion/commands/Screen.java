@@ -1,6 +1,5 @@
 package fox.ryukkun_.vividmotion.commands;
 
-import fox.ryukkun_.vividmotion.ConfigManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
@@ -13,35 +12,15 @@ import org.bytedeco.javacv.FrameGrabber;
 import java.util.Arrays;
 import java.util.List;
 
-public class Screen extends SubCommandTemp{
+public class Screen extends SubCommandTPL {
     public Screen(){
-        subCommands.put("set-fps", new SetFps());
         subCommands.put("resume", new Resume());
         subCommands.put("pause", new Pause());
         subCommands.put("delete", new Delete());
         subCommands.put("new", new New());
     }
 
-    private static class SetFps extends ScreenCommandTemplate {
-        @Override
-        public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
-            if (1 <= args.length) {
-                try {
-                    double d = Double.parseDouble(args[0]);
-                    if (0.0 < d && d <= 20.0) {
-                        ConfigManager.setFPS(d);
-                    } else {
-                        commandSender.sendMessage("FPSは 下限0 上限20です。");
-                    }
-                    return true;
-
-                } catch (NumberFormatException e) {}
-            }
-            return false;
-        }
-    }
-
-    private static class Resume extends ScreenCommandTemplate {
+    private static class Resume extends ScreenCommandTPL {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
             if (1 <= args.length){
@@ -56,7 +35,7 @@ public class Screen extends SubCommandTemp{
         }
     }
 
-    private static class Pause extends ScreenCommandTemplate {
+    private static class Pause extends ScreenCommandTPL {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
             if (1 <= args.length){
@@ -71,7 +50,7 @@ public class Screen extends SubCommandTemp{
         }
     }
 
-    private static class Delete extends ScreenCommandTemplate {
+    private static class Delete extends ScreenCommandTPL {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
             if (1 <= args.length){
@@ -86,7 +65,7 @@ public class Screen extends SubCommandTemp{
         }
     }
 
-    private static class New extends ScreenCommandTemplate {
+    private static class New extends ScreenCommandTPL {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
             if (args.length < 2){

@@ -165,4 +165,27 @@ public class ImageConverter {
         }catch (Exception ignored){}
         return res.toArray(new Short[0]);
     }
+
+
+
+    public enum EncodeType {
+        EDM("誤差拡散"),
+        EDM_Mk3("誤差拡散.Mk3"),
+        Nearest("近似");
+
+
+        public final String name;
+        EncodeType(String arg) {
+            name = arg;
+        }
+
+        public static EncodeType nameOf(String name) throws Exception {
+            for (EncodeType v : values()) {
+                if (v.name.equalsIgnoreCase( name.trim())) {
+                    return v;
+                }
+            }
+            throw new Exception( "一致するEncodeTypeが見つかりませんでした。");
+        }
+    }
 }

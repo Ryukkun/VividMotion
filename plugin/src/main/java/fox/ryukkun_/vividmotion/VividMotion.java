@@ -76,6 +76,7 @@ public final class VividMotion extends JavaPlugin {
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
         getCommand("screen").setExecutor(new Screen());
+        getCommand("vividmotion").setExecutor(new fox.ryukkun_.vividmotion.commands.VividMotion());
     }
 
     @Override

@@ -20,7 +20,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
-public class SetScreen extends ScreenCommandTemplate {
+public class SetScreen extends ScreenCommandTPL {
     @Override
     public void onCommandInCache(Player player, ScreenData screenData) {
         SetUpScreen.init_run(player, screenData, true);

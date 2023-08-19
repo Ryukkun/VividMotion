@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class GiveScreen extends ScreenCommandTemplate {
+public class GiveScreen extends ScreenCommandTPL {
 
     private ItemStack[] convertToChest(int[] mapIds){
         int ii;

@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class SubCommandTemp implements CMD {
+public class SubCommandTPL implements CMD {
     final HashMap<String, CMD> subCommands = new HashMap<>();
 
     @Override
