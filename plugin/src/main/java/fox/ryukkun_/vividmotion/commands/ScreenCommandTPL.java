@@ -1,11 +1,13 @@
 package fox.ryukkun_.vividmotion.commands;
 
+import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bytedeco.javacv.FrameGrabber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -19,18 +21,17 @@ public class ScreenCommandTPL implements CMD {
     @Override
     public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
         if (!(commandSender instanceof Player)){
-            commandSender.sendMessage("Please execute by the Player ");
+            MCLogger.sendMessage(commandSender, MCLogger.Level.Error, "Please execute by the Player ");
             return true;
         }
         Player player = (Player) commandSender;
 
         if (1 == args.length){
             // in cache
-            for (ScreenData screenData : VividMotion.screenDataList){
-                if (screenData.data.name.equals(args[0])){
-                    onCommandInCache(player, screenData);
-                    return true;
-                }
+            ScreenData screenData = VividMotion.getScreenData( args[0]);
+            if (screenData != null){
+                onCommandInCache(player, screenData);
+                return true;
             }
             return false;
 
@@ -57,10 +58,12 @@ public class ScreenCommandTPL implements CMD {
                     onCommandNotInCache(player, sd);
 
                 }else {
-                    player.sendMessage("解析不能なURL、PATHです。");
+                    MCLogger.syncSendMessage(player, MCLogger.Level.Error, "解析不能なURL、PATHです。");
+                    try {
+                        ffs.ffg.close();
+                    } catch (FrameGrabber.Exception e) {}
                 }
             }).start();
-
 
 
             return true;

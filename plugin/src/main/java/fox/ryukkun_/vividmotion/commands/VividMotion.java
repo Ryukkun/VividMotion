@@ -1,10 +1,12 @@
 package fox.ryukkun_.vividmotion.commands;
 
 import fox.ryukkun_.vividmotion.ConfigManager;
+import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.imageutil.ImageConverter;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class VividMotion extends SubCommandTPL {
@@ -22,14 +24,22 @@ public class VividMotion extends SubCommandTPL {
                     double d = Double.parseDouble(args[0]);
                     if (0.0 < d && d <= 20.0) {
                         ConfigManager.setFPS(d);
-                    } else {
-                        commandSender.sendMessage("FPSは 下限0 上限20です。");
-                    }
-                    return true;
+                        MCLogger.sendMessage(commandSender ,MCLogger.Level.Success ,"FPSを '"+d+"' に設定しました。");
 
-                } catch (NumberFormatException e) {}
+                    } else {
+                        MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"FPSは 下限0 上限20です。");
+                    }
+
+
+                } catch (NumberFormatException e) {
+                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"数字に変換できませんでした");
+
+                }
+
+            } else {
+                MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"数字を入力してください");
             }
-            return false;
+            return true;
         }
 
         @Override
@@ -46,9 +56,10 @@ public class VividMotion extends SubCommandTPL {
                 try {
                     ImageConverter.EncodeType encode = ImageConverter.EncodeType.nameOf( args[0]);
                     ConfigManager.setEncode( encode);
+                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Success ,"mapEncodeを '"+encode.name+"' に設定しました。");
 
                 } catch (Exception e) {
-                    commandSender.sendMessage( e.toString());
+                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,e.toString());
                 }
                 return true;
             }
@@ -56,7 +67,19 @@ public class VividMotion extends SubCommandTPL {
         }
 
         @Override
-        public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] strings) {
+        public List<String> onTabComplete(CommandSender commandSender, Command command, String s, String[] args) {
+            if (args.length == 1) {
+                // screen name list
+                List<String> tabList = new ArrayList<>();
+                for (ImageConverter.EncodeType v : ImageConverter.EncodeType.values()) {
+                    String name = v.name;
+
+                    if (args[0].isEmpty() || name.startsWith(args[0])) {
+                        tabList.add(name);
+                    }
+                }
+                return tabList;
+            }
             return null;
         }
     }
@@ -66,6 +89,7 @@ public class VividMotion extends SubCommandTPL {
         @Override
         public boolean onCommand(CommandSender commandSender, Command command, String alias, String[] args) {
             ConfigManager.reload();
+            MCLogger.sendMessage(commandSender ,MCLogger.Level.Success ,"Config Reloaded");
             return true;
         }
 

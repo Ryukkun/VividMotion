@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion.commands;
 
+import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
@@ -58,10 +59,15 @@ public class Screen extends SubCommandTPL {
 
                 if (sc != null){
                     sc.delete();
-                    return true;
+                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Success ,args[0]+" の削除に成功しましたした。");
+
+                } else {
+                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"Screenが見つかりませんでした。");
                 }
+                return true;
             }
-            return false;
+            MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"削除対象が入力されていません。");
+            return true;
         }
     }
 
@@ -98,16 +104,14 @@ public class Screen extends SubCommandTPL {
                         new ScreenData(name, ffs, bcs.getBlock().getWorld());
 
                     } else {
-                        CMD.sendMessage(commandSender, " Player または CommandBlock から実行してください");
+                        MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, " Player または CommandBlock から実行してください");
                     }
 
                 }else {
-                    CMD.sendMessage(commandSender, "解析不能なURL、PATHです。");
+                    MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, "解析不能なURL、PATHです。");
                     try {
                         ffs.ffg.close();
-                    } catch (FrameGrabber.Exception e) {
-                        throw new RuntimeException(e);
-                    }
+                    } catch (FrameGrabber.Exception e) {}
                 }
             }).start();
 
