@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion.imageutil;
 
+import fox.ryukkun_.vividmotion.ConfigManager;
 import org.bukkit.Bukkit;
 import org.bytedeco.ffmpeg.global.avutil;
 import org.bytedeco.javacv.FFmpegFrameGrabber;
@@ -16,6 +17,7 @@ public class FFmpegSource {
     public int width, height;
     public double frameRate;
     public FFmpegFrameGrabber ffg = null;
+    private ImageConverter.EncodeType encodeType;
 
     public static final Pattern re_url = Pattern.compile("https?://.+");
 
@@ -25,6 +27,12 @@ public class FFmpegSource {
 
 
     public FFmpegSource(String path) {
+        try {
+            encodeType = ConfigManager.getEncode();
+        } catch (Exception e) {
+            can_load = false;
+            return;
+        }
 
         // is URL
         if (re_url.matcher(path).find()) {
@@ -124,7 +132,7 @@ public class FFmpegSource {
             } else if (f.image == null) {
                 return null;
             }
-            return ImageConverter.toConvert(f);
+            return ImageConverter.toConvert(f, encodeType);
 
         }
         return null;

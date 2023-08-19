@@ -2,7 +2,6 @@ package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
 import fox.ryukkun_.vividmotion.VividMotion;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -13,13 +12,13 @@ import java.util.*;
 public class VideoPlayer extends Thread{
 
     public final ScreenData mapsData;
+    private final VideoPacket[][] packetsTrimCache;
     public static final HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
-
-    private static final boolean lessThan1_16 = NBTEditor.getMinecraftVersion().lessThanOrEqualTo(  NBTEditor.MinecraftVersion.v1_16);
 
 
     public VideoPlayer(ScreenData mapsData){
         this.mapsData = mapsData;
+        packetsTrimCache = new VideoPacket[mapsData.data.frameCount][mapsData.data.mapIds.length];
     }
 
     public static void updateTime(int mapId, UUID uuid){
@@ -77,22 +76,31 @@ public class VideoPlayer extends Thread{
 
                 } else {
                     // is not Pausing
-                    // Send Packets
+                    //// get Difference
                     byte[][] pixelData = mapsData.getMapData();
-                    List<MapPacket> mapPixelCheckers = new ArrayList<>();
-                    if (lastPixelData != null){
-                        for (int i =0; i < mapsData.data.mapIds.length; i++) {
-                            MapPacket mpc = new MapPacket(mapsData.data.mapIds[i], lastPixelData[i], pixelData[i], lessThan1_16);
-                            if (!mpc.notChange){
-                                mapPixelCheckers.add(mpc);
-                            }
-                        }
+                    VideoPacket[] difPackets = packetsTrimCache[(int) mapsData.data.nowFrame];
+
+                    if (difPackets[0] == null && lastPixelData != null) {
+                        difPackets = VideoPacket.getDifference(lastPixelData, pixelData);
+                        packetsTrimCache[(int) mapsData.data.nowFrame] = difPackets;
                     }
+
+                    //// send Packet
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid : uuids) {
                         if (alreadySend.contains(uuid)) {
-                            MapPacketSender.sendPixelData(uuid, mapPixelCheckers);
+                            // 部分的に送信
+                            List<MapPacket> packets = new ArrayList<>();
+                            for (int i = 0; i < difPackets.length; i++) {
+                                VideoPacket vp = difPackets[i];
+                                if (vp.noChange) continue;
+
+                                packets.add( vp.getMapPacket( mapsData.data.mapIds[i], pixelData[i]));
+                            }
+                            MapPacketSender.sendPixelData(uuid, packets);
+
                         } else {
+                            // 全てのピクセル送信
                             MapPacketSender.sendPixelData(mapsData, uuid, pixelData);
                         }
                     }

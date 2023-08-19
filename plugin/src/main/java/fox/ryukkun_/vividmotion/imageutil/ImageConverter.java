@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import fox.ryukkun_.vividmotion.ConfigManager;
 import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
@@ -44,10 +45,88 @@ public class ImageConverter {
 
     }
 
+    public static byte[] toConvert(Frame frame) {
+        EncodeType encode;
+        try {
+            encode = ConfigManager.getEncode();
+        } catch (Exception e) {
+            encode = EncodeType.EDM_Mk3;
+        }
+        return toConvert(frame, encode);
+    }
+
+    public static byte[] toConvert(Frame frame, EncodeType encode) {
+        if (encode.equals( EncodeType.EDM)) {
+            return encodeEDM( frame);
+        } else if (encode.equals( EncodeType.EDM_Mk3)) {
+            return encodeEDM_Mk3( frame);
+        } else {
+            return encodeNearest( frame);
+        }
+    }
 
 
-    public static byte[] toConvert(Frame frame){
+    public static byte[] encodeEDM(Frame frame){
+        int index = 0;
+        int width = frame.imageWidth, height = frame.imageHeight;
 
+        short[][] pixel = new short[width*height][3];
+        byte[] map_format = new byte[width*height];
+
+
+        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
+
+
+        for (int y = 0; y <  height; y++) {
+            for (int x = 0; x < width; x++) {
+                pixel[index][0] = (short) (buffer[index] >> 16 & 0xff);
+                pixel[index][1] = (short) (buffer[index] >> 8 & 0xff);
+                pixel[index][2] = (short) (buffer[index] & 0xff);
+                index++;
+            }
+        }
+
+        index = 0;
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+
+                short color_index = (leftLimit <= pixel[index][0] && pixel[index][0] < rightLimit && leftLimit <= pixel[index][1] && pixel[index][1] < rightLimit && leftLimit <= pixel[index][2] && pixel[index][2] < rightLimit)
+                        ? colorCache[ ((pixel[index][0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[index][1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[index][2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
+                        : get_nearest_fixedColor(pixel[index][0], pixel[index][1], pixel[index][2]);
+
+                map_format[index] = (byte)(color_index+4);
+                color_index *= 3;
+
+                boolean right = x+1 != width;
+                boolean left = x-1 != -1;
+                boolean under = y+1 != height;
+                for (int i = 0; i < 3; i++) {
+                    int s = (0 <= pixel[index][i] ? pixel[index][i] - fixedColor[color_index+i] : pixel[index][i] + fixedColor[color_index+i]) >> 4;
+
+                    if (right) {
+                        pixel[index+1][i] += (short) (s * 7);
+                    }
+                    if (under){
+                        if (right) {
+                            pixel[index+width+1][i] += (short) s;
+                        }
+                        if (left) {
+                            pixel[index+width-1][i] += (short) (s * 3);
+                        }
+                        pixel[index+width][i] += (short) (s * 5);
+                    }
+
+                }
+
+                index++;
+            }
+        }
+        return map_format;
+    }
+
+
+
+    public static byte[] encodeEDM_Mk3(Frame frame){
         int index = 0;
         int width = frame.imageWidth, height = frame.imageHeight;
         int[] diff = {0, 0, 0};
@@ -87,6 +166,27 @@ public class ImageConverter {
         }
         return map_format;
     }
+
+
+    public static byte[] encodeNearest(Frame frame){
+        int index = 0;
+        int width = frame.imageWidth, height = frame.imageHeight;
+        byte[] map_format = new byte[width*height];
+
+        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
+
+
+        for (int y = 0; y < height; y++) {
+            for (int x = 0; x < width; x++) {
+                map_format[index] = (byte) (colorCache[(((buffer[index] >> 16 & 0xff)>>DIV_SHIFT)+DIV_oneSideDif) +
+                        ((((buffer[index] >> 8 & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) +
+                        ((((buffer[index] & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)] + 4);
+                index++;
+            }
+        }
+        return map_format;
+    }
+
 
 
     private static short[] calcCache(){

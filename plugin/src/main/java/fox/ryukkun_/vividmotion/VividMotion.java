@@ -7,7 +7,6 @@ import fox.ryukkun_.vividmotion.commands.SetScreen;
 import fox.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import fox.ryukkun_.vividmotion.event.UsedSetUpScreen;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +24,6 @@ public final class VividMotion extends JavaPlugin {
     public static MapUtil mapUtil;
     public static MapGetter mapGetter;
     public static Plugin plugin;
-    public static String version;
     private static File folder;
 
 
@@ -42,8 +40,7 @@ public final class VividMotion extends JavaPlugin {
     public void onEnable() {
         // Plugin startup logic
         plugin = this;
-        version = Bukkit.getServer().getClass().getPackage().getName();
-        version = version.substring( version.lastIndexOf('.') + 1);
+
         saveDefaultConfig();
         ConfigManager.setPlugin( this);
         isEnable = true;
@@ -126,9 +123,9 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapGetter getMapGetter(){
-    if (version.equalsIgnoreCase( MCVersion.v1_12_R1)) {
+    if (MCVersion.equal( MCVersion.v1_12_R1)) {
         return new MapUtil_1_12_R1();
-    } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+    } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
         return new MapUtil_1_13_R1();
     } else {
             return new MapUtil_1_13_R2();
@@ -140,35 +137,35 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static PacketManager getPacketManager(){
-        if (version.equalsIgnoreCase( MCVersion.v1_12_R1)){
+        if (MCVersion.equal( MCVersion.v1_12_R1)){
             return new Packet_1_12_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
             return new Packet_1_13_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_13_R2)) {
             return new Packet_1_13_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_14_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_14_R1)) {
             return new Packet_1_14_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_15_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_15_R1)) {
             return new Packet_1_15_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R1)) {
             return new Packet_1_16_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R2)) {
             return new Packet_1_16_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R3)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R3)) {
             return new Packet_1_16_R3();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_17_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_17_R1)) {
             return new Packet_1_17_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_18_R1)) {
             return new Packet_1_18_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_18_R2)) {
             return new Packet_1_18_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R1)) {
             return new Packet_1_19_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R2)) {
             return new Packet_1_19_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R3)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R3)) {
             return new Packet_1_19_R3();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_20_R1)){
+        } else if (MCVersion.equal( MCVersion.v1_20_R1)){
             return new Packet_1_20_R1();
         }
         return null;
@@ -176,56 +173,37 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapUtil getMapUtil(){
-        if (version.equalsIgnoreCase( MCVersion.v1_12_R1)){
+        if (MCVersion.equal( MCVersion.v1_12_R1)){
             return new MapUtil_1_12_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
             return new MapUtil_1_13_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_13_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_13_R2)) {
             return new MapUtil_1_13_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_14_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_14_R1)) {
             return new MapUtil_1_14_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_15_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_15_R1)) {
             return new MapUtil_1_15_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R1)) {
             return new MapUtil_1_16_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R2)) {
             return new MapUtil_1_16_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_16_R3)) {
+        } else if (MCVersion.equal( MCVersion.v1_16_R3)) {
             return new MapUtil_1_16_R3();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_17_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_17_R1)) {
             return new MapUtil_1_17_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_18_R1)) {
             return new MapUtil_1_18_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_18_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_18_R2)) {
             return new MapUtil_1_18_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R1)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R1)) {
             return new MapUtil_1_19_R1();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R2)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R2)) {
             return new MapUtil_1_19_R2();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_19_R3)) {
+        } else if (MCVersion.equal( MCVersion.v1_19_R3)) {
             return new MapUtil_1_19_R3();
-        } else if (version.equalsIgnoreCase( MCVersion.v1_20_R1)){
+        } else if (MCVersion.equal( MCVersion.v1_20_R1)){
             return new MapUtil_1_20_R1();
         }
         return null;
-    }
-
-    public static class MCVersion {
-        public static final String
-                v1_12_R1 = "v1_12_R1",
-                v1_13_R1 = "v1_13_R1",
-                v1_13_R2 = "v1_13_R2",
-                v1_14_R1 = "v1_14_R1",
-                v1_15_R1 = "v1_15_R1",
-                v1_16_R1 = "v1_16_R1",
-                v1_16_R2 = "v1_16_R2",
-                v1_16_R3 = "v1_16_R3",
-                v1_17_R1 = "v1_17_R1",
-                v1_18_R1 = "v1_18_R1",
-                v1_18_R2 = "v1_18_R2",
-                v1_19_R1 = "v1_19_R1",
-                v1_19_R2 = "v1_19_R2",
-                v1_19_R3 = "v1_19_R3",
-                v1_20_R1 = "v1_20_R1";
     }
 }

@@ -27,8 +27,8 @@ public class ConfigManager {
     }
 
 
-    public static String getEncode(){
-        return config.getString("mapEncode");
+    public static ImageConverter.EncodeType getEncode() throws Exception {
+        return ImageConverter.EncodeType.nameOf( config.getString("mapEncode"));
     }
 
     public static void setEncode(ImageConverter.EncodeType encode){
