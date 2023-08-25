@@ -12,25 +12,19 @@
 <br>
 
 ## ◆ コマンド
-  | set-screen                          | description                          |
-  |:------------------------------------|:-------------------------------------|
-  | `/set-screen <name>`                | `ScreenSetter`を取得する。                 |
-  | `/set-screen <name> <URL or Path>`  | 新しく`screen`をつくり、`ScreenSetter`を取得する。 |
-  
-  | give-screen                         | description                      |
-  |:------------------------------------|:---------------------------------|
-  | `/give-screen <name>`               | `screen`で使われるすべての地図を取得する。        |
-  | `/give-screen <name> <URL or Path>` | 新しく`screen`をつくり、使われるすべての地図を取得する。 |
-
-  | screen                             | description                                        |
-  |:-----------------------------------|:---------------------------------------------------|
-  | `/screen new <name> <URL or Path>` | 新しく`screen`をつくる。URLが長くチャット欄に収まらない場合は、コマンドブロックを使おう！ |
-  | `/screen delete <name>`            | 駆逐する                                               |
-  | `/screen pause <name>`             | 一時停止 <-> resume                                    |
-  | `/screen resume <name>`            | 再生 <-> pause                                       |
-
-  | VividMotion                            | description                                                                |
+  | command                                | description                                                                |
   |:---------------------------------------|:---------------------------------------------------------------------------|
+  | `/set-screen <name>`                   | `ScreenSetter`を取得する。                                                       |
+  | `/set-screen <name> <URL or Path>`     | 新しく`screen`をつくり、`ScreenSetter`を取得する。                                       |
+  |                                        |                                                                            |
+  | `/give-screen <name>`                  | `screen`で使われるすべての地図を取得する。                                                  |
+  | `/give-screen <name> <URL or Path>`    | 新しく`screen`をつくり、使われるすべての地図を取得する。                                           |
+  |                                        |                                                                            |
+  | `/screen new <name> <URL or Path>`     | 新しく`screen`をつくる。URLが長くチャット欄に収まらない場合は、コマンドブロックを使おう！                         |
+  | `/screen delete <name>`                | 駆逐する                                                                       |
+  | `/screen pause <name>`                 | 一時停止 <-> resume                                                            |
+  | `/screen resume <name>`                | 再生 <-> pause                                                               |
+  |                                        |                                                                            |
   | `/vividmotion fps <0.0~20.0>`          | `screen`で動画を再生する際のFPS。すでに処理済みの`screen`のFPSは途中から変更はできない。初期設定は**10.0**       |
   | `/vividmotion map-encode <encodeType>` | 画像・動画の処理の方法を変更。`<encodeType>`は [近似, 誤差拡散, 誤差拡散.Mk3] から選択。初期設定は**誤差拡散.Mk3** |
   | `/vividmotion reload`                  | configのreload。                                                             |
@@ -38,7 +32,7 @@
 <br>
 
 ## ◆ VividMotionのここがすごい！
-  - 画像・動画の処理に`誤差拡散方式`という方式採用してるため、グラデーションが綺麗！(configから変更可能)
+  - 画像・動画の処理に`誤差拡散方式`という方式採用してるため、グラデーションが綺麗！(変更可能)
   - 次のフレームと前のフレームを比較し 色が変化する部分のみ処理するため、無駄な通信がない。
 <br>
 

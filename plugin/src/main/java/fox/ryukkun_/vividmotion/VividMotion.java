@@ -108,7 +108,7 @@ public final class VividMotion extends JavaPlugin {
 
             path1 = path.resolve(mapsData.data.name);
             path1.toFile().mkdirs();
-            path1 = path1.resolve(mapsData.data.name+ ".dat");
+            path1 = path1.resolve("screen.dat");
             try (FileOutputStream f = new FileOutputStream( path1.toFile());
                  ObjectOutputStream out = new ObjectOutputStream(f)){
 
