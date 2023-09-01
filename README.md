@@ -12,22 +12,26 @@
 <br>
 
 ## ◆ コマンド
-  | command                                | description                                                               |
+  | set-screen                              | screenを設置できる`ScreenSetter`を取得するコマンド                                                  |
   |:---------------------------------------|:--------------------------------------------------------------------------|
   | `/set-screen <name>`                   | `ScreenSetter`を取得する。                                                      |
   | `/set-screen <name> <URL・Path>`        | 新しく`screen`をつくり、`ScreenSetter`を取得する。                                      |
-  | .                                      |                                                                           |
+  | &nbsp;                                 |                                                                           |
+  | __give-screen__ | __screenを地図状態で取得するコマンド__ |
   | `/give-screen <name>`                  | `screen`で使われるすべての地図を取得する。                                                 |
   | `/give-screen <name> <URL・Path>`       | 新しく`screen`をつくり、使われるすべての地図を取得する。                                          |
-  | .                                      |                                                                           |
+  | &nbsp;                                 |                                                                           |
+  | __screen__ | __screenの設定などを操作するコマンド__ |
   | `/screen new <name> <URL・Path>`        | 新しく`screen`をつくる。URLが長くチャット欄に収まらない場合は、コマンドブロックを使おう！                        |
   | `/screen delete <name>`                | 駆逐する                                                                      |
   | `/screen pause <name>`                 | 一時停止 <-> resume                                                           |
   | `/screen resume <name>`                | 再生 <-> pause                                                              |
-  | .                                      |                                                                            |
+  | &nbsp;                                 |                                                                            |
+  | __vividmotion__ | __configの変更 や debug機能の使用に関するコマンド__ |
   | `/vividmotion fps <0.0~20.0>`          | `screen`で動画を再生する際のFPS。すでに処理済みの`screen`のFPSは途中から変更はできない。初期設定は**10.0**      |
   | `/vividmotion map-encode <encodeType>` | 画像・動画の処理の方法を変更。`<encodeType>`は [近似, 誤差拡散, 誤差拡散.Mk3] から選択。初期設定は**誤差拡散.Mk3** |
-  | `/vividmotion reload`                  | configのreload。                                                            |
+  | `/vividmotion reload`                  | configをファイルから読み込みし直す。                                                            |
+  | `/vividmotion show-screen-updates` | 表示面の更新場所をパーティクルで表示する （ON / OFF） |
 
 <br>
 
