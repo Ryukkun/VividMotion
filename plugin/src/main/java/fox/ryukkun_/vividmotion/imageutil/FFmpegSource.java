@@ -17,7 +17,7 @@ public class FFmpegSource {
     public int width, height;
     public double frameRate;
     public FFmpegFrameGrabber ffg = null;
-    private ImageConverter.EncodeType encodeType;
+    private ImageEncoder.EncodeType encodeType;
 
     public static final Pattern re_url = Pattern.compile("https?://.+");
 
@@ -26,13 +26,8 @@ public class FFmpegSource {
 
 
 
-    public FFmpegSource(String path) {
-        try {
-            encodeType = ConfigManager.getEncode();
-        } catch (Exception e) {
-            can_load = false;
-            return;
-        }
+    public FFmpegSource(String path) throws Exception {
+        ConfigManager.getEncode();
 
         // is URL
         if (re_url.matcher(path).find()) {
@@ -110,8 +105,8 @@ public class FFmpegSource {
     }
 
 
-    public byte[] read() {
-        byte[] res = _read();
+    public Frame read() {
+        Frame res = _read();
         if (res == null) {
             close();
         }
@@ -119,7 +114,7 @@ public class FFmpegSource {
     }
 
 
-    public byte[] _read() {
+    public Frame _read() {
         if (can_load && ffg != null){
             Frame f;
             try{
@@ -132,7 +127,7 @@ public class FFmpegSource {
             } else if (f.image == null) {
                 return null;
             }
-            return ImageConverter.toConvert(f, encodeType);
+            return f;
 
         }
         return null;

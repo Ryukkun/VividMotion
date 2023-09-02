@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion.commands;
 
+import fox.ryukkun_.vividmotion.MCLogger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -15,7 +16,12 @@ public class SubCommandTPL implements CMD {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         if (1 <= strings.length){
             if (subCommands.containsKey(strings[0])){
-                return subCommands.get(strings[0]).onCommand(commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
+                try {
+                    return subCommands.get(strings[0]).onCommand(commandSender, command, s, Arrays.copyOfRange(strings, 1, strings.length));
+
+                } catch (Exception e) {
+                    MCLogger.sendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
+                }
             }
         }
         return false;

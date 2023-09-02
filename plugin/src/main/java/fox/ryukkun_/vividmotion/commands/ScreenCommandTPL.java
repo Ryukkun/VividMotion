@@ -7,7 +7,6 @@ import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bytedeco.javacv.FrameGrabber;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,16 +51,20 @@ public class ScreenCommandTPL implements CMD {
 
             new Thread(() -> {
 
-                FFmpegSource ffs = new FFmpegSource(input);
-                if (ffs.can_load){
-                    ScreenData sd = new ScreenData(name, ffs, player.getWorld());
-                    onCommandNotInCache(player, sd);
+                try {
+                    FFmpegSource ffs = new FFmpegSource(input);
+                    if (ffs.can_load){
+                        ScreenData sd = new ScreenData(name, ffs, player.getWorld());
+                        onCommandNotInCache(player, sd);
 
-                }else {
-                    MCLogger.syncSendMessage(player, MCLogger.Level.Error, "解析不能なURL、PATHです。");
-                    try {
-                        ffs.ffg.close();
-                    } catch (FrameGrabber.Exception e) {}
+                    }else {
+                        MCLogger.syncSendMessage(player, MCLogger.Level.Error, "解析不能なURL、PATHです。");
+                        ffs.close();
+                    }
+
+
+                } catch (Exception e) {
+                    MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
                 }
             }).start();
 

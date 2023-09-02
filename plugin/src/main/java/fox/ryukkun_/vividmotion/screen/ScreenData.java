@@ -3,12 +3,13 @@ package fox.ryukkun_.vividmotion.screen;
 import fox.ryukkun_.vividmotion.ConfigManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
-import fox.ryukkun_.vividmotion.imageutil.ImageConverter;
+import fox.ryukkun_.vividmotion.imageutil.ImageEncoder;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bytedeco.javacv.Frame;
 import org.xerial.snappy.SnappyInputStream;
 import org.xerial.snappy.SnappyOutputStream;
 
@@ -62,12 +63,19 @@ public class ScreenData {
     public void loadFFS() {
         // Please run with async
         long lastSend = 0;
-        byte[] frame;
+        Frame frame;
         int frameCount = 0;
         double framePointer = 0.0;
         double targetFPS = ConfigManager.getFPS();
         double targetFPSTime = 1/targetFPS;
         double videoFPS = ffs.frameRate;
+        ImageEncoder.EncodeType encodeType;
+        try {
+            encodeType = ConfigManager.getEncode();
+        } catch (Exception e) {
+            encodeType = ImageEncoder.EncodeType.EDM_Mk3;
+        }
+
         SnappyOutputStream out = null;
         VideoPlayer.MapDetector mapDetector = new VideoPlayer.MapDetector();
         VividMotion.mapGetter.getMap( data.mapIds[0])
@@ -88,7 +96,7 @@ public class ScreenData {
 
 
                 // Save MapPixel
-                byte[][] b = toMapFormat(frame);
+                byte[][] b = toMapFormat( ImageEncoder.toConvert(frame, encodeType));
                 if (frameCount % FILE_FRAME == 0){
                     if (out != null) {
                         out.close();
@@ -239,7 +247,7 @@ public class ScreenData {
 
 
     public void setBackgroundColor(int r, int g, int b){
-        data.background_color = (byte) ImageConverter.get_nearest_color(r,g,b);
+        data.background_color = (byte) ImageEncoder.get_nearest_color(r,g,b);
     }
 
     public byte[][] getMapData(){

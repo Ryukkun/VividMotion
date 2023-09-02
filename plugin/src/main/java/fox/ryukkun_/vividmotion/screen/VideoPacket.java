@@ -75,8 +75,8 @@ public class VideoPacket {
         byte[] result = new byte[dX*dY];
 
         int index = 0;
-        for (int y = sY; y < fY; y++) {
-            for (int x = sX; x < fX; x++) {
+        for (int y = sY; y <= fY; y++) {
+            for (int x = sX; x <= fX; x++) {
                 result[index++] = color[y * 128 + x];
             }
         }

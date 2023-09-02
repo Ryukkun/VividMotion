@@ -8,7 +8,6 @@ import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bytedeco.javacv.FrameGrabber;
 
 import java.util.Arrays;
 import java.util.List;
@@ -92,26 +91,29 @@ public class Screen extends SubCommandTPL {
 
             new Thread(() -> {
 
+                try {
+                    FFmpegSource ffs = new FFmpegSource(input);
+                    if (ffs.can_load) {
+                        if (commandSender instanceof Player) {
+                            Player player = (Player) commandSender;
+                            new ScreenData(name, ffs, player.getWorld());
 
-                FFmpegSource ffs = new FFmpegSource(input);
-                if (ffs.can_load){
-                    if (commandSender instanceof Player){
-                        Player player = (Player) commandSender;
-                        new ScreenData(name, ffs, player.getWorld());
+                        } else if (commandSender instanceof BlockCommandSender) {
+                            BlockCommandSender bcs = (BlockCommandSender) commandSender;
+                            new ScreenData(name, ffs, bcs.getBlock().getWorld());
 
-                    } else if (commandSender instanceof BlockCommandSender) {
-                        BlockCommandSender bcs = (BlockCommandSender) commandSender;
-                        new ScreenData(name, ffs, bcs.getBlock().getWorld());
+                        } else {
+                            MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, " Player または CommandBlock から実行してください");
+                        }
 
                     } else {
-                        MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, " Player または CommandBlock から実行してください");
+                        MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, "解析不能なURL、PATHです。");
+                        ffs.close();
                     }
 
-                }else {
-                    MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, "解析不能なURL、PATHです。");
-                    try {
-                        ffs.ffg.close();
-                    } catch (FrameGrabber.Exception e) {}
+
+                } catch (Exception e){
+                    MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
                 }
             }).start();
 

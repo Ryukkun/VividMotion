@@ -12,9 +12,9 @@ import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
 import org.bytedeco.javacv.Java2DFrameConverter;
 
-public class ImageConverter {
-    public static final short[] color;
-    private static final short[] fixedColor;
+public class ImageEncoder {
+    public static short[] color;
+    private static short[] fixedColor;
     private static final Java2DFrameConverter java2d = new Java2DFrameConverter();
 
     // Cache設定
@@ -31,18 +31,32 @@ public class ImageConverter {
     private static final int DIV_Row = 256 / DIV + DIV_RowDif;
     private static final int DIV_Row2 = DIV_Row *DIV_Row;
     private static final int DIV_Row3 = DIV_Row2 * DIV_Row;
-    private static final short[] colorCache;
+    private static short[] colorCache;
 
-    static{
-        Short[] _c = get_all_color();
-        color = new short[_c.length];
-        for (int i = 0; i < _c.length; i++){
-            color[i] = _c[i];
-        }
-        fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
+//    static{
+//        Short[] _c = get_all_color();
+//        color = new short[_c.length];
+//        for (int i = 0; i < _c.length; i++){
+//            color[i] = _c[i];
+//        }
+//        fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
+//
+//        colorCache = calcCache();
+//
+//    }
 
-        colorCache = calcCache();
+    public static void load(){
+        new Thread(() -> {
+            Short[] _c = get_all_color();
+            color = new short[_c.length];
+            for (int i = 0; i < _c.length; i++){
+                color[i] = _c[i];
+            }
+            fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
 
+            colorCache = calcCache();
+
+        }).start();
     }
 
     public static byte[] toConvert(Frame frame) {

@@ -14,6 +14,7 @@ public class VideoPlayer extends Thread{
     public final ScreenData mapsData;
     private final VideoPacket[][] packetsTrimCache;
     public static final HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
+    public static final List<UUID> showScreenUpdates = new ArrayList<>();
 
 
     public VideoPlayer(ScreenData mapsData){

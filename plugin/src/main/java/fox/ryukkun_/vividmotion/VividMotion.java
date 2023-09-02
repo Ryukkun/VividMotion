@@ -6,6 +6,7 @@ import fox.ryukkun_.vividmotion.commands.Screen;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
 import fox.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import fox.ryukkun_.vividmotion.event.UsedSetUpScreen;
+import fox.ryukkun_.vividmotion.imageutil.ImageEncoder;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -48,6 +49,7 @@ public final class VividMotion extends JavaPlugin {
         mapUtil = getMapUtil();
         mapGetter = getMapGetter();
         folder = getDataFolder();
+        ImageEncoder.load();
 
 
         if (!getDataFolder().exists()){
@@ -61,7 +63,7 @@ public final class VividMotion extends JavaPlugin {
                 File[] fs1 = file.listFiles();
 
                 for (File file1 : fs1 != null ? fs1 : new File[0]) {
-                    if (file1.getName().endsWith(".dat")) {
+                    if (file1.getName().endsWith("screen.dat")) {
                         new ScreenData(file1);
                     }
                 }
