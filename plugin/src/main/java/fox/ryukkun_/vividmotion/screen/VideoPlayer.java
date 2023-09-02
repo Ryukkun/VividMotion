@@ -2,6 +2,9 @@ package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
 import fox.ryukkun_.vividmotion.VividMotion;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
@@ -14,7 +17,7 @@ public class VideoPlayer extends Thread{
     public final ScreenData mapsData;
     private final VideoPacket[][] packetsTrimCache;
     public static final HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
-    public static final List<UUID> showScreenUpdates = new ArrayList<>();
+    public static final List<UUID> showUpdatePlayer = new ArrayList<>();
 
 
     public VideoPlayer(ScreenData mapsData){
@@ -48,6 +51,24 @@ public class VideoPlayer extends Thread{
 
         }
         return uuids;
+    }
+
+
+    private static void showScreenUpdates(VideoPacket[] videoPackets) {
+        for (UUID uuid : showUpdatePlayer) {
+            Player player = Bukkit.getPlayer(uuid);
+            if (player == null) continue;
+
+            for (Entity entity : player.getNearbyEntities(20.0D, 20.0D, 20.0D)) {
+                if (!(entity instanceof ItemFrame)) continue;
+
+                ItemFrame itemFrame = (ItemFrame) entity;
+                itemFrame.getItem().
+
+            }
+
+
+        }
     }
 
 
