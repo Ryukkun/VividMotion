@@ -6,6 +6,7 @@ import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -79,7 +80,8 @@ public class VideoPlayer extends Thread{
 
                 for (int i = 0, limit = mapIds.length; i < limit; i++) {
                     if (mapId == mapIds[i]) {
-
+                        BlockFace face = itemFrame.getFacing();
+                        face.equals(BlockFace.NORTH)
                     }
                 }
             }
@@ -127,7 +129,7 @@ public class VideoPlayer extends Thread{
                     //// send Packet
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid : uuids) {
-                        if (alreadySend.contains(uuid)) {
+                        if (alreadySend.contains(uuid) && mapsData.data.nowFrame != 0) {
                             // 部分的に送信
                             List<MapPacket> packets = new ArrayList<>();
                             for (int i = 0; i < difPackets.length; i++) {

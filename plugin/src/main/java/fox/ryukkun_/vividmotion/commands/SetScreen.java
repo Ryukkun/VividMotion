@@ -1,12 +1,10 @@
 package fox.ryukkun_.vividmotion.commands;
 
 
-import fox.ryukkun_.ParticleUtil;
-import fox.ryukkun_.ParticleUtil_1_12_R1;
-import fox.ryukkun_.ParticleUtil_1_13_R1;
+import fox.ryukkun_.vividmotion.MCVersion;
+import fox.ryukkun_.vividmotion.ParticleManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -111,16 +109,8 @@ public class SetScreen extends ScreenCommandTPL {
         private final Player player;
         private final ScreenData screenData;
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
-        public static final boolean isOver_1_13 = (NBTEditor.getMinecraftVersion().greaterThanOrEqualTo( NBTEditor.MinecraftVersion.v1_13));
+        public static final boolean isOver_1_13 = (MCVersion.greaterThanEqual(MCVersion.v1_13_R1));
 
-        public static final ParticleUtil particleUtil;
-        static {
-            if (isOver_1_13){
-                particleUtil = new ParticleUtil_1_13_R1();
-            } else{
-                particleUtil = new ParticleUtil_1_12_R1();
-            }
-        }
         private static final ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
         static {
             ItemMeta im = itemFrame.getItemMeta();
@@ -265,7 +255,6 @@ public class SetScreen extends ScreenCommandTPL {
 
 
             int mapHeight = screenData.data.mapHeight, mapWidth = screenData.data.mapWidth;
-            List<Location> locations = new ArrayList<>();
             double _y = -(double)(mapHeight / 2), _x = -(double)(mapWidth / 2);
             double y = mapHeight + _y - 1, x = mapWidth + _x - 1;
             _y -= 0.4;
@@ -281,59 +270,14 @@ public class SetScreen extends ScreenCommandTPL {
             Location l_x_y = calcPosition(l, _x, _y, 0, face),
                     lxy = calcPosition(l, x, y, 0, face);
 
-            locations.add(lxy);
-            locations.add(l_x_y);
-            double xd = Math.abs(lxy.getX() - l_x_y.getX());
-            double yd = Math.abs(lxy.getY() - l_x_y.getY());
-            double zd = Math.abs(lxy.getZ() - l_x_y.getZ());
-            double vecS = 0.3;
-            Location lCopy, lCopy2;
-            if ( 0.5 < xd){
-                lCopy = lxy.clone();
-                lCopy2 = l_x_y.clone();
-                double v = (lxy.getX() - l_x_y.getX()) < 0 ? vecS : -vecS;
-                for (double d = 0.0; d < xd; d+=vecS) {
-                    lCopy.add(v, 0, 0);
-                    lCopy2.add(-v, 0, 0);
-
-                    locations.add(lCopy.clone());
-                    locations.add(lCopy2.clone());
-                }
-            }
-            if ( 0.5 < yd){
-                lCopy = lxy.clone();
-                lCopy2 = l_x_y.clone();
-                double v = (lxy.getY() - l_x_y.getY()) < 0 ? vecS : -vecS;
-                for (double d = 0.0; d < yd; d+=vecS) {
-                    lCopy.add(0, v, 0);
-                    lCopy2.add(0, -v, 0);
-
-                    locations.add(lCopy.clone());
-                    locations.add(lCopy2.clone());
-                }
-            }
-            if ( 0.5 < zd){
-                lCopy = lxy.clone();
-                lCopy2 = l_x_y.clone();
-                double v = (lxy.getZ() - l_x_y.getZ()) < 0 ? vecS : -vecS;
-                for (double d = 0.0; d < zd; d+=vecS) {
-                    lCopy.add(0, 0, v);
-                    lCopy2.add(0, 0, -v);
-
-                    locations.add(lCopy.clone());
-                    locations.add(lCopy2.clone());
-                }
-            }
 
             boolean canPlace = canPlace(screenData, face);
-            for (Location ll : locations){
-                if (canPlace){
-                    particleUtil.spawnParticle(player.getWorld(), ll, 0, 255, 0);
-                }else{
-                    particleUtil.spawnParticle(player.getWorld(), ll, 255, 0, 0);
-                }
-
+            if (canPlace){
+                ParticleManager.spawnSquare(lxy, l_x_y, player, Particle.REDSTONE, 0, 255, 0);
+            }else{
+                ParticleManager.spawnSquare(lxy, l_x_y, player, Particle.REDSTONE, 255, 0, 0);
             }
+
         }
     }
 }
