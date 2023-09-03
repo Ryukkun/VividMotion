@@ -1,11 +1,15 @@
 package fox.ryukkun_.vividmotion.screen;
 
+import de.tr7zw.changeme.nbtapi.NBT;
 import fox.ryukkun_.MapPacket;
+import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
@@ -54,7 +58,7 @@ public class VideoPlayer extends Thread{
     }
 
 
-    private static void showScreenUpdates(VideoPacket[] videoPackets) {
+    private static void showScreenUpdates(VideoPacket[] videoPackets, int[] mapIds) {
         for (UUID uuid : showUpdatePlayer) {
             Player player = Bukkit.getPlayer(uuid);
             if (player == null) continue;
@@ -63,8 +67,21 @@ public class VideoPlayer extends Thread{
                 if (!(entity instanceof ItemFrame)) continue;
 
                 ItemFrame itemFrame = (ItemFrame) entity;
-                itemFrame.getItem().
+                ItemStack is = itemFrame.getItem();
+                if (!is.getType().equals(Material.MAP)) continue;
 
+                int mapId;
+                if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
+                    mapId = is.getDurability();
+                } else {
+                    mapId = NBT.itemStackToNBT( is).getCompound("tag").getInteger("map");
+                }
+
+                for (int i = 0, limit = mapIds.length; i < limit; i++) {
+                    if (mapId == mapIds[i]) {
+
+                    }
+                }
             }
 
 

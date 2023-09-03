@@ -59,8 +59,9 @@
 
     <repositories>
         <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
+            <id>codemc-repo</id>
+            <url>https://repo.codemc.io/repository/maven-public/</url>
+            <layout>default</layout>
         </repository>
     </repositories>
 
@@ -72,9 +73,9 @@
         </dependency>
 
         <dependency>
-            <groupId>io.github.bananapuncher714</groupId>
-            <artifactId>nbteditor</artifactId>
-            <version>7.18.5</version>
+            <groupId>de.tr7zw</groupId>
+            <artifactId>item-nbt-api</artifactId>
+            <version>2.11.3</version>
         </dependency>
 
 

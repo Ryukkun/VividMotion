@@ -37,21 +37,13 @@
             <id>spigot-repo</id>
             <url>https://hub.spigotmc.org/nexus/content/groups/public/</url>
         </repository>
-        <repository>
-            <id>CodeMC</id>
-            <url>https://repo.codemc.org/repository/maven-public/</url>
-        </repository>
     </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
             <artifactId>spigot-api</artifactId>
             <version>1.12.2-R0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>io.github.bananapuncher714</groupId>
-            <artifactId>nbteditor</artifactId>
-            <version>7.18.5</version>
         </dependency>
     </dependencies>
 </project>

@@ -1,8 +1,10 @@
 package fox.ryukkun_.vividmotion.commands;
 
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
@@ -19,15 +21,15 @@ public class GiveScreen extends ScreenCommandTPL {
     private ItemStack[] convertToChest(int[] mapIds){
         int ii;
         int iii = 1;
-        NBTEditor.NBTCompound chest = null;
-        NBTEditor.NBTCompound nbt;
+        ReadWriteNBT chest = null;
+        ReadWriteNBT nbt;
         List<ItemStack> chestList = new ArrayList<>();
 
         for (int i = 0; i < mapIds.length; i++){
             ii = i % 27;
             if (ii == 0){
                 if (chest != null) {
-                    chestList.add(NBTEditor.getItemFromTag(chest));
+                    chestList.add(NBT.itemStackFromNBT( chest));
                 }
                 ItemStack itemChest = new ItemStack( Material.CHEST);
                 ItemMeta meta = itemChest.getItemMeta();
@@ -37,25 +39,28 @@ public class GiveScreen extends ScreenCommandTPL {
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 itemChest.setItemMeta(meta);
 
-                chest = NBTEditor.getNBTCompound( itemChest);
+                chest = NBT.itemStackToNBT( itemChest);
             }
 
-            nbt = NBTEditor.getEmptyNBTCompound();
-            nbt.set((byte)ii, "Slot");
-            nbt.set((byte)1, "Count");
-            nbt.set("minecraft:filled_map", "id");
-            if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo(NBTEditor.MinecraftVersion.v1_12)){
-                nbt.set((short) mapIds[i], "Damage");
+            nbt = NBT.createNBTObject();
+            nbt.setByte("Slot", (byte) ii);
+            nbt.setByte("Count", (byte) 1);
+            nbt.setString("id", "minecraft:filled_map");
+            if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)){
+                nbt.setShort("Damage", (short) mapIds[i]);
             } else{
-                nbt.set(mapIds[i], "tag", "map");
+                nbt.getOrCreateCompound("tag").setInteger("map", mapIds[i]);
             }
 
 
-            chest.set(nbt, "tag", "BlockEntityTag", "Items", NBTEditor.NEW_ELEMENT);
+            chest.getOrCreateCompound("tag")
+                    .getOrCreateCompound("BlockEntityTag")
+                    .getCompoundList("Items")
+                    .addCompound().mergeCompound(nbt);
         }
 
         if (chest != null){
-            chestList.add(NBTEditor.getItemFromTag( chest));
+            chestList.add(NBT.itemStackFromNBT( chest));
         }
 
         return chestList.toArray(new ItemStack[0]);
