@@ -1,9 +1,9 @@
 package fox.ryukkun_.vividmotion.event;
 
+import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
-import io.github.bananapuncher714.nbteditor.NBTEditor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -96,13 +96,7 @@ public class UsedSetUpScreen implements Listener {
                         else if (face.direction == 'E') itemFrameE.setRotation(Rotation.CLOCKWISE_45);
                     }
 
-                    NBTEditor.NBTCompound nbt = NBTEditor.getNBTCompound(new ItemStack(Material.MAP));
-                    if (NBTEditor.getMinecraftVersion().lessThanOrEqualTo(NBTEditor.MinecraftVersion.v1_12)) {
-                        nbt.set((short) screenData.data.mapIds[i], "Damage");
-                    } else {
-                        nbt.set(screenData.data.mapIds[i], "tag", "map");
-                    }
-                    itemFrameE.setItem(NBTEditor.getItemFromTag(nbt));
+                    itemFrameE.setItem( MapManager.getItem(screenData.data.mapIds[i]));
                 }
             }
         } catch (Exception e){

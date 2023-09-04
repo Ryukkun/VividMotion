@@ -22,7 +22,6 @@ public final class VividMotion extends JavaPlugin {
     public static final List<ScreenData> screenDataList = new ArrayList<>();
     public static boolean isEnable;
     public static PacketManager packetManager;
-    public static MapUtil mapUtil;
     public static MapGetter mapGetter;
     public static Plugin plugin;
     private static File folder;
@@ -46,7 +45,6 @@ public final class VividMotion extends JavaPlugin {
         ConfigManager.setPlugin( this);
         isEnable = true;
         packetManager = getPacketManager();
-        mapUtil = getMapUtil();
         mapGetter = getMapGetter();
         folder = getDataFolder();
         ImageEncoder.load();
@@ -174,38 +172,4 @@ public final class VividMotion extends JavaPlugin {
     }
 
 
-    private static MapUtil getMapUtil(){
-        if (MCVersion.equal( MCVersion.v1_12_R1)){
-            return new MapUtil_1_12_R1();
-        } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
-            return new MapUtil_1_13_R1();
-        } else if (MCVersion.equal( MCVersion.v1_13_R2)) {
-            return new MapUtil_1_13_R2();
-        } else if (MCVersion.equal( MCVersion.v1_14_R1)) {
-            return new MapUtil_1_14_R1();
-        } else if (MCVersion.equal( MCVersion.v1_15_R1)) {
-            return new MapUtil_1_15_R1();
-        } else if (MCVersion.equal( MCVersion.v1_16_R1)) {
-            return new MapUtil_1_16_R1();
-        } else if (MCVersion.equal( MCVersion.v1_16_R2)) {
-            return new MapUtil_1_16_R2();
-        } else if (MCVersion.equal( MCVersion.v1_16_R3)) {
-            return new MapUtil_1_16_R3();
-        } else if (MCVersion.equal( MCVersion.v1_17_R1)) {
-            return new MapUtil_1_17_R1();
-        } else if (MCVersion.equal( MCVersion.v1_18_R1)) {
-            return new MapUtil_1_18_R1();
-        } else if (MCVersion.equal( MCVersion.v1_18_R2)) {
-            return new MapUtil_1_18_R2();
-        } else if (MCVersion.equal( MCVersion.v1_19_R1)) {
-            return new MapUtil_1_19_R1();
-        } else if (MCVersion.equal( MCVersion.v1_19_R2)) {
-            return new MapUtil_1_19_R2();
-        } else if (MCVersion.equal( MCVersion.v1_19_R3)) {
-            return new MapUtil_1_19_R3();
-        } else if (MCVersion.equal( MCVersion.v1_20_R1)){
-            return new MapUtil_1_20_R1();
-        }
-        return null;
-    }
 }

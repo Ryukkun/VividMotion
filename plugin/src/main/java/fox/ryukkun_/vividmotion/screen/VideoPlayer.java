@@ -1,12 +1,11 @@
 package fox.ryukkun_.vividmotion.screen;
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import fox.ryukkun_.MapPacket;
-import fox.ryukkun_.vividmotion.MCVersion;
-import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.BlockFace;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.ItemFrame;
 import org.bukkit.entity.Player;
@@ -71,17 +70,19 @@ public class VideoPlayer extends Thread{
                 ItemStack is = itemFrame.getItem();
                 if (!is.getType().equals(Material.MAP)) continue;
 
-                int mapId;
-                if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
-                    mapId = is.getDurability();
-                } else {
-                    mapId = NBT.itemStackToNBT( is).getCompound("tag").getInteger("map");
-                }
+                int mapId = MapManager.getMapId(is);
+
 
                 for (int i = 0, limit = mapIds.length; i < limit; i++) {
                     if (mapId == mapIds[i]) {
-                        BlockFace face = itemFrame.getFacing();
-                        face.equals(BlockFace.NORTH)
+                        VideoPacket vp = videoPackets[i];
+                        if (vp.noChange) continue;
+
+                        LocationUtil l = new LocationUtil(itemFrame.getLocation(), itemFrame.getRotation());
+                        Location start = l.clone().addLocalCoordinate(1.0/128*(vp.sX-64), 1.0/128*(vp.sY), 0.1);
+                        Location fin = l.clone().addLocalCoordinate(1.0/128*(vp.fX-64), 1.0/128*(vp.fY), 0.1);
+
+                        ParticleManager.spawnSquare(start, fin, player, Particle.CRIT);
                     }
                 }
             }
@@ -125,6 +126,9 @@ public class VideoPlayer extends Thread{
                         difPackets = VideoPacket.getDifference(lastPixelData, pixelData);
                         packetsTrimCache[(int) mapsData.data.nowFrame] = difPackets;
                     }
+
+                    //// showUpdates
+                    showScreenUpdates(difPackets, mapsData.data.mapIds);
 
                     //// send Packet
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);

@@ -1,6 +1,7 @@
 package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.vividmotion.ConfigManager;
+import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.imageutil.FFmpegSource;
 import fox.ryukkun_.vividmotion.imageutil.ImageEncoder;
@@ -142,7 +143,7 @@ public class ScreenData {
             VividMotion.mapGetter.getMap( data.mapIds[0]).removeRenderer( mapDetector);
             for (int i = 0; i < data.mapIds.length; i++ ){
                 MapView view = VividMotion.mapGetter.getMap( data.mapIds[i]);
-                VividMotion.mapUtil.setColor(view, pixelData[i]);
+                MapManager.setColor(view, pixelData[i]);
 
                 view.addRenderer(new PictureRender(pixelData[i]));
             }
@@ -160,7 +161,7 @@ public class ScreenData {
             byte[][] pixelData = getMapData(0);
             for (int i = 0; i < data.mapIds.length; i++ ){
                 MapView view = VividMotion.mapGetter.getMap( (short) data.mapIds[i]);
-                VividMotion.mapUtil.setColor(view, pixelData[i]);
+                MapManager.setColor(view, pixelData[i]);
 
             }
             new VideoPlayer(this).start();
