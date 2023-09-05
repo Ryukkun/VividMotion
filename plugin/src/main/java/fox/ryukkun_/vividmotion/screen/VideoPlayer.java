@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapCanvas;
 import org.bukkit.map.MapRenderer;
 import org.bukkit.map.MapView;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.*;
 
@@ -59,36 +60,47 @@ public class VideoPlayer extends Thread{
 
 
     private static void showScreenUpdates(VideoPacket[] videoPackets, int[] mapIds) {
+
+        List<Player> players = new ArrayList<>();
         for (UUID uuid : showUpdatePlayer) {
             Player player = Bukkit.getPlayer(uuid);
-            if (player == null) continue;
-
-            for (Entity entity : player.getNearbyEntities(20.0D, 20.0D, 20.0D)) {
-                if (!(entity instanceof ItemFrame)) continue;
-
-                ItemFrame itemFrame = (ItemFrame) entity;
-                ItemStack is = itemFrame.getItem();
-                if (!is.getType().equals(Material.MAP)) continue;
-
-                int mapId = MapManager.getMapId(is);
+            if (player != null) players.add(player);
+        }
 
 
-                for (int i = 0, limit = mapIds.length; i < limit; i++) {
-                    if (mapId == mapIds[i]) {
-                        VideoPacket vp = videoPackets[i];
-                        if (vp.noChange) continue;
 
-                        LocationUtil l = new LocationUtil(itemFrame.getLocation(), itemFrame.getRotation());
-                        Location start = l.clone().addLocalCoordinate(1.0/128*(vp.sX-64), 1.0/128*(vp.sY), 0.1);
-                        Location fin = l.clone().addLocalCoordinate(1.0/128*(vp.fX-64), 1.0/128*(vp.fY), 0.1);
+        if (players.isEmpty()) return;
 
-                        ParticleManager.spawnSquare(start, fin, player, Particle.CRIT);
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                for (Player player : players) {
+                    for (Entity entity : player.getNearbyEntities(20.0D, 20.0D, 20.0D)) {
+                        if (!(entity instanceof ItemFrame)) continue;
+
+                        ItemFrame itemFrame = (ItemFrame) entity;
+                        ItemStack is = itemFrame.getItem();
+                        if (!is.getType().equals(Material.MAP)) continue;
+
+                        int mapId = MapManager.getMapId(is);
+
+
+                        for (int i = 0, limit = mapIds.length; i < limit; i++) {
+                            if (mapId == mapIds[i]) {
+                                VideoPacket vp = videoPackets[i];
+                                if (vp.noChange) continue;
+
+                                LocationUtil l = new LocationUtil(itemFrame.getLocation(), itemFrame.getRotation());
+                                Location start = l.clone().addLocalCoordinate(1.0/128*(vp.sX-64), -1.0/128*(vp.sY-64), 0.1);
+                                Location fin = l.clone().addLocalCoordinate(1.0/128*(vp.fX-64), -1.0/128*(vp.fY-64), 0.1);
+
+                                ParticleManager.spawnSquare(start, fin, player, Particle.REDSTONE, 0, 255, 0);
+                            }
+                        }
                     }
                 }
             }
-
-
-        }
+        }.runTask(VividMotion.plugin);
     }
 
 
@@ -129,6 +141,7 @@ public class VideoPlayer extends Thread{
 
                     //// showUpdates
                     showScreenUpdates(difPackets, mapsData.data.mapIds);
+
 
                     //// send Packet
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);

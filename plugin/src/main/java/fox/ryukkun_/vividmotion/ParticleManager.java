@@ -33,12 +33,13 @@ public class ParticleManager {
 
         locations.add(start);
         locations.add(finish);
-        double xd = Math.abs(start.getX() - finish.getX());
-        double yd = Math.abs(start.getY() - finish.getY());
-        double zd = Math.abs(start.getZ() - finish.getZ());
+
         double vecS = 0.3;
+        double xd = Math.abs(start.getX() - finish.getX()) - vecS;
+        double yd = Math.abs(start.getY() - finish.getY()) - vecS;
+        double zd = Math.abs(start.getZ() - finish.getZ()) - vecS;
         Location lCopy, lCopy2;
-        if ( 0.5 < xd){
+        if ( 0.0 < xd){
             lCopy = start.clone();
             lCopy2 = finish.clone();
             double v = (start.getX() - finish.getX()) < 0 ? vecS : -vecS;
@@ -50,7 +51,7 @@ public class ParticleManager {
                 locations.add(lCopy2.clone());
             }
         }
-        if ( 0.5 < yd){
+        if ( 0.0 < yd){
             lCopy = start.clone();
             lCopy2 = finish.clone();
             double v = (start.getY() - finish.getY()) < 0 ? vecS : -vecS;
@@ -62,7 +63,7 @@ public class ParticleManager {
                 locations.add(lCopy2.clone());
             }
         }
-        if ( 0.5 < zd){
+        if ( 0.0 < zd){
             lCopy = start.clone();
             lCopy2 = finish.clone();
             double v = (start.getZ() - finish.getZ()) < 0 ? vecS : -vecS;
@@ -81,7 +82,7 @@ public class ParticleManager {
             }
         } else {
             for (Location l : locations) {
-                player.spawnParticle(particle, l, 1);
+                player.spawnParticle(particle, l, 1, 0, 0, 0, 0);
             }
         }
     }

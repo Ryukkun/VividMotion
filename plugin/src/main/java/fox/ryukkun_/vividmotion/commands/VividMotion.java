@@ -115,11 +115,11 @@ public class VividMotion extends SubCommandTPL {
             UUID uuid = ((Player)commandSender).getUniqueId();
             if (VideoPlayer.showUpdatePlayer.contains( uuid)) {
                 VideoPlayer.showUpdatePlayer.remove( uuid);
-                MCLogger.sendMessage(commandSender, MCLogger.Level.Success, "表示面の更新を表示 >> オン");
+                MCLogger.sendMessage(commandSender, MCLogger.Level.Success, "表示面の更新を表示 >> オフ");
 
             } else {
                 VideoPlayer.showUpdatePlayer.add( uuid);
-                MCLogger.sendMessage(commandSender, MCLogger.Level.Success, "表示面の更新を表示 >> オフ");
+                MCLogger.sendMessage(commandSender, MCLogger.Level.Success, "表示面の更新を表示 >> オン");
 
             }
             return true;

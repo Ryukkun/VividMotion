@@ -33,17 +33,6 @@ public class ImageEncoder {
     private static final int DIV_Row3 = DIV_Row2 * DIV_Row;
     private static short[] colorCache;
 
-//    static{
-//        Short[] _c = get_all_color();
-//        color = new short[_c.length];
-//        for (int i = 0; i < _c.length; i++){
-//            color[i] = _c[i];
-//        }
-//        fixedColor = Arrays.copyOfRange(color, 4*3, color.length);
-//
-//        colorCache = calcCache();
-//
-//    }
 
     public static void load(){
         new Thread(() -> {

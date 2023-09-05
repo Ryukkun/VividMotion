@@ -1,6 +1,7 @@
 package fox.ryukkun_.vividmotion.commands;
 
 
+import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.ParticleManager;
 import fox.ryukkun_.vividmotion.VividMotion;
@@ -33,41 +34,38 @@ public class SetScreen extends ScreenCommandTPL {
 
 
     public static class Direction{
-        public boolean up = false;
-        public boolean down = false;
-        public Character direction;
-        public Block targetBlock = null;
-        public boolean status = false;
+        public Float yaw = null , pitch = null;
+        public Block targetBlock;
 
-        public Direction(Player player){
+        public Direction(Player player) {
             List<Block> b = getTargetBlock(player);
-            direction = getDirection(player);
             if (b == null) return;
             if (b.size() < 2) return;
             targetBlock = b.get(1);
             Block adjacentB = b.get(0);
-            if (targetBlock.isEmpty() || targetBlock.isLiquid() || direction == null) {
+            if (targetBlock.isEmpty() || targetBlock.isLiquid()) {
                 return;
             }
 
-            up = false;
-            down = false;
+            pitch = 0.0F;
             BlockFace bf = targetBlock.getFace(adjacentB);
             if(bf.equals(BlockFace.UP)){
-                down = true;
+                pitch = -90.0F;
+                yaw = getDirectionFloat(player);
             } else if (bf.equals(BlockFace.DOWN)) {
-                up = true;
+                pitch = 90.0F;
+                yaw = getDirectionFloat(player);
             } else if (bf.equals(BlockFace.NORTH)) {
-                direction = 'S';
+                yaw = 180F;
             } else if (bf.equals(BlockFace.SOUTH)) {
-                direction = 'N';
+                yaw = 0F;
             } else if (bf.equals(BlockFace.WEST)) {
-                direction = 'E';
+                yaw = 90F;
             } else if (bf.equals(BlockFace.EAST)) {
-                direction = 'W';
+                yaw = -90F;
             }
-            status = true;
         }
+
 
         public static List<Block> getTargetBlock(Player p){
             if (p.getGameMode().equals(GameMode.SURVIVAL)){
@@ -81,26 +79,28 @@ public class SetScreen extends ScreenCommandTPL {
         }
 
 
-        public static Character getDirection(Player p){
-            double rotation = (p.getLocation().getYaw() - 90.0F) % 360.0F;
 
-            if (rotation < 0.0D) {
-                rotation += 360.0D;
+        public static float getDirectionFloat(Player p){
+            float rotation = p.getLocation().getYaw() % 360.0F;
+
+            if (rotation < 0.0F) {
+                rotation += 360.0F;
             }
-            if ((0.0D <= rotation) && (rotation < 45.0D))
-                return 'W';
-            if ((45.0D <= rotation) && (rotation < 135.0D))
-                return 'N';
-            if ((135.0D <= rotation) && (rotation < 225.0D))
-                return 'E';
-            if ((225.0D <= rotation) && (rotation < 315.0D))
-                return 'S';
-            if ((315.0D <= rotation) && (rotation < 360.0D)) {
-                return 'W';
+            if ((0.0F <= rotation) && (rotation < 45.0F))
+                return 180.0F;
+            if ((45.0F <= rotation) && (rotation < 135.0F))
+                return -90.0F;
+            if ((135.0F <= rotation) && (rotation < 225.0F))
+                return 0.0F;
+            if ((225.0F <= rotation) && (rotation < 315.0F))
+                return 90.0F;
+            if ((315.0F <= rotation) && (rotation < 360.0F)) {
+                return 180.0F;
             }
-            return null;
+            return 0.0F;
         }
     }
+
 
 
 
@@ -156,47 +156,6 @@ public class SetScreen extends ScreenCommandTPL {
         }
 
 
-        public static Location calcPosition(Location l, double rx, double ry, double rz, Direction face){
-            l = l.clone();
-
-            if (face.direction == 'N'){
-                if (face.up){
-                    l.add(rx, rz, ry);
-                } else if (face.down) {
-                    l.add(rx, -rz, -ry);
-                } else {
-                    l.add(rx, ry, -rz);
-                }
-
-            } else if (face.direction == 'S') {
-                if (face.up){
-                    l.add(-rx, rz, -ry);
-                } else if (face.down) {
-                    l.add(-rx, -rz, ry);
-                } else {
-                    l.add(-rx, ry, rz);
-                }
-
-            } else if (face.direction == 'E') {
-                if (face.up){
-                    l.add(-ry, rz, rx);
-                } else if (face.down) {
-                    l.add(ry, -rz, rx);
-                } else {
-                    l.add(rz, ry, rx);
-                }
-
-            } else if (face.direction == 'W') {
-                if (face.up) {
-                    l.add(ry, rz, -rx);
-                } else if (face.down) {
-                    l.add(-ry, -rz, -rx);
-                } else {
-                    l.add(-rz, ry, -rx);
-                }
-            }
-            return l;
-        }
 
         public static boolean canPlace(ScreenData screenData, Direction face){
             int mapHeight = screenData.data.mapHeight, mapWidth = screenData.data.mapWidth;
@@ -207,8 +166,12 @@ public class SetScreen extends ScreenCommandTPL {
 
                     int ry = y - mapHeight/2, rx = x - mapWidth/2;
 
-                    l = calcPosition(face.targetBlock.getLocation(), rx, ry, 0.0, face);
-                    l1 = calcPosition(l, 0.0, 0.0, -1.0, face);
+                    l = face.targetBlock.getLocation().add(0.5, 0.5, 0.5);
+                    l.setPitch(face.pitch);
+                    l.setYaw(face.yaw);
+                    LocationUtil lu = new LocationUtil(l, 0.0);
+                    l = lu.addLocalCoordinate(rx, ry, 0.0);
+                    l1 = lu.addLocalCoordinate(0.0, 0.0, 1.0);
 
                     if (l.getBlock().isEmpty() || l.getBlock().isLiquid() || !l1.getBlock().isEmpty()){
                         return false;
@@ -249,7 +212,7 @@ public class SetScreen extends ScreenCommandTPL {
 
 
             Direction face = new Direction(player);
-            if (!isOver_1_13 && (face.down || face.up) || !face.status) {
+            if (!isOver_1_13 && !face.pitch.equals(0.0F) || face.pitch == null) {
                 return;
             }
 
@@ -261,14 +224,15 @@ public class SetScreen extends ScreenCommandTPL {
             _x -= 0.4;
             y += 0.4;
             x += 0.4;
-            Location l = face.targetBlock.getLocation();
-            l.setX(face.targetBlock.getX() + 0.5);
-            l.setY(face.targetBlock.getY() + 0.5);
-            l.setZ(face.targetBlock.getZ() + 0.5);
-            l = calcPosition(l, 0.0, 0.0, -0.6, face);
+            Location l = face.targetBlock.getLocation().add(0.5, 0.5, 0.5);
 
-            Location l_x_y = calcPosition(l, _x, _y, 0, face),
-                    lxy = calcPosition(l, x, y, 0, face);
+            l.setYaw( face.yaw);
+            l.setPitch( face.pitch);
+            LocationUtil lu = new LocationUtil(l, 0.0);
+            lu.addLocalCoordinate(0, 0, 0.6);
+
+            Location l_x_y = lu.clone().addLocalCoordinate(_x, _y, 0),
+                    lxy = lu.clone().addLocalCoordinate(x, y, 0);
 
 
             boolean canPlace = canPlace(screenData, face);

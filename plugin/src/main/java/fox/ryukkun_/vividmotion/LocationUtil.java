@@ -5,17 +5,20 @@ import org.bukkit.Location;
 import org.bukkit.Rotation;
 import org.bukkit.util.Vector;
 
+
 public class LocationUtil implements Cloneable{
     private Location location;
     private double roll;
 
     public LocationUtil(Location location, Rotation r) {
         this.location = location;
-        if (r.equals( Rotation.CLOCKWISE_45)) {
+        if (r.equals(Rotation.NONE) || r.equals(Rotation.FLIPPED)) {
+            roll = 0;
+        } else if (r.equals( Rotation.CLOCKWISE_45) || r.equals( Rotation.FLIPPED_45)) {
             roll = -90;
-        } else if (r.equals(Rotation.CLOCKWISE)) {
+        } else if (r.equals(Rotation.CLOCKWISE) || r.equals(Rotation.COUNTER_CLOCKWISE)) {
             roll = -180;
-        } else if (r.equals(Rotation.COUNTER_CLOCKWISE_45)) {
+        } else if (r.equals(Rotation.CLOCKWISE_135) || r.equals(Rotation.COUNTER_CLOCKWISE_45)) {
             roll = 90;
         } else {
             Bukkit.getLogger().warning("Rotationがみつかんなかったわ result:"+r.name());
@@ -43,8 +46,9 @@ public class LocationUtil implements Cloneable{
 
     public Location addLocalCoordinate(double x, double y, double z) {
         // calc roll
-        double cosR = Math.cos(roll);
-        double sinR = Math.sin(roll);
+        double rollR = Math.toRadians(roll);
+        double cosR = Math.cos(Math.toRadians(rollR));
+        double sinR = Math.sin(rollR);
 
         double _x = x;
         x = _x*cosR + y*sinR;
@@ -52,18 +56,21 @@ public class LocationUtil implements Cloneable{
 
         Vector v1 = calcLocalCoordinate(location.getYaw(), location.getPitch(), z);
         Vector v2 = calcLocalCoordinate(location.getYaw(), location.getPitch()-90f, y);
-        Vector v3 = calcLocalCoordinate(location.getYaw()-90f, location.getPitch(), x);
+        Vector v3 = calcLocalCoordinate(location.getYaw()-90f, 0, x);
 
-        return location.add(v1).add(v2).add(v3);
+        return location.add(v1).add(v2).add(v3).clone();
     }
 
     public static Vector calcLocalCoordinate(float yaw, float pitch, double vec) {
-        double vec2D = vec * Math.cos(pitch);
+        double pitchR = Math.toRadians(-pitch);
+        double yawR = Math.toRadians(yaw);
+        double vec2D = vec * Math.cos(pitchR);
 
-        double x = vec2D * Math.sin(yaw);
-        double y = vec * Math.sin(pitch);
-        double z = vec2D * Math.cos(yaw);
+        double x = -vec2D * Math.sin(yawR);
+        double y = vec * Math.sin(pitchR);
+        double z = vec2D * Math.cos(yawR);
 
+        //Bukkit.getLogger().info("yaw:"+yaw+" pitch:"+pitch+" vec:"+vec+" x:"+x+" y:"+y+" z:"+z);
         return new Vector(x, y, z);
     }
 
@@ -71,7 +78,7 @@ public class LocationUtil implements Cloneable{
     public LocationUtil clone() {
         try {
             LocationUtil clone = (LocationUtil) super.clone();
-            // TODO: このクローンが元の内部を変更できないようにミュータブルな状態をここにコピーします
+            clone.setLocation( getLocation().clone());
             return clone;
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();

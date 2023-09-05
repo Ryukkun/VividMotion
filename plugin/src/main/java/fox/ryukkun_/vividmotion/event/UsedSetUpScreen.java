@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion.event;
 
+import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
@@ -38,7 +39,7 @@ public class UsedSetUpScreen implements Listener {
         // is good direction?
         Player player = event.getPlayer();
         SetScreen.Direction face = new SetScreen.Direction(player);
-        if (!SetScreen.SetUpScreen.isOver_1_13 && (face.down || face.up) || !face.status) {
+        if (!SetScreen.SetUpScreen.isOver_1_13 && !face.pitch.equals(0.0F) || face.pitch == null) {
             event.setCancelled(true);
             return;
         }
@@ -55,24 +56,27 @@ public class UsedSetUpScreen implements Listener {
         ItemFrame itemFrameE;
         int i = -1;
 
-        if (face.down){
-            frameFace = BlockFace.UP;
-        } else if (face.up) {
+        if (face.pitch == 90.0F){
             frameFace = BlockFace.DOWN;
-        } else if (face.direction == 'N') {
-            frameFace = BlockFace.SOUTH;
-        } else if (face.direction == 'E') {
-            frameFace = BlockFace.WEST;
-        } else if (face.direction == 'W') {
-            frameFace = BlockFace.EAST;
-        } else if (face.direction == 'S') {
+        } else if (face.pitch == -90.0F) {
+            frameFace = BlockFace.UP;
+        } else if (face.yaw == 180.0F) {
             frameFace = BlockFace.NORTH;
+        } else if (face.yaw == -90F) {
+            frameFace = BlockFace.EAST;
+        } else if (face.yaw == 90F) {
+            frameFace = BlockFace.WEST;
+        } else if (face.yaw == 0F) {
+            frameFace = BlockFace.SOUTH;
         } else {
             event.setCancelled(true);
             return;
         }
 
-
+        Location l1 = face.targetBlock.getLocation().add(0.5, 0.5, 0.5);
+        l1.setYaw( face.yaw);
+        l1.setPitch( face.pitch);
+        LocationUtil lu = new LocationUtil(l1, 0);
         event.getEntity().remove();
         try {
             for (int y = 0; y < mapHeight; y++) {
@@ -81,19 +85,20 @@ public class UsedSetUpScreen implements Listener {
                     int ry = (mapHeight - mapHeight / 2) - 1 - y, rx = x - mapWidth / 2;
                     i++;
 
-                    l = SetScreen.SetUpScreen.calcPosition(face.targetBlock.getLocation(), rx, ry, -1, face);
+
+                    l = lu.clone().addLocalCoordinate(rx, ry, 1);
 
                     itemFrameE = (ItemFrame) player.getWorld().spawnEntity(l, EntityType.ITEM_FRAME);
                     itemFrameE.setFacingDirection(frameFace, true);
-                    if (face.up){
-                        if (face.direction == 'E') itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
-                        else if (face.direction == 'S') itemFrameE.setRotation(Rotation.CLOCKWISE);
-                        else if (face.direction == 'W') itemFrameE.setRotation(Rotation.CLOCKWISE_45);
+                    if (face.pitch == -90F){
+                        if (face.yaw == -90F) itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                        else if (face.yaw == 180F) itemFrameE.setRotation(Rotation.CLOCKWISE);
+                        else if (face.yaw == 90F) itemFrameE.setRotation(Rotation.CLOCKWISE_45);
 
-                    } else if (face.down){
-                        if (face.direction == 'W') itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
-                        else if (face.direction == 'S') itemFrameE.setRotation(Rotation.CLOCKWISE);
-                        else if (face.direction == 'E') itemFrameE.setRotation(Rotation.CLOCKWISE_45);
+                    } else if (face.pitch == 90F){
+                        if (face.yaw == 90F) itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
+                        else if (face.yaw == 180F) itemFrameE.setRotation(Rotation.CLOCKWISE);
+                        else if (face.yaw == -90F) itemFrameE.setRotation(Rotation.CLOCKWISE_45);
                     }
 
                     itemFrameE.setItem( MapManager.getItem(screenData.data.mapIds[i]));
