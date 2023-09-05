@@ -51,7 +51,7 @@ public class LocationUtil implements Cloneable{
         double sinR = Math.sin(rollR);
 
         double _x = x;
-        x = _x*cosR + y*sinR;
+        x = _x*cosR - y*sinR;
         y = y*cosR + _x*sinR;
 
         Vector v1 = calcLocalCoordinate(location.getYaw(), location.getPitch(), z);
