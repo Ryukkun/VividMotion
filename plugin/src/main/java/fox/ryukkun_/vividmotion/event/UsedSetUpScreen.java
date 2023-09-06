@@ -1,11 +1,11 @@
 package fox.ryukkun_.vividmotion.event;
 
 import fox.ryukkun_.vividmotion.LocationUtil;
+import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.Rotation;
@@ -17,6 +17,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsedSetUpScreen implements Listener {
     @EventHandler
@@ -78,6 +81,7 @@ public class UsedSetUpScreen implements Listener {
         l1.setPitch( face.pitch);
         LocationUtil lu = new LocationUtil(l1, 0);
         event.getEntity().remove();
+        List<ItemFrame> summonedItemFrame = new ArrayList<>();
         try {
             for (int y = 0; y < mapHeight; y++) {
                 for (int x = 0; x < mapWidth; x++) {
@@ -92,6 +96,7 @@ public class UsedSetUpScreen implements Listener {
                     l.setZ(l.getBlockZ());
                     itemFrameE = (ItemFrame) player.getWorld().spawnEntity(l, EntityType.ITEM_FRAME);
                     itemFrameE.setFacingDirection(frameFace, true);
+                    summonedItemFrame.add(itemFrameE);
                     if (face.pitch == -90F){
                         if (face.yaw == -90F) itemFrameE.setRotation(Rotation.COUNTER_CLOCKWISE_45);
                         else if (face.yaw == 180F) itemFrameE.setRotation(Rotation.CLOCKWISE);
@@ -107,8 +112,11 @@ public class UsedSetUpScreen implements Listener {
                 }
             }
         } catch (Exception e){
-            Bukkit.getLogger().warning(e.getMessage());
+            MCLogger.sendMessage(player, MCLogger.Level.Error, e.getMessage());
             event.setCancelled(true);
+            for (ItemFrame iF : summonedItemFrame) {
+                iF.remove();
+            }
         }
     }
 }

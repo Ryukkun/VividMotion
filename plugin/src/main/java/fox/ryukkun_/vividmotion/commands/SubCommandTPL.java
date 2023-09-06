@@ -21,6 +21,7 @@ public class SubCommandTPL implements CMD {
 
                 } catch (Exception e) {
                     MCLogger.sendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
+                    return true;
                 }
             }
         }
