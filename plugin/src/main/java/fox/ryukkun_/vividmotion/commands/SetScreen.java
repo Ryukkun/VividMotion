@@ -212,9 +212,8 @@ public class SetScreen extends ScreenCommandTPL {
 
 
             Direction face = new Direction(player);
-            if (!isOver_1_13 && !face.pitch.equals(0.0F) || face.pitch == null) {
-                return;
-            }
+            if (face.yaw == null || face.pitch == null) return;
+            if (!isOver_1_13 && !face.pitch.equals(0.0F)) return;
 
 
             int mapHeight = screenData.data.mapHeight, mapWidth = screenData.data.mapWidth;

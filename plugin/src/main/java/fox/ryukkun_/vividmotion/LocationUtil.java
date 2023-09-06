@@ -17,7 +17,7 @@ public class LocationUtil implements Cloneable{
         } else if (r.equals( Rotation.CLOCKWISE_45) || r.equals( Rotation.FLIPPED_45)) {
             roll = -90;
         } else if (r.equals(Rotation.CLOCKWISE) || r.equals(Rotation.COUNTER_CLOCKWISE)) {
-            roll = -180;
+            roll = 180;
         } else if (r.equals(Rotation.CLOCKWISE_135) || r.equals(Rotation.COUNTER_CLOCKWISE_45)) {
             roll = 90;
         } else {
@@ -47,7 +47,7 @@ public class LocationUtil implements Cloneable{
     public Location addLocalCoordinate(double x, double y, double z) {
         // calc roll
         double rollR = Math.toRadians(roll);
-        double cosR = Math.cos(Math.toRadians(rollR));
+        double cosR = Math.cos(rollR);
         double sinR = Math.sin(rollR);
 
         double _x = x;

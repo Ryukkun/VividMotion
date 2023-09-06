@@ -75,7 +75,7 @@ public class VideoPlayer extends Thread{
             @Override
             public void run() {
                 for (Player player : players) {
-                    for (Entity entity : player.getNearbyEntities(20.0D, 20.0D, 20.0D)) {
+                    for (Entity entity : player.getNearbyEntities(15.0D, 15.0D, 15.0D)) {
                         if (!(entity instanceof ItemFrame)) continue;
 
                         ItemFrame itemFrame = (ItemFrame) entity;
@@ -84,19 +84,22 @@ public class VideoPlayer extends Thread{
 
                         int mapId = MapManager.getMapId(is);
 
-
-                        for (int i = 0, limit = mapIds.length; i < limit; i++) {
-                            if (mapId == mapIds[i]) {
-                                VideoPacket vp = videoPackets[i];
-                                if (vp.noChange) continue;
-
-                                LocationUtil l = new LocationUtil(itemFrame.getLocation(), itemFrame.getRotation());
-                                Location start = l.clone().addLocalCoordinate(1.0/128*(vp.sX-64), -1.0/128*(vp.sY-64), 0.1);
-                                Location fin = l.clone().addLocalCoordinate(1.0/128*(vp.fX-64), -1.0/128*(vp.fY-64), 0.1);
-
-                                ParticleManager.spawnSquare(start, fin, player, Particle.REDSTONE, 0, 255, 0);
+                        int i = -1;
+                        for (int _i = 0, limit = mapIds.length; _i < limit; _i++) {
+                            if (mapId == mapIds[_i]) {
+                                i = _i;
+                                break;
                             }
                         }
+                        if (i == -1) continue;
+                        VideoPacket vp = videoPackets[i];
+                        if (vp.noChange) continue;
+
+                        LocationUtil l = new LocationUtil(itemFrame.getLocation(), itemFrame.getRotation());
+                        Location start = l.clone().addLocalCoordinate(1.0/128*(vp.sX-64), -1.0/128*(vp.sY-64), 0.1);
+                        Location fin = l.clone().addLocalCoordinate(1.0/128*(vp.fX-64), -1.0/128*(vp.fY-64), 0.1);
+
+                        ParticleManager.spawnSquare(start, fin, player, Particle.REDSTONE, 0, 255, 0);
                     }
                 }
             }

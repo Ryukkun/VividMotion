@@ -87,7 +87,9 @@ public class UsedSetUpScreen implements Listener {
 
 
                     l = lu.clone().addLocalCoordinate(rx, ry, 1);
-
+                    l.setX(l.getBlockX());
+                    l.setY(l.getBlockY());
+                    l.setZ(l.getBlockZ());
                     itemFrameE = (ItemFrame) player.getWorld().spawnEntity(l, EntityType.ITEM_FRAME);
                     itemFrameE.setFacingDirection(frameFace, true);
                     if (face.pitch == -90F){
