@@ -41,7 +41,6 @@ public class BreakScreen implements Listener {
 
         int mapId = MapManager.getMapId(frameItem);
         int index = -1;
-        event.setCancelled(true);
         ScreenData screenData = null;
         loop:
         for (ScreenData sd :VividMotion.screenDataList) {
@@ -55,6 +54,7 @@ public class BreakScreen implements Listener {
         }
 
         if (screenData == null) return;
+        event.setCancelled(true);
         LocationUtil base = new LocationUtil(entity.getLocation(), ((ItemFrame)entity).getRotation());
         base.addLocalCoordinate(-(index%screenData.data.mapWidth), index/screenData.data.mapWidth, 0);
 
