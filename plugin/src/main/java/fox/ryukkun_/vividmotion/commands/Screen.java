@@ -9,6 +9,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
@@ -57,8 +58,12 @@ public class Screen extends SubCommandTPL {
                 ScreenData sc = VividMotion.getScreenData(args[0]);
 
                 if (sc != null){
-                    sc.delete();
-                    MCLogger.sendMessage(commandSender ,MCLogger.Level.Success ,args[0]+" の削除に成功しましたした。");
+                    try {
+                        sc.delete();
+                        MCLogger.sendMessage(commandSender, MCLogger.Level.Success, args[0] + " の削除に成功しましたした。");
+                    } catch (IOException e) {
+                        MCLogger.sendMessage(commandSender ,MCLogger.Level.Error, e.getMessage());
+                    }
 
                 } else {
                     MCLogger.sendMessage(commandSender ,MCLogger.Level.Error ,"Screenが見つかりませんでした。");

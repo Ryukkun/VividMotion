@@ -206,18 +206,13 @@ public class ScreenData {
     }
 
 
-    public void delete(){
-        try {
-            if (inputStream != null) {
-                inputStream.close();
-            }
-            this.loopEnable = false;
-            VividMotion.screenDataList.remove( this);
-            FileUtils.deleteDirectory( getFile());
-
-        } catch (Exception e){
-            Bukkit.getLogger().info(e.getMessage());
+    public void delete() throws IOException {
+        if (inputStream != null) {
+            inputStream.close();
         }
+        this.loopEnable = false;
+        VividMotion.screenDataList.remove( this);
+        FileUtils.deleteDirectory( getFile());
     }
 
 
