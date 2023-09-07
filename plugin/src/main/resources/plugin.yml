@@ -6,7 +6,7 @@ commands:
   vividmotion:
     description: This is a fantastic command.
     permission: vividmotion.command.vividmotion
-    usage: /<command> [fps, map-encode, reload] [...]
+    usage: /<command> [...] [...]
   give-screen:
     description: This is a fantastic command.
     permission: vividmotion.command.give-screen
@@ -36,4 +36,7 @@ permissions:
   vividmotion.command.give-screen:
     default: op
   vividmotion.command.screen:
+    default: op
+
+  vividmotion.interact-screen:
     default: op

@@ -3,7 +3,6 @@ package fox.ryukkun_.vividmotion.event;
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.MapManager;
-import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.Location;
@@ -34,7 +33,7 @@ public class UsedSetUpScreen implements Listener {
             return;
         }
         // find screen Data
-        ScreenData screenData = VividMotion.getScreenData( itemStack.getItemMeta().getLore().get(0));
+        ScreenData screenData = SetScreen.SetUpScreen.getScreenData(itemStack);
         if (screenData == null) {
             return;
         }

@@ -4,11 +4,14 @@ import fox.ryukkun_.*;
 import fox.ryukkun_.vividmotion.commands.GiveScreen;
 import fox.ryukkun_.vividmotion.commands.Screen;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
+import fox.ryukkun_.vividmotion.event.BreakScreen;
+import fox.ryukkun_.vividmotion.event.InteractScreen;
 import fox.ryukkun_.vividmotion.event.SelectSetUpScreen;
 import fox.ryukkun_.vividmotion.event.UsedSetUpScreen;
 import fox.ryukkun_.vividmotion.imageutil.ImageEncoder;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.*;
@@ -68,8 +71,12 @@ public final class VividMotion extends JavaPlugin {
             }
         }
 
-        getServer().getPluginManager().registerEvents(new UsedSetUpScreen(), this);
-        getServer().getPluginManager().registerEvents(new SelectSetUpScreen(), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new UsedSetUpScreen(), this);
+        pluginManager.registerEvents(new SelectSetUpScreen(), this);
+        pluginManager.registerEvents(new BreakScreen(), this);
+        pluginManager.registerEvents(new InteractScreen(), this);
+
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
         getCommand("screen").setExecutor(new Screen());
@@ -89,6 +96,15 @@ public final class VividMotion extends JavaPlugin {
         for (ScreenData sd : VividMotion.screenDataList) {
             if (sd.data.name.equals(name)) {
                 return sd;
+            }
+        }
+        return null;
+    }
+
+    public static ScreenData getScreenData(int mapId){
+        for (ScreenData sd : VividMotion.screenDataList) {
+            for (int _id : sd.data.mapIds) {
+                if (mapId == _id) return sd;
             }
         }
         return null;

@@ -53,13 +53,14 @@ public class MapManager {
 
 
     public static ItemStack getItem(int mapId) {
+        ReadWriteNBT nbt = NBT.itemStackToNBT(new ItemStack(Material.MAP));
+        nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setByte("Item", (byte)2);
         if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
-            ItemStack is = new ItemStack(Material.MAP);
+            ItemStack is = NBT.itemStackFromNBT(nbt);
             is.setDurability((short) mapId);
             return is;
 
         } else {
-            ReadWriteNBT nbt = NBT.itemStackToNBT(new ItemStack(Material.MAP));
             nbt.getOrCreateCompound("tag").setInteger("map", mapId);
             return NBT.itemStackFromNBT(nbt);
         }

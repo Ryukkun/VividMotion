@@ -1,6 +1,8 @@
 package fox.ryukkun_.vividmotion.commands;
 
 
+import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.ParticleManager;
@@ -111,14 +113,22 @@ public class SetScreen extends ScreenCommandTPL {
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
         public static final boolean isOver_1_13 = (MCVersion.greaterThanEqual(MCVersion.v1_13_R1));
 
-        private static final ItemStack itemFrame = new ItemStack(Material.ITEM_FRAME);
+        private static final ItemStack itemFrame;
         static {
-            ItemMeta im = itemFrame.getItemMeta();
+            ItemStack is = new ItemStack(Material.ITEM_FRAME);
+            ItemMeta im = is.getItemMeta();
             im.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             im.setDisplayName("ScreenSetter");
             im.setLore(Arrays.asList("右クリック で設置", "いらなかったら 消したり捨てていいよ"));
-            itemFrame.setItemMeta(im);
+            is.setItemMeta(im);
+
+            ReadWriteNBT nbt = NBT.itemStackToNBT(is);
+            ReadWriteNBT nbt1 = nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion");
+            nbt1.setByte("Item", (byte)1);
+            nbt1.setString("ScreenName", "");
+
+            itemFrame = NBT.itemStackFromNBT(nbt);
         }
 
         private SetUpScreen(Player player, ScreenData screenData, boolean giveItem){
@@ -126,13 +136,10 @@ public class SetScreen extends ScreenCommandTPL {
             this.screenData = screenData;
 
             if (giveItem){
-                ItemStack item = itemFrame.clone();
-                ItemMeta im = item.getItemMeta();
-                List<String> l = im.getLore();
-                l.addAll(0, Arrays.asList( screenData.data.name, ""));
-                im.setLore( l);
-                item.setItemMeta(im);
+                ReadWriteNBT nbt = NBT.itemStackToNBT( itemFrame.clone());
+                nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setString("ScreenName",screenData.data.name);
 
+                ItemStack item = NBT.itemStackFromNBT(nbt);
                 PlayerInventory inv = player.getInventory();
                 if (inv.getItemInMainHand().getType().equals(Material.AIR)){
                     inv.setItemInMainHand(item);
@@ -183,14 +190,22 @@ public class SetScreen extends ScreenCommandTPL {
 
 
         public static boolean isSetUpScreenItem(ItemStack itemStack){
-            ItemMeta im = itemStack.getItemMeta();
+            if (!itemStack.getType().equals( Material.ITEM_FRAME)) return false;
 
-            if (im == null){
-                return false;
-            }
-            if (!im.hasDisplayName() || !im.hasLore() || !itemStack.getType().equals( Material.ITEM_FRAME)){
-                return false;
-            } else return (im.getDisplayName().equals(itemFrame.getItemMeta().getDisplayName())) && (VividMotion.getScreenData( im.getLore().get(0)) != null);
+            ReadWriteNBT nbt = NBT.itemStackToNBT(itemStack);
+            ReadWriteNBT nbt1 = nbt.getOrCreateCompound("tag").getCompound("VividMotion");
+            if (nbt1 == null) return false;
+            return nbt1.getByte("Item").equals((byte) 1);
+        }
+
+
+        public static String getScreenName(ItemStack itemStack) {
+            return NBT.itemStackToNBT(itemStack).getOrCreateCompound("tag").getCompound("VividMotion").getString("ScreenName");
+        }
+
+
+        public static ScreenData getScreenData(ItemStack itemStack) {
+            return VividMotion.getScreenData(getScreenName(itemStack));
         }
 
 
@@ -205,7 +220,7 @@ public class SetScreen extends ScreenCommandTPL {
             if ( !isSetUpScreenItem( itemStack) || !player.isOnline()){
                 _cancel();
                 return;
-            } else if (!itemStack.getItemMeta().getLore().get(0).equals( screenData.data.name)) {
+            } else if (!getScreenName(itemStack).equals( screenData.data.name)) {
                 _cancel();
                 return;
             }
