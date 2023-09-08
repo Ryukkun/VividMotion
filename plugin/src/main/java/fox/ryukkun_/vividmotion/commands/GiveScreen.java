@@ -3,7 +3,8 @@ package fox.ryukkun_.vividmotion.commands;
 
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
-import fox.ryukkun_.vividmotion.MCVersion;
+import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBTCompoundList;
+import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -22,45 +23,36 @@ public class GiveScreen extends ScreenCommandTPL {
         int ii;
         int iii = 1;
         ReadWriteNBT chest = null;
+        ReadWriteNBTCompoundList chestItems = null;
         ReadWriteNBT nbt;
         List<ItemStack> chestList = new ArrayList<>();
 
         for (int i = 0; i < mapIds.length; i++){
             ii = i % 27;
             if (ii == 0){
-                if (chest != null) {
-                    chestList.add(NBT.itemStackFromNBT( chest));
-                }
-                ItemStack itemChest = new ItemStack( Material.CHEST);
+                ItemStack itemChest = new ItemStack(Material.CHEST);
                 ItemMeta meta = itemChest.getItemMeta();
                 meta.setDisplayName("Maps " + iii++);
                 meta.setLore( Collections.singletonList("(+NBT)"));
                 meta.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
                 meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
                 itemChest.setItemMeta(meta);
-
-                chest = NBT.itemStackToNBT( itemChest);
+                chest = NBT.itemStackToNBT(itemChest);
+                chestItems = chest.getOrCreateCompound("tag")
+                        .getOrCreateCompound("BlockEntityTag")
+                        .getCompoundList("Items");
             }
 
-            nbt = NBT.createNBTObject();
+            nbt = MapManager.getItemNBT(mapIds[i]);
             nbt.setByte("Slot", (byte) ii);
             nbt.setByte("Count", (byte) 1);
-            nbt.setString("id", "minecraft:filled_map");
-            if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)){
-                nbt.setShort("Damage", (short) mapIds[i]);
-            } else{
-                nbt.getOrCreateCompound("tag").setInteger("map", mapIds[i]);
+
+
+            chestItems.addCompound().mergeCompound(nbt);
+
+            if (ii == 26 || i+1 == mapIds.length) {
+                chestList.add(NBT.itemStackFromNBT( chest));
             }
-
-
-            chest.getOrCreateCompound("tag")
-                    .getOrCreateCompound("BlockEntityTag")
-                    .getCompoundList("Items")
-                    .addCompound().mergeCompound(nbt);
-        }
-
-        if (chest != null){
-            chestList.add(NBT.itemStackFromNBT( chest));
         }
 
         return chestList.toArray(new ItemStack[0]);

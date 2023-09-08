@@ -53,17 +53,28 @@ public class MapManager {
 
 
     public static ItemStack getItem(int mapId) {
-        ReadWriteNBT nbt = NBT.itemStackToNBT(new ItemStack(Material.MAP));
-        nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setByte("Item", (byte)2);
-        if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
-            ItemStack is = NBT.itemStackFromNBT(nbt);
-            is.setDurability((short) mapId);
-            return is;
+        return NBT.itemStackFromNBT( getItemNBT(mapId));
+    }
 
+
+    public static ReadWriteNBT getItemNBT(int mapId) {
+        ItemStack itemStack = new ItemStack(Material.MAP);
+        ReadWriteNBT nbt;
+
+        if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
+            itemStack.setDurability((short) mapId);
+            nbt = NBT.itemStackToNBT(itemStack);
         } else {
+            nbt = NBT.itemStackToNBT(itemStack);
             nbt.getOrCreateCompound("tag").setInteger("map", mapId);
-            return NBT.itemStackFromNBT(nbt);
         }
+
+        nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setByte("Item", (byte)2);
+        return nbt;
+    }
+
+    public static boolean isScreenMap(ItemStack itemStack) {
+        return NBT.itemStackToNBT(itemStack).getOrCreateCompound("tag").getOrCreateCompound("VividMotion").getByte("Item") == (byte)2;
     }
 
 

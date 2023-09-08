@@ -1,7 +1,6 @@
 package fox.ryukkun_.vividmotion.event;
 
 import fox.ryukkun_.vividmotion.MapManager;
-import fox.ryukkun_.vividmotion.VividMotion;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
@@ -40,7 +39,7 @@ public class InteractScreen implements Listener {
         if (!frameItem.getType().equals(Material.MAP) || player.getGameMode().equals(GameMode.CREATIVE)) return false;
 
         if (!player.hasPermission("vividmotion.interact-screen")) {
-            return VividMotion.getScreenData(MapManager.getMapId(frameItem)) != null;
+            return MapManager.isScreenMap(frameItem);
         }
         return false;
     }
