@@ -37,6 +37,3 @@ permissions:
     default: op
   vividmotion.command.screen:
     default: op
-
-  vividmotion.interact-screen:
-    default: op

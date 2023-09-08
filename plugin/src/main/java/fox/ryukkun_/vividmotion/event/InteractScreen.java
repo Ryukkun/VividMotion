@@ -38,9 +38,6 @@ public class InteractScreen implements Listener {
         ItemStack frameItem = itemFrame.getItem();
         if (!frameItem.getType().equals(Material.MAP) || player.getGameMode().equals(GameMode.CREATIVE)) return false;
 
-        if (!player.hasPermission("vividmotion.interact-screen")) {
-            return MapManager.isScreenMap(frameItem);
-        }
-        return false;
+        return MapManager.isScreenMap(frameItem);
     }
 }
