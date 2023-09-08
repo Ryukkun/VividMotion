@@ -23,7 +23,7 @@ public class VideoPlayer extends Thread{
     private final VideoPacket[][] packetsTrimCache;
     public static final HashMap<Integer, HashMap<UUID, Long>> lastTime = new HashMap<>();
     public static final List<UUID> showUpdatePlayer = new ArrayList<>();
-
+    private static final int FULL_UPDATE_DURATION = 10;
 
     public VideoPlayer(ScreenData mapsData){
         this.mapsData = mapsData;
@@ -114,6 +114,8 @@ public class VideoPlayer extends Thread{
         long next = System.currentTimeMillis();
         List<UUID> alreadySend = new ArrayList<>();
         byte[][] lastPixelData = null;
+        int fullUpdateTiming = (int) (mapsData.data.videoFrameRate*FULL_UPDATE_DURATION);
+        int fullUpdateTime = 0;
 
         try{
             while (VividMotion.isEnable && mapsData.loopEnable){
@@ -137,9 +139,12 @@ public class VideoPlayer extends Thread{
                     byte[][] pixelData = mapsData.getMapData();
                     VideoPacket[] difPackets = packetsTrimCache[(int) mapsData.data.nowFrame];
 
-                    if (difPackets[0] == null && lastPixelData != null) {
-                        difPackets = VideoPacket.getDifference(lastPixelData, pixelData);
-                        packetsTrimCache[(int) mapsData.data.nowFrame] = difPackets;
+                    if (difPackets[0] == null) {
+                        if (lastPixelData != null) {
+                            difPackets = VideoPacket.getDifference(lastPixelData, pixelData);
+                            packetsTrimCache[(int) mapsData.data.nowFrame] = difPackets;
+                        }
+                        lastPixelData = pixelData;
                     }
 
                     //// showUpdates
@@ -149,7 +154,7 @@ public class VideoPlayer extends Thread{
                     //// send Packet
                     List<UUID> uuids = getPacketNeeded( mapsData.data.mapIds[0]);
                     for (UUID uuid : uuids) {
-                        if (alreadySend.contains(uuid) && mapsData.data.nowFrame != 0) {
+                        if (alreadySend.contains(uuid) && fullUpdateTime < fullUpdateTiming) {
                             // 部分的に送信
                             List<MapPacket> packets = new ArrayList<>();
                             for (int i = 0; i < difPackets.length; i++) {
@@ -163,17 +168,17 @@ public class VideoPlayer extends Thread{
                         } else {
                             // 全てのピクセル送信
                             MapPacketSender.sendPixelData(mapsData, uuid, pixelData);
+                            fullUpdateTime %= fullUpdateTiming;
                         }
                     }
 
-                    lastPixelData = pixelData;
                     alreadySend = uuids;
                 }
 
                 // sleep
                 next += (long) (1000 / mapsData.getFrameRate());
                 Thread.sleep(Math.max(0,  next - System.currentTimeMillis()));
-
+                fullUpdateTime++;
                 }
             } catch (InterruptedException e) {
             throw new RuntimeException(e);
