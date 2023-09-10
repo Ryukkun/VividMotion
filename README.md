@@ -10,7 +10,7 @@
 |       名前       | 説明                             |                                         |
 |:--------------:|:-------------------------------|:---------------------------------------:|
 |    `screen`    | 写真や動画を読み込んだもの。管理しやすい様に名前をつけよう！ |                                         |
-| `ScreenSetter` | `screen`をワンクリックで設置できるアイテム。     | ![ScreenSetter](https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-96a7048c525d) |
+| `ScreenSetter` | `screen`をワンクリックで設置できるアイテム。     | https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-96a7048c525d |
 <br>
 
 
