@@ -7,16 +7,17 @@
 <br>
 
 ## ◆ アイテム・概念
-|       名前       | 説明                             |                                         |
-|:--------------:|:-------------------------------|:---------------------------------------:|
-|    `screen`    | 写真や動画を読み込んだもの。管理しやすい様に名前をつけよう！ |                                         |
-| `ScreenSetter` | `screen`をワンクリックで設置できるアイテム。     | ![screenSetter](files/ScreenSetter.mp4) |
+- `screen` : 写真や動画を読み込んだもの。管理しやすい様に名前をつけよう！
 <br>
 
+- `ScreenSetter` : `screen`をワンクリックで設置できるアイテム。
+  - 右クリック : `screen`を設置。緑のパーティクルだと設置可能。
+  - 左クリック : `screen`を一括破壊。
+  - このアイテムを手に持った状態だと ブロックが破壊できない様になってます。
 
+https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-96a7048c525d
 
-
-
+<br><br>
 
 ## ◆ コマンド
   | set-screen                              | screenを設置できる`ScreenSetter`を取得するコマンド                                                  |
@@ -37,7 +38,7 @@
   | __vividmotion__ | __configの変更 や debug機能の使用に関するコマンド__ |
   | `/vividmotion fps <0.0~20.0>`          | `screen`で動画を再生する際のFPS。すでに処理済みの`screen`のFPSは途中から変更はできない。初期設定は**10.0**      |
   | `/vividmotion map-encode <encodeType>` | 画像・動画の処理の方法を変更。`<encodeType>`は [近似, 誤差拡散, 誤差拡散.Mk3] から選択。初期設定は**誤差拡散.Mk3** |
-  | `/vividmotion reload`                  | configをファイルから読み込みし直す。                                                            |
+  | `/vividmotion reload`                  | configファイルを読み込みし直す。                                                            |
   | `/vividmotion show-screen-updates` | 表示面の更新場所をパーティクルで表示する （ON / OFF） |
 
 <br>
