@@ -54,6 +54,6 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
   - `screen`を作りすぎたり、解像度の高い`screen`を作ると、サーバーに接続できなくなるから注意！
     - `1280x720 10FPS` の`screen`1つで上限くらい。
     - Pixel per Second で 9216000（1280x720x10）を上限の基準くらいで考えるといいかも
-    - １Pixel １Byteなので、 `1280x720 10FPS`の場合、 プレイヤー１人に `9.216MByte/s（73.728MBps）` 送信してることを忘れずに心に刻もう。
+    - １Pixel １Byteなので、 `1280x720 10FPS`の場合、 プレイヤー１人に**最大で** `9.216MByte/s（73.728MBps）` 送信してることになる。
 <br>
 
