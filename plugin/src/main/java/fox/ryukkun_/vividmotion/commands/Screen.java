@@ -60,7 +60,7 @@ public class Screen extends SubCommandTPL {
                 if (sc != null){
                     try {
                         sc.delete();
-                        MCLogger.sendMessage(commandSender, MCLogger.Level.Success, args[0] + " の削除に成功しましたした。");
+                        MCLogger.sendMessage(commandSender, MCLogger.Level.Success, args[0] + " の削除に成功しました。");
                     } catch (IOException e) {
                         MCLogger.sendMessage(commandSender ,MCLogger.Level.Error, e.getMessage());
                     }
