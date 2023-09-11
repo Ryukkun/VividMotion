@@ -54,15 +54,19 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
 それぞれメリットデメリットあるから好きなの選んで。
 | encodeType | 写メ | 写メ2 | 通信量 | 説明 |
 | :--- | :---: | :---: | :--- | :--- |
-| _元画像_ | ![320](https://github.com/Ryukkun/VividMotion/assets/83561145/63e0fa79-9d74-4f52-a34a-9288b9df5a46) |  | | |
-| 近似 | ![320N](https://github.com/Ryukkun/VividMotion/assets/83561145/ba9b48be-b459-4c88-94bc-9fcea5dfd4a4) | | 少 | ベーシックな奴。色の精度は低いが、グラデーションがない画像は得意。 |
-| 誤差拡散 |![320G](https://github.com/Ryukkun/VividMotion/assets/83561145/c49aab12-0108-4baa-91b2-0a83a45c9e41) | | 多 | 遠くから見たらキレイ。近くで見たらキレイじゃない。 |
-| 誤差拡散.Mk3 | ![320G3](https://github.com/Ryukkun/VividMotion/assets/83561145/631b05ab-a679-4f2e-9903-35c623a4c0bf) | | 中 | ↑同じく。グラデーションが無い画像は苦手。 |
+| _元画像_ | ![320](https://github.com/Ryukkun/VividMotion/assets/83561145/63e0fa79-9d74-4f52-a34a-9288b9df5a46) | ![320R](https://github.com/Ryukkun/VividMotion/assets/83561145/b6e028e0-466a-4f48-baa8-66aad01cc3ec) | | |
+| 近似 | ![320N](https://github.com/Ryukkun/VividMotion/assets/83561145/ba9b48be-b459-4c88-94bc-9fcea5dfd4a4) | ![320RN](https://github.com/Ryukkun/VividMotion/assets/83561145/061bf820-4b92-4d8d-871d-e96e2e2ba115) | 少 | ベーシックな奴。色の精度は低いが、グラデーションが無い画像は得意。 |
+| 誤差拡散 |![320G](https://github.com/Ryukkun/VividMotion/assets/83561145/c49aab12-0108-4baa-91b2-0a83a45c9e41) | ![320RG](https://github.com/Ryukkun/VividMotion/assets/83561145/3fdd2859-d5d5-43ac-9513-622566343712) | 多 | 遠くから見たらキレイ。近くで見たらキレイじゃない。 |
+| 誤差拡散.Mk3 | ![320G3](https://github.com/Ryukkun/VividMotion/assets/83561145/631b05ab-a679-4f2e-9903-35c623a4c0bf) | ![320RG3](https://github.com/Ryukkun/VividMotion/assets/83561145/466470c3-479d-4eec-a9d6-0b4bb5441b89) | 中 | ↑同じく。グラデーションが無い画像は苦手。 |
+
+
+
 
 
 
 
 ## ◆ 注意
+
   - `screen`のファイル容量かなり大きくなるかもしれない。ゆるして！
   - `screen`を作りすぎたり、解像度の高い`screen`を作ると、サーバーに接続できなくなるから注意！
     - `1280x720 10FPS` の`screen`1つで上限くらい。
