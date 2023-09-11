@@ -28,6 +28,7 @@ public class FFmpegSource {
 
     public FFmpegSource(String path) throws Exception {
         ConfigManager.getEncode();
+        path = path.trim();
 
         // is URL
         if (re_url.matcher(path).find()) {
@@ -43,6 +44,8 @@ public class FFmpegSource {
         // is File
         } else {
             try {
+                if (path.startsWith("\"") || path.startsWith("'")) path = path.substring(1);
+                if (path.endsWith("\"") || path.endsWith("'")) path = path.substring(0, path.length()-1);
                 File file = new File(path);
                 if (file.exists()){
                     fromFile( file);
