@@ -54,10 +54,10 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
 それぞれメリットデメリットあるから好きなの選んで。
 | encodeType | 写メ | 写メ2 | 通信量 | 説明 |
 | :--- | :---: | :---: | :--- | :--- |
-| _元画像_ | ![320](https://github.com/Ryukkun/VividMotion/assets/83561145/63e0fa79-9d74-4f52-a34a-9288b9df5a46) | ![320R](https://github.com/Ryukkun/VividMotion/assets/83561145/b6e028e0-466a-4f48-baa8-66aad01cc3ec) | | |
-| 近似 | ![320N](https://github.com/Ryukkun/VividMotion/assets/83561145/ba9b48be-b459-4c88-94bc-9fcea5dfd4a4) | ![320RN](https://github.com/Ryukkun/VividMotion/assets/83561145/061bf820-4b92-4d8d-871d-e96e2e2ba115) | 少 | ベーシックな奴。色の精度は低いが、グラデーションが無い画像は得意。 |
-| 誤差拡散 |![320G](https://github.com/Ryukkun/VividMotion/assets/83561145/c49aab12-0108-4baa-91b2-0a83a45c9e41) | ![320RG](https://github.com/Ryukkun/VividMotion/assets/83561145/3fdd2859-d5d5-43ac-9513-622566343712) | 多 | 遠くから見たらキレイ。近くで見たらキレイじゃない。 |
-| 誤差拡散.Mk3 | ![320G3](https://github.com/Ryukkun/VividMotion/assets/83561145/631b05ab-a679-4f2e-9903-35c623a4c0bf) | ![320RG3](https://github.com/Ryukkun/VividMotion/assets/83561145/466470c3-479d-4eec-a9d6-0b4bb5441b89) | 中 | ↑同じく。グラデーションが無い画像は苦手。 |
+| _元画像_ | ![320](https://github.com/Ryukkun/VividMotion/assets/83561145/50e086bd-2b80-4868-ac21-d3365e6e1772) | ![320R](https://github.com/Ryukkun/VividMotion/assets/83561145/e731ac05-aa2b-411e-8121-8e735dbb3695) | | |
+| 近似 | ![320N](https://github.com/Ryukkun/VividMotion/assets/83561145/9236cf1a-95bf-4b7a-b95b-58aef57ddc90) | ![320RN](https://github.com/Ryukkun/VividMotion/assets/83561145/3e6ff80d-d650-4745-bd44-6d126c30b750) | 少 | ベーシックな奴。色の精度は低いが、グラデーションが無い画像は得意。 |
+| 誤差拡散 | ![320G](https://github.com/Ryukkun/VividMotion/assets/83561145/0a89894c-7e76-48e9-a2e9-d58596cf1a3b) | ![320RG](https://github.com/Ryukkun/VividMotion/assets/83561145/d63f4c3f-3ca1-4ffe-b765-4da966ffd506) | 多 | 遠くから見たらキレイ。近くで見たらキレイじゃない。 |
+| 誤差拡散.Mk3 | ![320G3](https://github.com/Ryukkun/VividMotion/assets/83561145/2b7ca56a-ce14-4f65-974c-d48588bf0a26) | ![320RG3](https://github.com/Ryukkun/VividMotion/assets/83561145/1f3e4787-9150-4d71-b828-e7e3e5b5034e) | 中 | ↑同じく。グラデーションが無い画像は苦手。 |
 
 
 
