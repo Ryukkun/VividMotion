@@ -49,6 +49,19 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
 <br>
 
 
+## mapEncodeType
+マインクラフトの地図は表現できる色が256色以下と限られています。とても良くないです。怒った僕はアルゴリズムを3つ用意しました。
+それぞれメリットデメリットあるから好きなの選んで。
+| encodeType | 写メ | 写メ2 | 通信量 | 説明 |
+| :--- | :---: | :---: | :--- | :--- |
+| _元画像_ | ![320](https://github.com/Ryukkun/VividMotion/assets/83561145/63e0fa79-9d74-4f52-a34a-9288b9df5a46) |  | | |
+| 近似 | ![320N](https://github.com/Ryukkun/VividMotion/assets/83561145/ba9b48be-b459-4c88-94bc-9fcea5dfd4a4) | | 少 | ベーシックな奴。色の精度は低いが、グラデーションがない画像は得意。 |
+| 誤差拡散 |![320G](https://github.com/Ryukkun/VividMotion/assets/83561145/c49aab12-0108-4baa-91b2-0a83a45c9e41) | | 多 | 遠くから見たらキレイ。近くで見たらキレイじゃない。 |
+| 誤差拡散.Mk3 | ![320G3](https://github.com/Ryukkun/VividMotion/assets/83561145/631b05ab-a679-4f2e-9903-35c623a4c0bf) | | 中 | ↑同じく。グラデーションが無い画像は苦手。 |
+
+
+
+
 ## ◆ 注意
   - `screen`のファイル容量かなり大きくなるかもしれない。ゆるして！
   - `screen`を作りすぎたり、解像度の高い`screen`を作ると、サーバーに接続できなくなるから注意！
