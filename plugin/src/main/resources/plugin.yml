@@ -1,5 +1,5 @@
 name: VividMotion
-version: '${project.version}'
+version: '${plugin.version}'
 main: fox.ryukkun_.vividmotion.VividMotion
 
 commands:

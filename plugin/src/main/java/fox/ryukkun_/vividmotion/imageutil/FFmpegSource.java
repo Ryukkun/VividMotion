@@ -17,7 +17,6 @@ public class FFmpegSource {
     public int width, height;
     public double frameRate;
     public FFmpegFrameGrabber ffg = null;
-    private ImageEncoder.EncodeType encodeType;
 
     public static final Pattern re_url = Pattern.compile("https?://.+");
 
