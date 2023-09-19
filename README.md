@@ -48,17 +48,19 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
   | `/screen resume <name>`                | 再生 <-> pause                                                              |
   | &nbsp;                                 |                                                                            |
   | __vividmotion__ | __configの変更 や debug機能の使用に関するコマンド__ |
-  | `/vividmotion fps <0.0~20.0>`          | `screen`で動画を再生する際のFPS。すでに処理済みの`screen`のFPSは途中から変更はできない。初期設定は**10.0**      |
-  | `/vividmotion map-encode <encodeType>` | 画像・動画の処理の方法を変更。`<encodeType>`は [近似, 誤差拡散, 誤差拡散.Mk3] から選択。初期設定は**誤差拡散.Mk3** |
+  | `/vividmotion fps <0.0~20.0>`          | `動画のscreen`のFPS。screen生成時に設定されたFPSの値を参照して処理するため、生成済みのscreenはFPSを変更できない。初期設定は**10.0**      |
+  | `/vividmotion map-encode <mapEncodeType>` | 画像・動画を地図データに変換する際のアルゴリズムの変更。`<mapEncodeType>`は後述。 |
   | `/vividmotion reload`                  | configファイルを読み込みし直す。                                                            |
-  | `/vividmotion show-screen-updates` | 表示面の更新場所をパーティクルで表示する （ON / OFF） |
+  | `/vividmotion show-screen-updates` | コマンド実行者は、screenの表示面の更新場所をパーティクルで表示する （ON / OFF） |
 
 <br>
 
 
 
 ## ◆ mapEncodeType
-マインクラフトの地図は表現できる色が256色以下と限られているため、アルゴリズムを3つ用意しました。  
+マインクラフトの地図は表現できる色が256色以下と限られているため、画像・動画を地図データに変換する際のアルゴリズムを3つ用意しました。  
+初期設定は**誤差拡散.Mk3**  
+`動画のscreen`を使用する場合は、アルゴリズムごとに通信量が変わってきます。  
 それぞれメリットデメリットあるから好きなの選んで。
 | encodeType | 写メ | 写メ2 | 通信量 | 説明 |
 | :--- | :---: | :---: | :--- | :--- |
@@ -77,8 +79,8 @@ https://github.com/Ryukkun/VividMotion/assets/83561145/9c1dee77-2df2-42c0-80ca-9
   - クリエイティブでのみscreenとの干渉（破壊やmapの回転）が可能です。
   - 地図1枚の解像度は`128x128`なので、screenに変換する写真の解像度は縦横ともに128の倍数にすることをオススメします！<br>128の倍数ではなかった場合、余白が生成されます。
   - 長い動画はscreenのファイル容量かなり大きくなるかもしれない。ゆるして！
-  - `動画のscreen`は、`写真のscreen`よりも負荷が大きいので注意！<br>また、作りすぎたり解像度が高いと、送信するパケットの量が膨大になり接続エラーになる場合があります！
-    - `1280x720 10FPS` のscreen1つくらいで、1人のプレイヤーに送信できるパケットの量の上限となる。
+  - `動画のscreen`は、`写真のscreen`よりも負荷が大きいので注意！<br>また、作りすぎたり解像度が高いと、通信量が膨大になり接続エラーになる場合があります！
+    - `1280x720 10FPS のscreen`1つくらいで、1人のプレイヤーに送信できる通信量の上限となる。
     - １Pixel １Byteなので、 `1280x720 10FPS`の場合、 プレイヤー１人に**最大で** `9.216MByte/s（73.728MBps）` 送信してることになる。
 <br>
 
