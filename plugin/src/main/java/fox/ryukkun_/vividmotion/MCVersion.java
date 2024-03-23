@@ -17,7 +17,9 @@ public enum MCVersion {
     v1_19_R1(1191, "v1_19_R1"),
     v1_19_R2(1192, "v1_19_R2"),
     v1_19_R3(1193, "v1_19_R3"),
-    v1_20_R1(1201, "v1_20_R1");
+    v1_20_R1(1201, "v1_20_R1"),
+    v1_20_R2(1202, "v1_20_R2"),
+    v1_20_R3(1203, "v1_20_R3");
 
     public final static MCVersion version;
     static {

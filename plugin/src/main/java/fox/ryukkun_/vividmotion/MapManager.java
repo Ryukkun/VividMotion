@@ -40,6 +40,10 @@ public class MapManager {
             mapUtil = new MapUtil_1_19_R3();
         } else if (MCVersion.equal( MCVersion.v1_20_R1)){
             mapUtil = new MapUtil_1_20_R1();
+        } else if (MCVersion.equal( MCVersion.v1_20_R2)){
+            mapUtil = new MapUtil_1_20_R2();
+        } else if (MCVersion.equal( MCVersion.v1_20_R3)){
+            mapUtil = new MapUtil_1_20_R3();
         }
     }
 

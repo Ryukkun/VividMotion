@@ -29,6 +29,8 @@
         <module>bukkit_1_19_R2</module>
         <module>bukkit_1_19_R3</module>
         <module>bukkit_1_20_R1</module>
+        <module>bukkit_1_20_R2</module>
+        <module>bukkit_1_20_R3</module>
     </modules>
 
     <properties>

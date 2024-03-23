@@ -6,3 +6,7 @@ fps: 10
 # 誤差拡散     : ちょい遅い、線は生成されない
 # 近似        : 早い。表現できる色が減るが、通信量がまあまあ減る。
 mapEncode: 誤差拡散
+
+# background Color
+# Black = 119, Invisible = 0, white = 34
+backgroundColor: 34

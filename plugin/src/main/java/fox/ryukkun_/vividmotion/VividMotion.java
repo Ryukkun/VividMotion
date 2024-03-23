@@ -183,6 +183,10 @@ public final class VividMotion extends JavaPlugin {
             return new Packet_1_19_R3();
         } else if (MCVersion.equal( MCVersion.v1_20_R1)){
             return new Packet_1_20_R1();
+        } else if (MCVersion.equal( MCVersion.v1_20_R2)){
+            return new Packet_1_20_R2();
+        } else if (MCVersion.equal( MCVersion.v1_20_R3)){
+            return new Packet_1_20_R3();
         }
         return null;
     }
