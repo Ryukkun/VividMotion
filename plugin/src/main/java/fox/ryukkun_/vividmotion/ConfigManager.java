@@ -36,6 +36,15 @@ public class ConfigManager {
         save();
     }
 
+    public static byte getBackgroundColor() {
+        return (byte)config.getInt("backgroundColor");
+    }
+
+    public static void setBackgroundColor(byte color) {
+        config.set("backgroundColor", color);
+        save();
+    }
+
     public static void reload(){
         plugin.reloadConfig();
     }

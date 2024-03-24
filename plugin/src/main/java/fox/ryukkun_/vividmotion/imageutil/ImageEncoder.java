@@ -2,6 +2,7 @@ package fox.ryukkun_.vividmotion.imageutil;
 
 import java.awt.*;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -133,11 +134,12 @@ public class ImageEncoder {
         int index = 0;
         int width = frame.imageWidth, height = frame.imageHeight;
         int[] diff = {0, 0, 0};
-        int[] pixel = new int[3];
+        int[] pixel = new int[4];
         byte[] map_format = new byte[width*height];
         Random random = new Random(1717289);
 
-        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
+        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+
 
 
         for (int y = 0; y < height; y++) {
@@ -146,24 +148,31 @@ public class ImageEncoder {
             diff[2] = random.nextInt(40)-20;
 
             for (int x = 0; x < width; x++) {
-                pixel[0] = (buffer[index] >> 16 & 0xff) + diff[0];
-                pixel[1] = (buffer[index] >> 8 & 0xff) + diff[1];
-                pixel[2] = (buffer[index] & 0xff) + diff[2];
+                pixel[0] = ((int)buffer.get() & 0xff) + diff[0];
+                pixel[1] = ((int)buffer.get() & 0xff) + diff[1];
+                pixel[2] = ((int)buffer.get() & 0xff) + diff[2];
+                if (buffer.get() == 0) {
+                    // 透明
+                    map_format[index++] = 0;
+                    Arrays.fill(diff, 0);
 
-                short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
-                        ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
-                        : get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
+                } else {
+                    // !透明
+                    short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
+                            ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
+                            : get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
 
-                map_format[index++] = (byte)(color_index+4);
-                color_index *= 3;
-                for (int i = 0; i < 3; i++) {
-                    diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
-                }
+                    map_format[index++] = (byte)(color_index+4);
+                    color_index *= 3;
+                    for (int i = 0; i < 3; i++) {
+                        diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
+                    }
 
-                if (255 < diff[0] || 255 < diff[1] || 255 < diff[2]){
-                    diff[0] >>= 1;
-                    diff[1] >>= 1;
-                    diff[2] >>= 1;
+                    if (255 < diff[0] || 255 < diff[1] || 255 < diff[2]){
+                        diff[0] >>= 1;
+                        diff[1] >>= 1;
+                        diff[2] >>= 1;
+                    }
                 }
             }
         }

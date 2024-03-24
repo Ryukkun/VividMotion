@@ -45,6 +45,8 @@ public final class VividMotion extends JavaPlugin {
         plugin = this;
 
         saveDefaultConfig();
+        getConfig().options().copyDefaults(true);
+        saveConfig();
         ConfigManager.setPlugin( this);
         isEnable = true;
         packetManager = getPacketManager();

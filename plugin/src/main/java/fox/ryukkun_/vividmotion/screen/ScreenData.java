@@ -28,7 +28,7 @@ public class ScreenData {
 
     public ScreenData(String name, FFmpegSource ffs, World world){
         data = new Data(name, ffs, world);
-        setBackgroundColor(0,0,0);
+        data.background_color = ConfigManager.getBackgroundColor();
         this.ffs = ffs;
 
         VividMotion.screenDataList.add(this);
