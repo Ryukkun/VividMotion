@@ -1,5 +1,6 @@
 package fox.ryukkun_.vividmotion.event;
 
+import de.tr7zw.changeme.nbtapi.NBTEntity;
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCLogger;
 import fox.ryukkun_.vividmotion.MapManager;
@@ -108,6 +109,10 @@ public class UsedSetUpScreen implements Listener {
                     }
 
                     itemFrameE.setItem( MapManager.getItem(screenData.data.mapIds[i]));
+                    NBTEntity itemFrameNBT = new NBTEntity(itemFrameE);
+                    itemFrameNBT.setByte("Invulnerable", (byte)1);
+                    itemFrameNBT.setByte("Invisible", (byte)1);
+                    itemFrameNBT.setByte("Fixed", (byte)1);
                 }
             }
         } catch (Exception e){

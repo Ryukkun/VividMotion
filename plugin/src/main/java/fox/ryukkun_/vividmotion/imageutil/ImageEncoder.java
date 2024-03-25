@@ -2,6 +2,7 @@ package fox.ryukkun_.vividmotion.imageutil;
 
 import java.awt.*;
 
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +17,6 @@ import org.bytedeco.javacv.Java2DFrameConverter;
 public class ImageEncoder {
     public static short[] color;
     private static short[] fixedColor;
-    private static final Java2DFrameConverter java2d = new Java2DFrameConverter();
 
     // Cache設定
     // DIV : 2だったら1個とばしで計算
@@ -79,17 +79,18 @@ public class ImageEncoder {
         byte[] map_format = new byte[width*height];
         int skipCount = getSkipCount(frame);
         int index4;
-        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+        Buffer buffer_ = frame.image[0];
+        ByteBuffer buffer = (ByteBuffer) buffer_;
 
 
         for (int y = 0; y < height; y++) {
-            buffer.position(buffer.position()+skipCount);
+            buffer_.position(buffer_.position()+skipCount);
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
                     map_format[index] = 0;
-                    buffer.position(buffer.position() + 3);
+                    buffer_.position(buffer_.position() + 3);
 
 
                 } else {
@@ -142,7 +143,8 @@ public class ImageEncoder {
         byte[] map_format = new byte[width*height];
         Random random = new Random(1717);
 
-        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+        Buffer buffer_ = frame.image[0];
+        ByteBuffer buffer = (ByteBuffer) buffer_;
         int skipCount = getSkipCount(frame);
         int minColor = -oneSideDif;
         int maxColor = 255 + oneSideDif;
@@ -150,14 +152,14 @@ public class ImageEncoder {
 
         for (int y = 0; y < height; y++) {
             firstLoad = false;
-            buffer.position(buffer.position()+skipCount);
+            buffer_.position(buffer_.position()+skipCount);
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
                     map_format[index] = 0;
                     diff[0] = diff[1] = diff[2] = 0;
-                    buffer.position(buffer.position() + 3);
+                    buffer_.position(buffer_.position() + 3);
 
 
                 } else {
@@ -196,17 +198,18 @@ public class ImageEncoder {
         int width = frame.imageWidth, height = frame.imageHeight;
         byte[] map_format = new byte[width*height];
 
-        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+        Buffer buffer_ = frame.image[0];
+        ByteBuffer buffer = (ByteBuffer) buffer_;
         int skipCount = getSkipCount(frame);
 
         for (int y = 0; y < height; y++) {
-            buffer.position(buffer.position() + skipCount);
+            buffer_.position(buffer_.position() + skipCount);
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
                     map_format[index] = 0;
-                    buffer.position(buffer.position() + 3);
+                    buffer_.position(buffer_.position() + 3);
 
 
                 } else {
