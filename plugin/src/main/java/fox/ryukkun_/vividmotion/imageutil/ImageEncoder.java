@@ -138,7 +138,8 @@ public class ImageEncoder {
         byte[] map_format = new byte[width*height];
 
         ByteBuffer buffer = (ByteBuffer) frame.image[0];
-
+        int minColor = -oneSideDif;
+        int maxColor = 255 + oneSideDif;
 
         for (int y = 0; y < height; y++) {
 
@@ -152,27 +153,22 @@ public class ImageEncoder {
                 }
 
                 // !透明
-                pixel[2] = (((int)buffer.get()) & 0xff) + diff[0];
-                pixel[1] = (((int)buffer.get()) & 0xff) + diff[1];
-                pixel[0] = (((int)buffer.get()) & 0xff) + diff[2];
+                pixel[2] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[0]));
+                pixel[1] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[1]));
+                pixel[0] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[2]));
 
-                short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
-                        ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
-                        : get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
+                short color_index = colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)];
 
                 map_format[index++] = (byte)(color_index+4);
                 color_index *= 3;
                 for (int i = 0; i < 3; i++) {
                     // pixel = 255, usedColor = 250 => +5
                     // pixel = -20, usedColor = 10 => -30
-                    diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
+                    //diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
+                    diff[i] = pixel[i] - fixedColor[color_index+i];
                 }
 
-                if (255 < diff[0] || 255 < diff[1] || 255 < diff[2]){
-                    diff[0] >>= 1;
-                    diff[1] >>= 1;
-                    diff[2] >>= 1;
-                }
+
             }
         }
         return map_format;
