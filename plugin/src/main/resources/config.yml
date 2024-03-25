@@ -9,4 +9,4 @@ mapEncode: 誤差拡散
 
 # background Color
 # Black = 119, Invisible = 0, white = 34
-backgroundColor: 34
+backgroundColor: 0
