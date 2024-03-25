@@ -74,52 +74,56 @@ public class ImageEncoder {
         int index = 0;
         int width = frame.imageWidth, height = frame.imageHeight;
 
-        short[][] pixel = new short[width*height][3];
+        short[] difPixel = new short[width*height*4];
+        int[] pixel = new int[3];
         byte[] map_format = new byte[width*height];
+        int skipCount = getSkipCount(frame);
+        int index4;
+        ByteBuffer buffer = (ByteBuffer) frame.image[0];
 
 
-        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
-
-
-        for (int y = 0; y <  height; y++) {
-            for (int x = 0; x < width; x++) {
-                pixel[index][0] = (short) (buffer[index] >> 16 & 0xff);
-                pixel[index][1] = (short) (buffer[index] >> 8 & 0xff);
-                pixel[index][2] = (short) (buffer[index] & 0xff);
-                index++;
-            }
-        }
-
-        index = 0;
         for (int y = 0; y < height; y++) {
+            buffer.position(buffer.position()+skipCount);
+
             for (int x = 0; x < width; x++) {
+                if (buffer.get() == 0) {
+                    // 透明
+                    map_format[index] = 0;
+                    buffer.position(buffer.position() + 3);
 
-                short color_index = (leftLimit <= pixel[index][0] && pixel[index][0] < rightLimit && leftLimit <= pixel[index][1] && pixel[index][1] < rightLimit && leftLimit <= pixel[index][2] && pixel[index][2] < rightLimit)
-                        ? colorCache[ ((pixel[index][0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[index][1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[index][2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
-                        : get_nearest_fixedColor(pixel[index][0], pixel[index][1], pixel[index][2]);
 
-                map_format[index] = (byte)(color_index+4);
-                color_index *= 3;
+                } else {
+                    // !透明
+                    index4 = index*4;
+                    pixel[2] = (((short) buffer.get()) & 0xff) + difPixel[index4+2];
+                    pixel[1] = (((short) buffer.get()) & 0xff) + difPixel[index4+1];
+                    pixel[0] = (((short) buffer.get()) & 0xff) + difPixel[index4];
+                    short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
+                            ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
+                            : get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
 
-                boolean right = x+1 != width;
-                boolean left = x-1 != -1;
-                boolean under = y+1 != height;
-                for (int i = 0; i < 3; i++) {
-                    int s = (0 <= pixel[index][i] ? pixel[index][i] - fixedColor[color_index+i] : pixel[index][i] + fixedColor[color_index+i]) >> 4;
+                    map_format[index] = (byte)(color_index+4);
+                    color_index *= 3;
 
-                    if (right) {
-                        pixel[index+1][i] += (short) (s * 7);
-                    }
-                    if (under){
+                    boolean right = x+1 != width;
+                    boolean left = x-1 != -1;
+                    boolean under = y+1 != height;
+                    for (int i = 0; i < 3; i++) {
+                        int s = (0 <= pixel[i] ? pixel[i] - fixedColor[color_index + i] : pixel[i] + fixedColor[color_index + i]) >> 4;
+
                         if (right) {
-                            pixel[index+width+1][i] += (short) s;
+                            difPixel[(index+1)*4+i] += (short) (s * 7);
                         }
-                        if (left) {
-                            pixel[index+width-1][i] += (short) (s * 3);
+                        if (under) {
+                            if (right) {
+                                difPixel[(index + width + 1)*4+i] += (short) s;
+                            }
+                            if (left) {
+                                difPixel[(index + width - 1)*4+i] += (short) (s * 3);
+                            }
+                            difPixel[(index + width)*4+i] += (short) (s * 5);
                         }
-                        pixel[index+width][i] += (short) (s * 5);
                     }
-
                 }
 
                 index++;
@@ -139,45 +143,48 @@ public class ImageEncoder {
         Random random = new Random(1717);
 
         ByteBuffer buffer = (ByteBuffer) frame.image[0];
+        int skipCount = getSkipCount(frame);
         int minColor = -oneSideDif;
         int maxColor = 255 + oneSideDif;
         boolean firstLoad;
 
         for (int y = 0; y < height; y++) {
             firstLoad = false;
+            buffer.position(buffer.position()+skipCount);
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
-                    map_format[index++] = 0;
+                    map_format[index] = 0;
                     diff[0] = diff[1] = diff[2] = 0;
                     buffer.position(buffer.position() + 3);
-                    continue;
+
+
+                } else {
+                    // !透明
+                    if (!firstLoad) {
+                        firstLoad = true;
+                        diff[0] = random.nextInt(40) - 20;
+                        diff[1] = random.nextInt(40) - 20;
+                        diff[2] = random.nextInt(40) - 20;
+                    }
+
+                    pixel[2] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + diff[2]));
+                    pixel[1] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + diff[1]));
+                    pixel[0] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + diff[0]));
+
+                    short color_index = colorCache[((pixel[0] >> DIV_SHIFT) + DIV_oneSideDif) + (((pixel[1] >> DIV_SHIFT) + DIV_oneSideDif) * DIV_Row) + (((pixel[2] >> DIV_SHIFT) + DIV_oneSideDif) * DIV_Row2)];
+
+                    map_format[index] = (byte) (color_index + 4);
+                    color_index *= 3;
+                    for (int i = 0; i < 3; i++) {
+                        // pixel = 255, usedColor = 250 => +5
+                        // pixel = -20, usedColor = 10 => -30
+                        //diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
+                        diff[i] = pixel[i] - fixedColor[color_index + i];
+                    }
                 }
-
-                if (!firstLoad) {
-                    firstLoad = true;
-                    diff[0] = random.nextInt(40)-20;
-                    diff[1] = random.nextInt(40)-20;
-                    diff[2] = random.nextInt(40)-20;
-                }
-                // !透明
-                pixel[2] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[0]));
-                pixel[1] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[1]));
-                pixel[0] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[2]));
-
-                short color_index = colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)];
-
-                map_format[index++] = (byte)(color_index+4);
-                color_index *= 3;
-                for (int i = 0; i < 3; i++) {
-                    // pixel = 255, usedColor = 250 => +5
-                    // pixel = -20, usedColor = 10 => -30
-                    //diff[i] = 0 <= pixel[i] ? pixel[i] - fixedColor[color_index+i] : pixel[i] + fixedColor[color_index+i];
-                    diff[i] = pixel[i] - fixedColor[color_index+i];
-                }
-
-
+                index++;
             }
         }
         return map_format;
@@ -189,20 +196,35 @@ public class ImageEncoder {
         int width = frame.imageWidth, height = frame.imageHeight;
         byte[] map_format = new byte[width*height];
 
-        int[] buffer = java2d.convert(frame).getRGB(0, 0, width, height, null, 0, width);
-
+        ByteBuffer buffer = (ByteBuffer) frame.image[0];
+        int skipCount = getSkipCount(frame);
 
         for (int y = 0; y < height; y++) {
+            buffer.position(buffer.position() + skipCount);
+
             for (int x = 0; x < width; x++) {
-                map_format[index] = (byte) (colorCache[(((buffer[index] >> 16 & 0xff)>>DIV_SHIFT)+DIV_oneSideDif) +
-                        ((((buffer[index] >> 8 & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) +
-                        ((((buffer[index] & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)] + 4);
+                if (buffer.get() == 0) {
+                    // 透明
+                    map_format[index] = 0;
+                    buffer.position(buffer.position() + 3);
+
+
+                } else {
+                    // !透明
+                    map_format[index] = (byte) (colorCache[((((int)buffer.get() & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2 +
+                            ((((int)buffer.get() & 0xff)>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row +
+                            (((int)buffer.get() & 0xff)>>DIV_SHIFT)+DIV_oneSideDif] + 4);
+                }
                 index++;
             }
         }
         return map_format;
     }
 
+
+    private static int getSkipCount(Frame frame) {
+        return (frame.image[0].limit() - frame.imageHeight * frame.imageWidth * 4) / frame.imageHeight;
+    }
 
 
     private static short[] calcCache(){
