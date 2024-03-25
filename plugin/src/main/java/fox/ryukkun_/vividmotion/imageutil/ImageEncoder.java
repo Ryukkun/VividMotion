@@ -136,12 +136,15 @@ public class ImageEncoder {
         int[] diff = {0, 0, 0};
         int[] pixel = new int[4];
         byte[] map_format = new byte[width*height];
+        Random random = new Random(1717);
 
         ByteBuffer buffer = (ByteBuffer) frame.image[0];
         int minColor = -oneSideDif;
         int maxColor = 255 + oneSideDif;
+        boolean firstLoad;
 
         for (int y = 0; y < height; y++) {
+            firstLoad = false;
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
@@ -152,6 +155,12 @@ public class ImageEncoder {
                     continue;
                 }
 
+                if (!firstLoad) {
+                    firstLoad = true;
+                    diff[0] = random.nextInt(40)-20;
+                    diff[1] = random.nextInt(40)-20;
+                    diff[2] = random.nextInt(40)-20;
+                }
                 // !透明
                 pixel[2] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[0]));
                 pixel[1] = Math.min(maxColor, Math.max(minColor, (((int)buffer.get()) & 0xff) + diff[1]));
