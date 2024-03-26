@@ -12,7 +12,6 @@ import java.util.Random;
 import fox.ryukkun_.vividmotion.ConfigManager;
 import org.bukkit.map.MapPalette;
 import org.bytedeco.javacv.Frame;
-import org.bytedeco.javacv.Java2DFrameConverter;
 
 public class ImageEncoder {
     public static short[] color;
@@ -85,8 +84,6 @@ public class ImageEncoder {
 
 
         for (int y = 0; y < height; y++) {
-            buffer_.position(buffer_.position()+skipCount);
-
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
@@ -130,6 +127,7 @@ public class ImageEncoder {
 
                 index++;
             }
+            buffer_.position(buffer_.position()+skipCount);
         }
         return map_format;
     }
@@ -154,7 +152,6 @@ public class ImageEncoder {
 
         for (int y = 0; y < height; y++) {
             firstLoad = false;
-            buffer_.position(buffer_.position()+skipCount);
 
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
@@ -190,6 +187,7 @@ public class ImageEncoder {
                 }
                 index++;
             }
+            buffer_.position(buffer_.position()+skipCount);
         }
         return map_format;
     }
@@ -206,8 +204,6 @@ public class ImageEncoder {
         int skipCount = getSkipCount(frame);
 
         for (int y = 0; y < height; y++) {
-            buffer_.position(buffer_.position() + skipCount);
-
             for (int x = 0; x < width; x++) {
                 if (buffer.get() == 0) {
                     // 透明
@@ -223,6 +219,7 @@ public class ImageEncoder {
                 }
                 index++;
             }
+            buffer_.position(buffer_.position()+skipCount);
         }
         return map_format;
     }
