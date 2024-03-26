@@ -81,6 +81,7 @@ public class ImageEncoder {
         int index4;
         Buffer buffer_ = frame.image[0];
         ByteBuffer buffer = (ByteBuffer) buffer_;
+        buffer_.rewind();
 
 
         for (int y = 0; y < height; y++) {
@@ -145,6 +146,7 @@ public class ImageEncoder {
 
         Buffer buffer_ = frame.image[0];
         ByteBuffer buffer = (ByteBuffer) buffer_;
+        buffer_.rewind();
         int skipCount = getSkipCount(frame);
         int minColor = -oneSideDif;
         int maxColor = 255 + oneSideDif;
@@ -200,6 +202,7 @@ public class ImageEncoder {
 
         Buffer buffer_ = frame.image[0];
         ByteBuffer buffer = (ByteBuffer) buffer_;
+        buffer_.rewind();
         int skipCount = getSkipCount(frame);
 
         for (int y = 0; y < height; y++) {
