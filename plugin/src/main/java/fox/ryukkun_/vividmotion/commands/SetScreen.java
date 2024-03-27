@@ -2,6 +2,7 @@ package fox.ryukkun_.vividmotion.commands;
 
 
 import de.tr7zw.changeme.nbtapi.NBT;
+import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCVersion;
@@ -113,22 +114,21 @@ public class SetScreen extends ScreenCommandTPL {
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
         public static final boolean isOver_1_13 = (MCVersion.greaterThanEqual(MCVersion.v1_13_R1));
 
-        private static final ItemStack itemFrame;
-        static {
+        private static final ItemStack itemFrame = getItemFrame();
+        private static ItemStack getItemFrame() {
             ItemStack is = new ItemStack(Material.ITEM_FRAME);
             ItemMeta im = is.getItemMeta();
             im.addEnchant(Enchantment.ARROW_DAMAGE, 0, false);
             im.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-            im.setDisplayName("ScreenSetter");
             im.setLore(Arrays.asList("右クリック で設置", "いらなかったら 消したり捨てていいよ"));
             is.setItemMeta(im);
 
-            ReadWriteNBT nbt = NBT.itemStackToNBT(is);
-            ReadWriteNBT nbt1 = nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion");
-            nbt1.setByte("Item", (byte)1);
-            nbt1.setString("ScreenName", "");
+            NBTItem nbtItem = new NBTItem(is);
+            ReadWriteNBT nbt = nbtItem.getOrCreateCompound("VividMotion");
+            nbt.setByte("Item", (byte)1);
+            nbt.setString("ScreenName", "");
 
-            itemFrame = NBT.itemStackFromNBT(nbt);
+            return nbtItem.getItem();
         }
 
         private SetUpScreen(Player player, ScreenData screenData, boolean giveItem){
@@ -136,10 +136,14 @@ public class SetScreen extends ScreenCommandTPL {
             this.screenData = screenData;
 
             if (giveItem){
-                ReadWriteNBT nbt = NBT.itemStackToNBT( itemFrame.clone());
-                nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setString("ScreenName",screenData.data.name);
+                ItemStack item = itemFrame.clone();
+                ItemMeta im = item.getItemMeta();
+                im.setDisplayName(ChatColor.GRAY+"screen: "+ChatColor.WHITE+ChatColor.BOLD+screenData.data.name);
+                item.setItemMeta(im);
+                NBTItem nbt = new NBTItem(item);
+                nbt.getOrCreateCompound("VividMotion").setString("ScreenName",screenData.data.name);
+                item = nbt.getItem();
 
-                ItemStack item = NBT.itemStackFromNBT(nbt);
                 PlayerInventory inv = player.getInventory();
                 if (inv.getItemInMainHand().getType().equals(Material.AIR)){
                     inv.setItemInMainHand(item);
@@ -192,10 +196,9 @@ public class SetScreen extends ScreenCommandTPL {
         public static boolean isSetUpScreenItem(ItemStack itemStack){
             if (!itemStack.getType().equals( Material.ITEM_FRAME)) return false;
 
-            ReadWriteNBT nbt = NBT.itemStackToNBT(itemStack);
-            ReadWriteNBT nbt1 = nbt.getOrCreateCompound("tag").getCompound("VividMotion");
-            if (nbt1 == null) return false;
-            return nbt1.getByte("Item").equals((byte) 1);
+            ReadWriteNBT nbt = new NBTItem(itemStack).getCompound("VividMotion");
+            if (nbt == null) return false;
+            return nbt.getByte("Item").equals((byte) 1);
         }
 
 
