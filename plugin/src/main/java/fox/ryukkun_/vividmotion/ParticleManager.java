@@ -11,16 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParticleManager {
-    public static final boolean isOver_1_13 = (MCVersion.greaterThanEqual(MCVersion.v1_13_R1));
-
-    public static final ParticleUtil particleUtil;
-    static {
-        if (isOver_1_13){
-            particleUtil = new ParticleUtil_1_13_R1();
-        } else{
-            particleUtil = new ParticleUtil_1_12_R1();
-        }
-    }
+//    public static final ParticleUtil particleUtil =
+//            MCVersion.greaterThanEqual(MCVersion.v1_13_R1) ?
+//            new ParticleUtil_1_13_R1() :
+//            new ParticleUtil_1_12_R1();
+    public static final ParticleUtil particleUtil = new ParticleUtil_1_12_R1();
 
 
     public static void spawnSquare(Location start, Location finish, Player player, Particle particle) {
