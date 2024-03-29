@@ -3,6 +3,7 @@ package fox.ryukkun_.vividmotion;
 import fox.ryukkun_.ParticleUtil;
 import fox.ryukkun_.ParticleUtil_1_12_R1;
 import fox.ryukkun_.ParticleUtil_1_13_R1;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.entity.Player;
@@ -15,7 +16,7 @@ public class ParticleManager {
 //            MCVersion.greaterThanEqual(MCVersion.v1_13_R1) ?
 //            new ParticleUtil_1_13_R1() :
 //            new ParticleUtil_1_12_R1();
-    public static final ParticleUtil particleUtil = new ParticleUtil_1_12_R1();
+    public static final ParticleUtil particleUtil = new Particle1_13_R1();
 
 
     public static void spawnSquare(Location start, Location finish, Player player, Particle particle) {
@@ -71,14 +72,18 @@ public class ParticleManager {
             }
         }
 
-        if (particle.equals(Particle.REDSTONE)) {
-            for (Location l : locations) {
-                particleUtil.spawnParticle(player, l, r, g, b);
+        try {
+            if (particle.equals(Particle.REDSTONE)) {
+                for (Location l : locations) {
+                    particleUtil.spawnParticle(player, l, r, g, b);
+                }
+            } else {
+                for (Location l : locations) {
+                    player.spawnParticle(particle, l, 1, 0, 0, 0, 0);
+                }
             }
-        } else {
-            for (Location l : locations) {
-                player.spawnParticle(particle, l, 1, 0, 0, 0, 0);
-            }
+        } catch (Exception e){
+            Bukkit.broadcastMessage(e.toString());
         }
     }
 }

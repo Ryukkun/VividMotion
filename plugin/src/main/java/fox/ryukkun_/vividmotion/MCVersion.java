@@ -23,10 +23,11 @@ public enum MCVersion {
     unknown(5000, "");
 
     public final static MCVersion version;
+    public final static String versionString;
     static {
         String v = Bukkit.getServer().getClass().getPackage().getName();
-        v = v.substring( v.lastIndexOf('.') + 1);
-        version = MCVersion.nameOf( v);
+        versionString = v.substring( v.lastIndexOf('.') + 1);
+        version = MCVersion.nameOf( versionString);
     }
 
     public final int num;
