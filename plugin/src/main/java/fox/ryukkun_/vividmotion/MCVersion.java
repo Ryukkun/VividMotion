@@ -57,4 +57,12 @@ public enum MCVersion {
     public static boolean equal(MCVersion version) {
         return MCVersion.version.num == version.num;
     }
+
+    public static String getNMS() {
+        return "net.minecraft.server."+versionString+".";
+    }
+
+    public static String getCB() {
+        return "org.bukkit.craftbukkit."+versionString+".";
+    }
 }

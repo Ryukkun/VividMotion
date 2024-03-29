@@ -12,11 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ParticleManager {
-//    public static final ParticleUtil particleUtil =
-//            MCVersion.greaterThanEqual(MCVersion.v1_13_R1) ?
-//            new ParticleUtil_1_13_R1() :
-//            new ParticleUtil_1_12_R1();
-    public static final ParticleUtil particleUtil = new Particle1_13_R1();
+    public static final ParticleUtil particleUtil =
+            MCVersion.greaterThanEqual(MCVersion.v1_13_R1) ?
+            new ParticleUtil_1_13_R1() :
+            new ParticleUtil_1_12_R1();
 
 
     public static void spawnSquare(Location start, Location finish, Player player, Particle particle) {
