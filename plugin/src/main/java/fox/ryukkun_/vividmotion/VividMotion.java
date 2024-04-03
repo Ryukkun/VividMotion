@@ -24,7 +24,6 @@ public final class VividMotion extends JavaPlugin {
 
     public static final List<ScreenData> screenDataList = new ArrayList<>();
     public static boolean isEnable;
-    public static PacketManager packetManager;
     public static MapGetter mapGetter;
     public static Plugin plugin;
     private static File folder;
@@ -49,7 +48,6 @@ public final class VividMotion extends JavaPlugin {
         saveConfig();
         ConfigManager.setPlugin( this);
         isEnable = true;
-        packetManager = getPacketManager();
         mapGetter = getMapGetter();
         folder = getDataFolder();
         ImageEncoder.load();
@@ -149,49 +147,4 @@ public final class VividMotion extends JavaPlugin {
             return new MapUtil_1_13_R2();
         }
     }
-
-
-
-
-
-    private static PacketManager getPacketManager(){
-//        if (MCVersion.equal( MCVersion.v1_12_R1)){
-//            return new Packet_1_12_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
-//            return new Packet_1_13_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_13_R2)) {
-//            return new Packet_1_13_R2();
-//        } else if (MCVersion.equal( MCVersion.v1_14_R1)) {
-//            return new Packet_1_14_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_15_R1)) {
-//            return new Packet_1_15_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_16_R1)) {
-//            return new Packet_1_16_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_16_R2)) {
-//            return new Packet_1_16_R2();
-//        } else if (MCVersion.equal( MCVersion.v1_16_R3)) {
-//            return new Packet_1_16_R3();
-//        } else if (MCVersion.equal( MCVersion.v1_17_R1)) {
-//            return new Packet_1_17_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_18_R1)) {
-//            return new Packet_1_18_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_18_R2)) {
-//            return new Packet_1_18_R2();
-//        } else if (MCVersion.equal( MCVersion.v1_19_R1)) {
-//            return new Packet_1_19_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_19_R2)) {
-//            return new Packet_1_19_R2();
-//        } else if (MCVersion.equal( MCVersion.v1_19_R3)) {
-//            return new Packet_1_19_R3();
-//        } else if (MCVersion.equal( MCVersion.v1_20_R1)){
-//            return new Packet_1_20_R1();
-//        } else if (MCVersion.equal( MCVersion.v1_20_R2)){
-//            return new Packet_1_20_R2();
-//        } else if (MCVersion.equal( MCVersion.v1_20_R3)){
-//            return new Packet_1_20_R3();
-//        }
-        return new PacketSender();
-    }
-
-
 }
