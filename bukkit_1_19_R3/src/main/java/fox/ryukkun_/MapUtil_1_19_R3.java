@@ -1,6 +1,6 @@
 package fox.ryukkun_;
 
-import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.saveddata.maps.WorldMap;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_19_R3.map.CraftMapView;
 import org.bukkit.map.MapView;
@@ -15,7 +15,7 @@ public class MapUtil_1_19_R3 implements MapUtil{
             CraftMapView cView = (CraftMapView) view;
             Field f = cView.getClass().getDeclaredField("worldMap");
             f.setAccessible(true);
-            ((MapItemSavedData) f.get(cView)).colors = pixelData;
+            ((WorldMap) f.get(cView)).g = pixelData;
 
         } catch (Exception e){
             Bukkit.getLogger().warning(e.toString());
