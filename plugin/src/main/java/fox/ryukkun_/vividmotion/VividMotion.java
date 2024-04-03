@@ -1,6 +1,8 @@
 package fox.ryukkun_.vividmotion;
 
-import fox.ryukkun_.*;
+import fox.ryukkun_.MapGetter;
+import fox.ryukkun_.MapUtil_1_12_R1;
+import fox.ryukkun_.MapUtil_1_13_R2;
 import fox.ryukkun_.vividmotion.commands.GiveScreen;
 import fox.ryukkun_.vividmotion.commands.Screen;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
@@ -139,12 +141,10 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapGetter getMapGetter(){
-    if (MCVersion.equal( MCVersion.v1_12_R1)) {
-        return new MapUtil_1_12_R1();
-    } else if (MCVersion.equal( MCVersion.v1_13_R1)) {
-        return new MapUtil_1_13_R1();
-    } else {
+        if (MCVersion.greaterThanEqual( MCVersion.v1_13_R2)) {
             return new MapUtil_1_13_R2();
+        } else {
+            return new MapUtil_1_12_R1();
         }
     }
 }
