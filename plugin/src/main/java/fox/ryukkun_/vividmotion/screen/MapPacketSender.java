@@ -1,7 +1,7 @@
 package fox.ryukkun_.vividmotion.screen;
 
 import fox.ryukkun_.MapPacket;
-import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.PacketSender;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -15,7 +15,7 @@ public class MapPacketSender {
         Player player = Bukkit.getPlayer(uuid);
         if (player != null){
 
-            VividMotion.packetManager.sendPacket(player, MPCs);
+            PacketSender.sendPacket(player, MPCs);
         }
     }
 
@@ -36,7 +36,7 @@ public class MapPacketSender {
                 packetList.add(new MapPacket(sc.data.mapIds[i], pixelData[i]));
             }
 
-            VividMotion.packetManager.sendPacket(player, packetList);
+            PacketSender.sendPacket(player, packetList);
         }
     }
 }

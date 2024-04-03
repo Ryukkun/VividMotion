@@ -19,13 +19,15 @@ public enum MCVersion {
     v1_19_R3(1193, "v1_19_R3"),
     v1_20_R1(1201, "v1_20_R1"),
     v1_20_R2(1202, "v1_20_R2"),
-    v1_20_R3(1203, "v1_20_R3");
+    v1_20_R3(1203, "v1_20_R3"),
+    unknown(5000, "");
 
     public final static MCVersion version;
+    public final static String versionString;
     static {
         String v = Bukkit.getServer().getClass().getPackage().getName();
-        v = v.substring( v.lastIndexOf('.') + 1);
-        version = MCVersion.nameOf( v);
+        versionString = v.substring( v.lastIndexOf('.') + 1);
+        version = MCVersion.nameOf( versionString);
     }
 
     public final int num;
@@ -41,7 +43,7 @@ public enum MCVersion {
                 return v;
             }
         }
-        return null;
+        return unknown;
     }
 
     public static boolean lessThanEqual(MCVersion version) {
@@ -54,5 +56,13 @@ public enum MCVersion {
 
     public static boolean equal(MCVersion version) {
         return MCVersion.version.num == version.num;
+    }
+
+    public static String getNMS() {
+        return "net.minecraft.server."+versionString+".";
+    }
+
+    public static String getCB() {
+        return "org.bukkit.craftbukkit."+versionString+".";
     }
 }
