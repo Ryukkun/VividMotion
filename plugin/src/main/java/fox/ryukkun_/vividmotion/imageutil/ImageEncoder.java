@@ -27,7 +27,7 @@ public class ImageEncoder {
     private static final int oneSideDif = rowDif/2;
     private static final int DIV_oneSideDif = oneSideDif / DIV;
     private static final int leftLimit = -oneSideDif;
-    private static final int rightLimit = 256 + oneSideDif;
+    private static final int rightLimit = 255 + oneSideDif;
     private static final int DIV_Row = 256 / DIV + DIV_RowDif;
     private static final int DIV_Row2 = DIV_Row *DIV_Row;
     private static final int DIV_Row3 = DIV_Row2 * DIV_Row;
@@ -81,6 +81,8 @@ public class ImageEncoder {
         Buffer buffer_ = frame.image[0];
         ByteBuffer buffer = (ByteBuffer) buffer_;
         buffer_.rewind();
+        int minColor = -oneSideDif;
+        int maxColor = 255 + oneSideDif;
 
 
         for (int y = 0; y < height; y++) {
@@ -94,12 +96,10 @@ public class ImageEncoder {
                 } else {
                     // !透明
                     index4 = index*4;
-                    pixel[2] = (((short) buffer.get()) & 0xff) + difPixel[index4+2];
-                    pixel[1] = (((short) buffer.get()) & 0xff) + difPixel[index4+1];
-                    pixel[0] = (((short) buffer.get()) & 0xff) + difPixel[index4];
-                    short color_index = (leftLimit <= pixel[0] && pixel[0] < rightLimit && leftLimit <= pixel[1] && pixel[1] < rightLimit && leftLimit <= pixel[2] && pixel[2] < rightLimit)
-                            ? colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)]
-                            : get_nearest_fixedColor(pixel[0], pixel[1], pixel[2]);
+                    pixel[2] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + difPixel[index4+2]));
+                    pixel[1] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + difPixel[index4+1]));
+                    pixel[0] = Math.min(maxColor, Math.max(minColor, (((int) buffer.get()) & 0xff) + difPixel[index4]));
+                    short color_index = colorCache[ ((pixel[0]>>DIV_SHIFT)+DIV_oneSideDif) + (((pixel[1]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row) + (((pixel[2]>>DIV_SHIFT)+DIV_oneSideDif)*DIV_Row2)];
 
                     map_format[index] = (byte)(color_index+4);
                     color_index *= 3;

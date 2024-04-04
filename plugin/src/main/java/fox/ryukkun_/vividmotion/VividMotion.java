@@ -77,7 +77,10 @@ public final class VividMotion extends JavaPlugin {
         pluginManager.registerEvents(new UsedSetUpScreen(), this);
         pluginManager.registerEvents(new SelectSetUpScreen(), this);
         pluginManager.registerEvents(new BreakScreen(), this);
-        pluginManager.registerEvents(new InteractScreen(), this);
+        if (!MCVersion.greaterThanEqual(MCVersion.v1_16_R1)) {
+            pluginManager.registerEvents(new InteractScreen(), this);
+        }
+
 
         getCommand("give-screen").setExecutor(new GiveScreen());
         getCommand("set-screen").setExecutor(new SetScreen());
