@@ -65,7 +65,7 @@ public class BreakScreen implements Listener {
         }
         if (screenData == null) return false;
         LocationUtil base = new LocationUtil(entity.getLocation(), ((ItemFrame)entity).getRotation());
-        base.addLocalCoordinate(-(index%screenData.data.mapWidth), (double) index /screenData.data.mapWidth, 0);
+        base.addLocalCoordinate(-(index%screenData.data.mapWidth), index /screenData.data.mapWidth, 0);
 
         int nowIndex = 0;
         for (int y = 0; y < screenData.data.mapHeight; y++) {
