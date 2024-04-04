@@ -1,6 +1,7 @@
 package fox.ryukkun_.vividmotion.event;
 
 import fox.ryukkun_.vividmotion.LocationUtil;
+import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
@@ -14,6 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class BreakScreen implements Listener {
@@ -25,19 +27,28 @@ public class BreakScreen implements Listener {
     }
 
 
+    @EventHandler
+    public void onHangingBreakByEntityEvent(HangingBreakByEntityEvent event) {
+        if (!MCVersion.greaterThanEqual(MCVersion.v1_16_R1)) {
+            return;
+        }
+        event.setCancelled( killScreen(event.getEntity(), event.getRemover()));
+    }
+
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
-        Entity damager = event.getDamager();
-        Entity entity = event.getEntity();
-        if (!(damager instanceof Player) || !(entity instanceof ItemFrame)) return;
+        event.setCancelled(killScreen(event.getEntity(), event.getDamager()));
+    }
+
+    private static boolean killScreen(Entity entity, Entity damager) {
+        if (!(damager instanceof Player) || !(entity instanceof ItemFrame)) return false;
 
         ItemStack is = ((Player)damager).getInventory().getItemInMainHand();
-        if (!SetScreen.SetUpScreen.isSetUpScreenItem( is)) return;
+        if (!SetScreen.SetUpScreen.isSetUpScreenItem( is)) return false;
 
         ItemStack frameItem = ((ItemFrame)entity).getItem();
-        if (!frameItem.getType().equals(Material.MAP)) return;
-
+        if (!frameItem.getType().equals(Material.MAP)) return false;
 
         int mapId = MapManager.getMapId(frameItem);
         int index = -1;
@@ -52,11 +63,9 @@ public class BreakScreen implements Listener {
                 }
             }
         }
-
-        if (screenData == null) return;
-        event.setCancelled(true);
+        if (screenData == null) return false;
         LocationUtil base = new LocationUtil(entity.getLocation(), ((ItemFrame)entity).getRotation());
-        base.addLocalCoordinate(-(index%screenData.data.mapWidth), index/screenData.data.mapWidth, 0);
+        base.addLocalCoordinate(-(index%screenData.data.mapWidth), (double) index /screenData.data.mapWidth, 0);
 
         int nowIndex = 0;
         for (int y = 0; y < screenData.data.mapHeight; y++) {
@@ -68,6 +77,7 @@ public class BreakScreen implements Listener {
                     if (!(nearEntity instanceof ItemFrame)) continue;
 
                     ItemStack item = ((ItemFrame)nearEntity).getItem();
+
                     if (!item.getType().equals(Material.MAP)) continue;
                     if (nowMapId != MapManager.getMapId(item)) continue;
 
@@ -76,5 +86,7 @@ public class BreakScreen implements Listener {
                 }
             }
         }
+
+        return true;
     }
 }
