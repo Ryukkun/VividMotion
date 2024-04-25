@@ -22,7 +22,7 @@
 
     <build>
         <directory>../target</directory>
-        <finalName>${project.parent.artifactId}-${plugin.version}</finalName>
+        <finalName>${project.parent.artifactId}</finalName>
         <resources>
             <resource>
                 <targetPath>.</targetPath>
