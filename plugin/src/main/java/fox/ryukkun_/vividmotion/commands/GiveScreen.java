@@ -43,7 +43,7 @@ public class GiveScreen extends ScreenCommandTPL {
                         .getCompoundList("Items");
             }
 
-            nbt = MapManager.getItemNBT(mapIds[i]);
+            nbt = MapManager.getNewMapItemNBT(mapIds[i]).nbt;
             nbt.setByte("Slot", (byte) ii);
             nbt.setByte("Count", (byte) 1);
 

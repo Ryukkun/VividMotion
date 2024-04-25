@@ -82,7 +82,7 @@ public class VideoPlayer extends Thread{
                         ItemStack is = itemFrame.getItem();
                         if (!is.getType().equals(Material.MAP)) continue;
 
-                        int mapId = MapManager.getMapId(is);
+                        int mapId = ScreenItemNBT.getMapId(is);
 
                         int i = -1;
                         for (int _i = 0, limit = mapIds.length; _i < limit; _i++) {

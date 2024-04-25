@@ -63,6 +63,7 @@ public class Screen extends SubCommandTPL {
                         MCLogger.sendMessage(commandSender, MCLogger.Level.Success, args[0] + " の削除に成功しました。");
                     } catch (IOException e) {
                         MCLogger.sendMessage(commandSender ,MCLogger.Level.Error, e.getMessage());
+                        e.printStackTrace();
                     }
 
                 } else {
@@ -119,6 +120,7 @@ public class Screen extends SubCommandTPL {
 
                 } catch (Exception e){
                     MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
+                    e.printStackTrace();
                 }
             }).start();
 

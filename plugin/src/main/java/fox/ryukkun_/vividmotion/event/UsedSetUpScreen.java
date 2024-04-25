@@ -108,7 +108,7 @@ public class UsedSetUpScreen implements Listener {
                         else if (face.yaw == -90F) itemFrameE.setRotation(Rotation.CLOCKWISE_45);
                     }
 
-                    itemFrameE.setItem( MapManager.getItem(screenData.data.mapIds[i]));
+                    itemFrameE.setItem( MapManager.getNewMapItemNBT(screenData.data.mapIds[i]).toItemStack());
                     NBTEntity itemFrameNBT = new NBTEntity(itemFrameE);
                     itemFrameNBT.setByte("Invulnerable", (byte)1);
                     itemFrameNBT.setByte("Invisible", (byte)1);
@@ -117,6 +117,7 @@ public class UsedSetUpScreen implements Listener {
             }
         } catch (Exception e){
             MCLogger.sendMessage(player, MCLogger.Level.Error, e.getMessage());
+            e.printStackTrace();
             event.setCancelled(true);
             for (ItemFrame iF : summonedItemFrame) {
                 iF.remove();

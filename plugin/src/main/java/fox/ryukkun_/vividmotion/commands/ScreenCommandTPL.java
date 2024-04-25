@@ -7,6 +7,7 @@ import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,19 +53,26 @@ public class ScreenCommandTPL implements CMD {
             new Thread(() -> {
 
                 try {
+                    // この処理0.7秒くらいかかる
                     FFmpegSource ffs = new FFmpegSource(input);
-                    if (ffs.can_load){
-                        ScreenData sd = new ScreenData(name, ffs, player.getWorld());
-                        onCommandNotInCache(player, sd);
 
-                    }else {
-                        MCLogger.syncSendMessage(player, MCLogger.Level.Error, "解析不能なURL、PATHです。");
-                        ffs.close();
-                    }
+                    new BukkitRunnable() {
+                        @Override
+                        public void run() {
+                            if (ffs.can_load){
+                                ScreenData sd = new ScreenData(name, ffs, player.getWorld());
+                                onCommandNotInCache(player, sd);
 
+                            }else {
+                                MCLogger.syncSendMessage(player, MCLogger.Level.Error, "解析不能なURL、PATHです。");
+                                ffs.close();
+                            }
+                        }
+                    }.runTask(VividMotion.plugin);
 
                 } catch (Exception e) {
                     MCLogger.syncSendMessage(commandSender, MCLogger.Level.Error, e.getMessage());
+                    e.printStackTrace();
                 }
             }).start();
 

@@ -125,7 +125,7 @@ public class ScreenData {
                 out.close();
             }
         } catch (IOException e){
-            Bukkit.getLogger().warning(e.getMessage());
+            e.printStackTrace();
         }
 
 
