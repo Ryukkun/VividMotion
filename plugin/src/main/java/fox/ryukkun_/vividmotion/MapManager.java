@@ -1,7 +1,6 @@
 package fox.ryukkun_.vividmotion;
 
-import de.tr7zw.changeme.nbtapi.NBT;
-import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
+import fox.ryukkun_.vividmotion.screen.ScreenItemNBT;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.map.MapView;
@@ -30,38 +29,17 @@ public class MapManager {
         }
     }
 
-    public static int getMapId(ItemStack is) {
-        if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
-            return is.getDurability();
-        } else {
-            return NBT.itemStackToNBT( is).getCompound("tag").getInteger("map");
-        }
-    }
 
+    public static ScreenItemNBT getNewMapItemNBT(int mapId) {
+        ScreenItemNBT nbtManager = new ScreenItemNBT(new ItemStack(Material.MAP));
 
-    public static ItemStack getItem(int mapId) {
-        return NBT.itemStackFromNBT( getItemNBT(mapId));
-    }
-
-
-    public static ReadWriteNBT getItemNBT(int mapId) {
-        ItemStack itemStack = new ItemStack(Material.MAP);
-        ReadWriteNBT nbt;
-
-        if (MCVersion.lessThanEqual(MCVersion.v1_12_R1)) {
-            itemStack.setDurability((short) mapId);
-            nbt = NBT.itemStackToNBT(itemStack);
-        } else {
-            nbt = NBT.itemStackToNBT(itemStack);
-            nbt.getOrCreateCompound("tag").setInteger("map", mapId);
-        }
-
-        nbt.getOrCreateCompound("tag").getOrCreateCompound("VividMotion").setByte("Item", (byte)2);
-        return nbt;
+        nbtManager.setMapId(mapId);
+        nbtManager.setScreenItemId((byte)2);
+        return nbtManager;
     }
 
     public static boolean isScreenMap(ItemStack itemStack) {
-        return NBT.itemStackToNBT(itemStack).getOrCreateCompound("tag").getOrCreateCompound("VividMotion").getByte("Item") == (byte)2;
+        return Byte.valueOf((byte)2).equals(ScreenItemNBT.getScreenItemId(itemStack));
     }
 
 

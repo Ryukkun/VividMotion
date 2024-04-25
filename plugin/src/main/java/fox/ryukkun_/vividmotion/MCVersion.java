@@ -20,6 +20,7 @@ public enum MCVersion {
     v1_20_R1(1201, "v1_20_R1"),
     v1_20_R2(1202, "v1_20_R2"),
     v1_20_R3(1203, "v1_20_R3"),
+    v1_20_R4(1204, "v1_20_R4"),
     unknown(5000, "");
 
     public final static MCVersion version;

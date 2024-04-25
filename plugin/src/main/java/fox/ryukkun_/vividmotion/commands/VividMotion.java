@@ -64,6 +64,7 @@ public class VividMotion extends SubCommandTPL {
 
                 } catch (Exception e) {
                     MCLogger.sendMessage(commandSender, MCLogger.Level.Error, e.toString());
+                    e.printStackTrace();
                 }
                 return true;
             }

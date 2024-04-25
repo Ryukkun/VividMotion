@@ -2,9 +2,9 @@ package fox.ryukkun_.vividmotion.event;
 
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCVersion;
-import fox.ryukkun_.vividmotion.MapManager;
 import fox.ryukkun_.vividmotion.VividMotion;
 import fox.ryukkun_.vividmotion.commands.SetScreen;
+import fox.ryukkun_.vividmotion.screen.ScreenItemNBT;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -50,7 +50,7 @@ public class BreakScreen implements Listener {
         ItemStack frameItem = ((ItemFrame)entity).getItem();
         if (!frameItem.getType().equals(Material.MAP)) return false;
 
-        int mapId = MapManager.getMapId(frameItem);
+        int mapId = ScreenItemNBT.getMapId(frameItem);
         int index = -1;
         ScreenData screenData = null;
         loop:
@@ -79,7 +79,7 @@ public class BreakScreen implements Listener {
                     ItemStack item = ((ItemFrame)nearEntity).getItem();
 
                     if (!item.getType().equals(Material.MAP)) continue;
-                    if (nowMapId != MapManager.getMapId(item)) continue;
+                    if (nowMapId != ScreenItemNBT.getMapId(item)) continue;
 
                     nearEntity.remove();
                     break;

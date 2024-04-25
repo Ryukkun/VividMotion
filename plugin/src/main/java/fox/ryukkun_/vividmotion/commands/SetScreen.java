@@ -1,13 +1,13 @@
 package fox.ryukkun_.vividmotion.commands;
 
 
-import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.NBTItem;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import fox.ryukkun_.vividmotion.LocationUtil;
 import fox.ryukkun_.vividmotion.MCVersion;
 import fox.ryukkun_.vividmotion.ParticleManager;
 import fox.ryukkun_.vividmotion.VividMotion;
+import fox.ryukkun_.vividmotion.screen.ScreenItemNBT;
 import fox.ryukkun_.vividmotion.screen.ScreenData;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -144,6 +144,7 @@ public class SetScreen extends ScreenCommandTPL {
                 nbt.getOrCreateCompound("VividMotion").setString("ScreenName",screenData.data.name);
                 item = nbt.getItem();
 
+                //MCLogger.sendMessage(player, MCLogger.Level.Success, NBT.itemStackToNBT(item).toString());
                 PlayerInventory inv = player.getInventory();
                 if (inv.getItemInMainHand().getType().equals(Material.AIR)){
                     inv.setItemInMainHand(item);
@@ -202,13 +203,8 @@ public class SetScreen extends ScreenCommandTPL {
         }
 
 
-        public static String getScreenName(ItemStack itemStack) {
-            return NBT.itemStackToNBT(itemStack).getOrCreateCompound("tag").getCompound("VividMotion").getString("ScreenName");
-        }
-
-
         public static ScreenData getScreenData(ItemStack itemStack) {
-            return VividMotion.getScreenData(getScreenName(itemStack));
+            return VividMotion.getScreenData(ScreenItemNBT.getScreenName(itemStack));
         }
 
 
@@ -223,7 +219,7 @@ public class SetScreen extends ScreenCommandTPL {
             if ( !isSetUpScreenItem( itemStack) || !player.isOnline()){
                 _cancel();
                 return;
-            } else if (!getScreenName(itemStack).equals( screenData.data.name)) {
+            } else if (!ScreenItemNBT.getScreenName(itemStack).equals( screenData.data.name)) {
                 _cancel();
                 return;
             }
