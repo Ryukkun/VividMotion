@@ -3,6 +3,7 @@ package fox.ryukkun_.vividmotion.screen;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import fox.ryukkun_.vividmotion.MCVersion;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 public class ScreenItemNBT {
@@ -43,12 +44,12 @@ public class ScreenItemNBT {
         if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getString("ScreenName");
 
         } else {
             return nbt.getOrCreateCompound("tag")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getString("ScreenName");
         }
     }
@@ -62,12 +63,12 @@ public class ScreenItemNBT {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
-                    .setByte("Item", id);
+                    .setByte("Item", itemType.getId());
 
         } else {
             nbt.getOrCreateCompound("tag")
                     .getOrCreateCompound("VividMotion")
-                    .setByte("Item", id);
+                    .setByte("Item", itemType.getId());
         }
     }
 
@@ -82,12 +83,12 @@ public class ScreenItemNBT {
         if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getByte("Item");
 
         } else {
             return nbt.getOrCreateCompound("tag")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getByte("Item");
         }
     }
