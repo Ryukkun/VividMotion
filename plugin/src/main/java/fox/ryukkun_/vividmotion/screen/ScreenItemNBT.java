@@ -55,10 +55,10 @@ public class ScreenItemNBT {
     }
 
 
-    public void setScreenItemId(byte id) {
-        setScreenItemId(nbt, id);
+    public void setScreenItemId(ItemType itemType) {
+        setScreenItemId(nbt, itemType);
     }
-    public static void setScreenItemId(ReadWriteNBT nbt, byte id) {
+    public static void setScreenItemId(ReadWriteNBT nbt, ItemType itemType) {
         if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
@@ -129,6 +129,17 @@ public class ScreenItemNBT {
 
         } else {
             return (int) nbt.getShort("Damage");
+        }
+    }
+
+    @Getter
+    public enum ItemType {
+        SCREEN_MAP((byte) 2);
+
+        private final byte id;
+
+        ItemType(final byte id) {
+            this.id = id;
         }
     }
 }

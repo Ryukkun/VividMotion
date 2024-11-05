@@ -34,7 +34,7 @@ public class MapManager {
         ScreenItemNBT nbtManager = new ScreenItemNBT(new ItemStack(Material.MAP));
 
         nbtManager.setMapId(mapId);
-        nbtManager.setScreenItemId((byte)2);
+        nbtManager.setScreenItemId( ScreenItemNBT.ItemType.SCREEN_MAP);
         return nbtManager;
     }
 
