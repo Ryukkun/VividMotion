@@ -112,7 +112,7 @@ public class SetScreen extends ScreenCommandTPL {
         private final Player player;
         private final ScreenData screenData;
         public static final HashMap<UUID, HashMap<String, Boolean>> running = new HashMap<>();
-        public static final boolean isOver_1_13 = (MCVersion.greaterThanEqual(MCVersion.v1_13_R1));
+        public static final boolean isOver_1_13 = (MCVersion.isNewerThan(MCVersion.v1_13_R1));
 
         private static final ItemStack itemFrame = getItemFrame();
         private static ItemStack getItemFrame() {

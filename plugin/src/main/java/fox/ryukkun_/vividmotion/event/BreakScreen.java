@@ -29,7 +29,7 @@ public class BreakScreen implements Listener {
 
     @EventHandler
     public void onHangingBreakByEntityEvent(HangingBreakByEntityEvent event) {
-        if (!MCVersion.greaterThanEqual(MCVersion.v1_16_R1)) {
+        if (!MCVersion.isNewerThan(MCVersion.v1_16_R1)) {
             return;
         }
         event.setCancelled( killScreen(event.getEntity(), event.getRemover()));

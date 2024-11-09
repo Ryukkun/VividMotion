@@ -97,12 +97,12 @@ public enum MCVersion {
         return unknown;
     }
 
-    public static boolean lessThanEqual(MCVersion target) {
-        return ver.num <= target.num;
+    public static boolean isOlderThan(MCVersion than) {
+        return ver.num <= than.num;
     }
 
-    public static boolean greaterThanEqual(MCVersion target) {
-        return target.num <= ver.num;
+    public static boolean isNewerThan(MCVersion than) {
+        return than.num <= ver.num;
     }
 
     public static boolean equal(MCVersion target) {
