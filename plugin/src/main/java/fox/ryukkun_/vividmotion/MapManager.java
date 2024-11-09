@@ -12,7 +12,7 @@ public class MapManager {
     private static Field colorF = null;
     static {
         try {
-            Class<?> craftMapViewClass = Class.forName(MCVersion.getCB()+"map.CraftMapView");
+            Class<?> craftMapViewClass = MCVersion.craftBukkitClass("map.CraftMapView");
             worldMapF = craftMapViewClass.getDeclaredField("worldMap");
             worldMapF.setAccessible(true);
 
@@ -20,7 +20,7 @@ public class MapManager {
             if (MCVersion.greaterThanEqual(MCVersion.v1_17_R1)) {
                 worldMapClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap");
             } else {
-                worldMapClass = Class.forName(MCVersion.getNMS()+"WorldMap");
+                worldMapClass = MCVersion.nmsClass("WorldMap");
             }
             colorF = Reflection.findField(worldMapClass, byte[].class);
 

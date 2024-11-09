@@ -109,11 +109,12 @@ public enum MCVersion {
         return ver.minor == target.num;
     }
 
-    public static String getNMS() {
-        return "net.minecraft.server."+versionString+".";
+    public static Class<?> nmsClass(String _class) throws ClassNotFoundException {
+        // 1.17 未満の実使用可能
+        return Class.forName("net.minecraft.server."+ver.name()+"."+_class);
     }
 
-    public static String getCB() {
-        return "org.bukkit.craftbukkit."+versionString+".";
+    public static Class<?> craftBukkitClass(String _class) throws ClassNotFoundException {
+        return Class.forName(Bukkit.getServer().getClass().getPackage().getName()+"."+_class);
     }
 }
