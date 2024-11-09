@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class VideoPacket {
-    private static final boolean lessThan1_16 = MCVersion.lessThanEqual( MCVersion.v1_16_R3);
+    private static final boolean lessThan1_16 = MCVersion.isOlderThan( MCVersion.v1_16_R3);
     public int sX = -1;
     public int sY = -1;
     public int fX = -1;

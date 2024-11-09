@@ -77,7 +77,7 @@ public final class VividMotion extends JavaPlugin {
         pluginManager.registerEvents(new UsedSetUpScreen(), this);
         pluginManager.registerEvents(new SelectSetUpScreen(), this);
         pluginManager.registerEvents(new BreakScreen(), this);
-        if (!MCVersion.greaterThanEqual(MCVersion.v1_16_R1)) {
+        if (!MCVersion.isNewerThan(MCVersion.v1_16_R1)) {
             pluginManager.registerEvents(new InteractScreen(), this);
         }
 
@@ -144,7 +144,7 @@ public final class VividMotion extends JavaPlugin {
 
 
     private static MapGetter getMapGetter(){
-        if (MCVersion.greaterThanEqual( MCVersion.v1_13_R2)) {
+        if (MCVersion.isNewerThan( MCVersion.v1_13_R2)) {
             return new MapUtil_1_13_R2();
         } else {
             return new MapUtil_1_12_R1();

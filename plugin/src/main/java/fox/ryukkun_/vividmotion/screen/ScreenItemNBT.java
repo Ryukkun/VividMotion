@@ -21,7 +21,7 @@ public class ScreenItemNBT {
         setScreenName(nbt, name);
     }
     public static void setScreenName(ReadWriteNBT nbt, String name) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
@@ -41,7 +41,7 @@ public class ScreenItemNBT {
         return getScreenName(NBT.itemStackToNBT(itemStack));
     }
     public static String getScreenName(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
@@ -59,7 +59,7 @@ public class ScreenItemNBT {
         setScreenItemId(nbt, itemType);
     }
     public static void setScreenItemId(ReadWriteNBT nbt, ItemType itemType) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
@@ -80,7 +80,7 @@ public class ScreenItemNBT {
         return getScreenItemId(NBT.itemStackToNBT(itemStack));
     }
     public static Byte getScreenItemId(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
@@ -98,11 +98,11 @@ public class ScreenItemNBT {
         setMapId(nbt, id);
     }
     public static void setMapId(ReadWriteNBT nbt, int id) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .setInteger("minecraft:map_id", id);
 
-        } else if (MCVersion.greaterThanEqual(MCVersion.v1_13_R1)) {
+        } else if (MCVersion.isNewerThan(MCVersion.v1_13_R1)) {
             nbt.getOrCreateCompound("tag")
                     .setInteger("map", id);
 
@@ -119,11 +119,11 @@ public class ScreenItemNBT {
         return getMapId(NBT.itemStackToNBT(itemStack));
     }
     public static Integer getMapId(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getInteger("minecraft:map_id");
 
-        } else if (MCVersion.greaterThanEqual(MCVersion.v1_13_R1)) {
+        } else if (MCVersion.isNewerThan(MCVersion.v1_13_R1)) {
             return nbt.getOrCreateCompound("tag")
                     .getInteger("map");
 

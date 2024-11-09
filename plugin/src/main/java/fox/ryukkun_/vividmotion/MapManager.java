@@ -17,7 +17,7 @@ public class MapManager {
             worldMapF.setAccessible(true);
 
             Class<?> worldMapClass;
-            if (MCVersion.greaterThanEqual(MCVersion.v1_17_R1)) {
+            if (MCVersion.isNewerThan(MCVersion.v1_17_R1)) {
                 worldMapClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap");
             } else {
                 worldMapClass = MCVersion.nmsClass("WorldMap");

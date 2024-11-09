@@ -14,13 +14,13 @@ public class PacketSender {
     private final static PacketSendInterface connection;
 
     static {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+        if (MCVersion.isNewerThan(MCVersion.v1_20_5)) {
             connection = new v1_20_5();
 
-        } else if (MCVersion.greaterThanEqual(MCVersion.v1_17_R1)) {
+        } else if (MCVersion.isNewerThan(MCVersion.v1_17_R1)) {
             connection = new v1_17_R1();
 
-        } else if (MCVersion.greaterThanEqual(MCVersion.v1_14_R1)) {
+        } else if (MCVersion.isNewerThan(MCVersion.v1_14_R1)) {
             connection = new v1_14_R1();
 
         } else {
@@ -51,7 +51,7 @@ public class PacketSender {
                 final Class<?> mapPacketClass = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutMap");
                 final Class<?> connectionClass = Class.forName("net.minecraft.server.network.PlayerConnection");
                 final Class<?> playerClass = Class.forName("net.minecraft.server.level.EntityPlayer");
-                final Class<?> bClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap$"+(MCVersion.greaterThanEqual(MCVersion.v1_21_2) ? "c" : "b"));
+                final Class<?> bClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap$"+(MCVersion.isNewerThan(MCVersion.v1_21_2) ? "c" : "b"));
                 final Class<?> packetClass = Class.forName("net.minecraft.network.protocol.Packet");
                 final Class<?> mapIdClass = Class.forName("net.minecraft.world.level.saveddata.maps.MapId");
 

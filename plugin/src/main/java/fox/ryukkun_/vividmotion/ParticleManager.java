@@ -13,7 +13,7 @@ import java.util.List;
 
 public class ParticleManager {
     public static final ParticleUtil particleUtil =
-            MCVersion.greaterThanEqual(MCVersion.v1_13_R1) ?
+            MCVersion.isNewerThan(MCVersion.v1_13_R1) ?
             new ParticleUtil_1_13_R1() :
             new ParticleUtil_1_12_R1();
 
