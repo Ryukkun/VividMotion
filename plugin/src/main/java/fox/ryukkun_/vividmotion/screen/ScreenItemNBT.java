@@ -3,6 +3,7 @@ package fox.ryukkun_.vividmotion.screen;
 import de.tr7zw.changeme.nbtapi.NBT;
 import de.tr7zw.changeme.nbtapi.iface.ReadWriteNBT;
 import fox.ryukkun_.vividmotion.MCVersion;
+import lombok.Getter;
 import org.bukkit.inventory.ItemStack;
 
 public class ScreenItemNBT {
@@ -20,7 +21,7 @@ public class ScreenItemNBT {
         setScreenName(nbt, name);
     }
     public static void setScreenName(ReadWriteNBT nbt, String name) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
@@ -40,34 +41,34 @@ public class ScreenItemNBT {
         return getScreenName(NBT.itemStackToNBT(itemStack));
     }
     public static String getScreenName(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getString("ScreenName");
 
         } else {
             return nbt.getOrCreateCompound("tag")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getString("ScreenName");
         }
     }
 
 
-    public void setScreenItemId(byte id) {
-        setScreenItemId(nbt, id);
+    public void setScreenItemId(ItemType itemType) {
+        setScreenItemId(nbt, itemType);
     }
-    public static void setScreenItemId(ReadWriteNBT nbt, byte id) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+    public static void setScreenItemId(ReadWriteNBT nbt, ItemType itemType) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
                     .getOrCreateCompound("VividMotion")
-                    .setByte("Item", id);
+                    .setByte("Item", itemType.getId());
 
         } else {
             nbt.getOrCreateCompound("tag")
                     .getOrCreateCompound("VividMotion")
-                    .setByte("Item", id);
+                    .setByte("Item", itemType.getId());
         }
     }
 
@@ -79,15 +80,15 @@ public class ScreenItemNBT {
         return getScreenItemId(NBT.itemStackToNBT(itemStack));
     }
     public static Byte getScreenItemId(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getOrCreateCompound("minecraft:custom_data")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getByte("Item");
 
         } else {
             return nbt.getOrCreateCompound("tag")
-                    .getCompound("VividMotion")
+                    .getOrCreateCompound("VividMotion")
                     .getByte("Item");
         }
     }
@@ -97,7 +98,7 @@ public class ScreenItemNBT {
         setMapId(nbt, id);
     }
     public static void setMapId(ReadWriteNBT nbt, int id) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             nbt.getOrCreateCompound("components")
                     .setInteger("minecraft:map_id", id);
 
@@ -118,7 +119,7 @@ public class ScreenItemNBT {
         return getMapId(NBT.itemStackToNBT(itemStack));
     }
     public static Integer getMapId(ReadWriteNBT nbt) {
-        if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
             return nbt.getOrCreateCompound("components")
                     .getInteger("minecraft:map_id");
 
@@ -128,6 +129,17 @@ public class ScreenItemNBT {
 
         } else {
             return (int) nbt.getShort("Damage");
+        }
+    }
+
+    @Getter
+    public enum ItemType {
+        SCREEN_MAP((byte) 2);
+
+        private final byte id;
+
+        ItemType(final byte id) {
+            this.id = id;
         }
     }
 }

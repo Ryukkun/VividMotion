@@ -14,18 +14,18 @@ public class PacketSender {
     private final static PacketSendInterface connection;
 
     static {
-            if (MCVersion.greaterThanEqual(MCVersion.v1_20_R4)) {
-                connection = new v1_20_R4();
+        if (MCVersion.greaterThanEqual(MCVersion.v1_20_5)) {
+            connection = new v1_20_5();
 
-            } else if (MCVersion.greaterThanEqual(MCVersion.v1_17_R1)) {
-                connection = new v1_17_R1();
+        } else if (MCVersion.greaterThanEqual(MCVersion.v1_17_R1)) {
+            connection = new v1_17_R1();
 
-            } else if (MCVersion.greaterThanEqual(MCVersion.v1_14_R1)) {
-                connection = new v1_14_R1();
+        } else if (MCVersion.greaterThanEqual(MCVersion.v1_14_R1)) {
+            connection = new v1_14_R1();
 
-            } else {
-                connection = new lessThan_v1_14_R1();
-            }
+        } else {
+            connection = new lessThan_v1_14_R1();
+        }
     }
 
     public static void sendPacket(Player player, List<MapPacket> packets) {
@@ -38,7 +38,7 @@ public class PacketSender {
         void sendPacket(Player player, List<MapPacket> packets);
     }
 
-    private static class v1_20_R4 implements PacketSendInterface {
+    private static class v1_20_5 implements PacketSendInterface {
         private static Constructor<?> mapPacketCo = null;
         private static Class<?> craftPlayerClass = null;
         private static Method sendPacketMethod = null;
@@ -51,12 +51,12 @@ public class PacketSender {
                 final Class<?> mapPacketClass = Class.forName("net.minecraft.network.protocol.game.PacketPlayOutMap");
                 final Class<?> connectionClass = Class.forName("net.minecraft.server.network.PlayerConnection");
                 final Class<?> playerClass = Class.forName("net.minecraft.server.level.EntityPlayer");
-                final Class<?> bClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap$b");
+                final Class<?> bClass = Class.forName("net.minecraft.world.level.saveddata.maps.WorldMap$"+(MCVersion.greaterThanEqual(MCVersion.v1_21_2) ? "c" : "b"));
                 final Class<?> packetClass = Class.forName("net.minecraft.network.protocol.Packet");
                 final Class<?> mapIdClass = Class.forName("net.minecraft.world.level.saveddata.maps.MapId");
 
                 mapIdCo = mapIdClass.getConstructor(int.class);
-                craftPlayerClass = Class.forName(MCVersion.getCB()+"entity.CraftPlayer");
+                craftPlayerClass = MCVersion.craftBukkitClass("entity.CraftPlayer");
                 sendPacketMethod = Reflection.findMethod(connectionClass, void.class, packetClass);
                 connectionF = Reflection.findField(playerClass, connectionClass);
                 mapPatchCo = bClass.getConstructor(int.class, int.class, int.class, int.class, byte[].class);
@@ -102,7 +102,7 @@ public class PacketSender {
                 connectionF = Reflection.findField(playerClass, connectionClass);
                 mapPatchCo = bClass.getConstructor(int.class, int.class, int.class, int.class, byte[].class);
                 mapPacketCo = mapPacketClass.getConstructor(int.class, byte.class, boolean.class, Collection.class, bClass);
-                craftPlayerClass = Class.forName(MCVersion.getCB()+"entity.CraftPlayer");
+                craftPlayerClass = MCVersion.craftBukkitClass("entity.CraftPlayer");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -134,11 +134,11 @@ public class PacketSender {
 
         static {
             try {
-                Class<?> c = Class.forName(MCVersion.getNMS()+"PacketPlayOutMap");
+                Class<?> c = MCVersion.nmsClass("PacketPlayOutMap");
                 mapPacketCo = c.getConstructor(int.class, byte.class, boolean.class, boolean.class, Collection.class, byte[].class, int.class, int.class, int.class, int.class);
-                sendPacketMethod = Class.forName(MCVersion.getNMS()+"PlayerConnection").getMethod("sendPacket", Class.forName(MCVersion.getNMS()+"Packet"));
-                connectionF = Class.forName(MCVersion.getNMS()+"EntityPlayer").getField("playerConnection");
-                craftPlayerClass = Class.forName(MCVersion.getCB()+"entity.CraftPlayer");
+                sendPacketMethod = MCVersion.nmsClass("PlayerConnection").getMethod("sendPacket", MCVersion.nmsClass("Packet"));
+                connectionF = MCVersion.nmsClass("EntityPlayer").getField("playerConnection");
+                craftPlayerClass = MCVersion.craftBukkitClass("entity.CraftPlayer");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -170,11 +170,11 @@ public class PacketSender {
 
         static {
             try {
-                Class<?> c = Class.forName(MCVersion.getNMS()+"PacketPlayOutMap");
+                Class<?> c = MCVersion.nmsClass("PacketPlayOutMap");
                 mapPacketCo = c.getConstructor(int.class, byte.class, boolean.class, Collection.class, byte[].class, int.class, int.class, int.class, int.class);
-                sendPacketMethod = Class.forName(MCVersion.getNMS()+"PlayerConnection").getMethod("sendPacket", Class.forName(MCVersion.getNMS()+"Packet"));
-                connectionF = Class.forName(MCVersion.getNMS()+"EntityPlayer").getField("playerConnection");
-                craftPlayerClass = Class.forName(MCVersion.getCB()+"entity.CraftPlayer");
+                sendPacketMethod = MCVersion.nmsClass("PlayerConnection").getMethod("sendPacket", MCVersion.nmsClass("Packet"));
+                connectionF = MCVersion.nmsClass("EntityPlayer").getField("playerConnection");
+                craftPlayerClass = MCVersion.craftBukkitClass("entity.CraftPlayer");
 
             } catch (Exception e) {
                 e.printStackTrace();
